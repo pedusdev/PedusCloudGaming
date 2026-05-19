@@ -955,8 +955,12 @@
             }
 
             // Limpiar trailing slash
-            serverUrl = serverUrl.replace(/\/+$/, '');
-            state.serverUrl = serverUrl;
+       // CÓDIGO NUEVO:
+    serverUrl = serverUrl.replace(/\/+$/, '');
+    state.serverUrl = serverUrl;
+
+    // Guardar en localStorage para la próxima vez
+    localStorage.setItem('pedus_server_url', serverUrl);
             state.connecting = true;
 
             setStatus('connecting', 'Conectando...');
@@ -1563,11 +1567,22 @@
         function init() {
             console.log('%c PedusCloud Gaming v2.0 ', 'background: linear-gradient(135deg, #00f5d4, #00bbf9); color: #0a0a0f; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;');
 
-            // Auto-fill server URL if accessed via ngrok or custom domain
-            const urlInput = $('server-url');
-            if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                urlInput.value = window.location.origin;
-            }
+ // CÓDIGO NUEVO - GITHUB PAGES COMPATIBLE:
+const urlInput = $('server-url');
+
+// 1. Intentar recuperar la URL guardada del servidor
+const savedUrl = localStorage.getItem('pedus_server_url');
+if (savedUrl) {
+    urlInput.value = savedUrl;
+}
+
+// 2. Cuando el usuario modifica la URL, guardarla automáticamente
+urlInput.addEventListener('input', () => {
+    const val = urlInput.value.trim();
+    if (val) {
+        localStorage.setItem('pedus_server_url', val);
+    }
+});
 
             // Enter en el input = conectar
             urlInput.addEventListener('keydown', (e) => {
