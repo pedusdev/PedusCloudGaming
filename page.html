@@ -5,76 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PedusCloud Gaming</title>
     <style>
-        /* ═══════════════════════════════════════════════════════
-           PEDUS CLOUD GAMING - PREMIUM UI
-           Glassmorphism + Neón + Futurista
-           ═══════════════════════════════════════════════════════ */
+        /*
+        ═══════════════════════════════════════════════════════
+        PEDUS CLOUD GAMING - PREMIUM UI
+        
+        Diseño: Glassmorphism + Neón + Futurista
+        Tema: Oscuro con acentos cian/esmeralda
+        ═══════════════════════════════════════════════════════
+        */
 
+        /* ── Fuentes de Google ── */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-        /* ── CSS Variables (Design Tokens) ── */
+        /* ── Variables de diseño ── */
         :root {
-            --accent-primary: #00f5d4;
-            --accent-secondary: #00bbf9;
-            --accent-tertiary: #9b5de5;
-            --accent-danger: #f15bb5;
-            --accent-warning: #fee440;
-            --accent-success: #00f5d4;
+            --accent: #00f5d4;
+            --accent2: #00bbf9;
+            --accent3: #9b5de5;
+            --danger: #f15bb5;
+            --warning: #fee440;
 
             --bg-deep: #0a0a0f;
             --bg-dark: #12121a;
             --bg-card: rgba(18, 18, 26, 0.65);
-            --bg-card-hover: rgba(18, 18, 26, 0.85);
             --bg-glass: rgba(255, 255, 255, 0.03);
             --bg-glass-hover: rgba(255, 255, 255, 0.06);
 
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.08);
             --border-active: rgba(0, 245, 212, 0.3);
 
-            --text-primary: #f0f0f5;
-            --text-secondary: #8888a0;
-            --text-muted: #55556a;
+            --text: #f0f0f5;
+            --text2: #8888a0;
+            --text3: #55556a;
 
-            --shadow-neon: 0 0 20px rgba(0, 245, 212, 0.15),
-                           0 0 60px rgba(0, 245, 212, 0.05);
-            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4),
-                           0 2px 8px rgba(0, 0, 0, 0.3);
-            --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.5),
-                               0 4px 16px rgba(0, 0, 0, 0.4);
-
-            --blur-glass: 20px;
-            --blur-heavy: 40px;
-
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
-            --radius-full: 9999px;
-
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
-
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --font: 'Inter', -apple-system, system-ui, sans-serif;
+            --mono: 'JetBrains Mono', 'Fira Code', monospace;
         }
 
-        /* ── Reset & Base ── */
+        /* ── Reset ── */
         *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
         }
 
         html, body {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             overflow: hidden;
-            font-family: var(--font-sans);
+            font-family: var(--font);
             background: var(--bg-deep);
-            color: var(--text-primary);
+            color: var(--text);
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -82,21 +61,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
-        /* ── Animated Background ── */
+        /* ── Fondo animado con gradientes ── */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background:
-                radial-gradient(ellipse 800px 600px at 20% 30%, rgba(0, 245, 212, 0.04), transparent),
-                radial-gradient(ellipse 600px 800px at 80% 70%, rgba(155, 93, 229, 0.04), transparent),
-                radial-gradient(ellipse 900px 500px at 50% 50%, rgba(0, 187, 249, 0.02), transparent);
+                radial-gradient(800px 600px at 20% 30%, rgba(0,245,212,0.04), transparent),
+                radial-gradient(600px 800px at 80% 70%, rgba(155,93,229,0.04), transparent),
+                radial-gradient(900px 500px at 50% 50%, rgba(0,187,249,0.02), transparent);
             pointer-events: none;
             z-index: 0;
             animation: bgPulse 12s ease-in-out infinite alternate;
@@ -107,128 +82,118 @@
             100% { opacity: 1; }
         }
 
-        /* ── Grid Pattern Overlay ── */
+        /* ── Patrón de grid sutil ── */
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
             background-size: 60px 60px;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* ── Main Container ── */
-        #app-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ── Top Bar ── */
+        /* ── Barra superior ── */
         #top-bar {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(var(--blur-glass));
-            -webkit-backdrop-filter: blur(var(--blur-glass));
-            border-bottom: 1px solid var(--border-glass);
+            background: rgba(10,10,15,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             z-index: 1000;
         }
 
-        .logo-section {
+        .logo {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: var(--radius-sm);
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: 800;
             color: var(--bg-deep);
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+            box-shadow: 0 0 12px rgba(0,245,212,0.3);
         }
 
         .logo-text {
             font-weight: 700;
             font-size: 15px;
-            letter-spacing: -0.3px;
         }
 
         .logo-text span {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .status-section {
+        .status-area {
             display: flex;
             align-items: center;
             gap: 16px;
         }
 
-        .status-badge {
+        .latency {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        .latency strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .badge {
             display: flex;
             align-items: center;
             gap: 6px;
             padding: 4px 12px;
-            border-radius: var(--radius-full);
+            border-radius: 999px;
             background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border);
             font-size: 12px;
             font-weight: 500;
-            font-family: var(--font-mono);
-            transition: var(--transition-normal);
+            font-family: var(--mono);
         }
 
-        .status-dot {
-            width: 7px;
-            height: 7px;
+        .dot {
+            width: 7px; height: 7px;
             border-radius: 50%;
-            background: var(--text-muted);
-            transition: var(--transition-normal);
+            background: var(--text3);
+            transition: all 0.3s;
         }
 
-        .status-badge.connected .status-dot {
-            background: var(--accent-success);
-            box-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
+        .badge.on .dot {
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(0,245,212,0.5);
             animation: pulse 2s infinite;
         }
 
-        .status-badge.connecting .status-dot {
-            background: var(--accent-warning);
-            box-shadow: 0 0 8px rgba(254, 228, 64, 0.5);
-            animation: pulse 1s infinite;
+        .badge.loading .dot {
+            background: var(--warning);
+            box-shadow: 0 0 8px rgba(254,228,64,0.5);
+            animation: pulse 0.8s infinite;
         }
 
-        .status-badge.error .status-dot {
-            background: var(--accent-danger);
-            box-shadow: 0 0 8px rgba(241, 91, 181, 0.5);
+        .badge.err .dot {
+            background: var(--danger);
+            box-shadow: 0 0 8px rgba(241,91,181,0.5);
         }
 
         @keyframes pulse {
@@ -236,20 +201,10 @@
             50% { opacity: 0.4; }
         }
 
-        .latency-badge {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .latency-badge strong {
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
-
-        /* ── Video Container ── */
-        #video-wrapper {
+        /* ── Contenedor de vídeo ── */
+        #video-wrap {
             position: relative;
+            z-index: 1;
             width: calc(100% - 40px);
             max-width: 1400px;
             height: calc(100% - 112px);
@@ -259,38 +214,41 @@
             justify-content: center;
         }
 
-        #video-container {
+        #video-box {
             position: relative;
-            border-radius: var(--radius-xl);
+            width: 100%; height: 100%;
+            border-radius: 24px;
             overflow: hidden;
             background: var(--bg-dark);
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-card);
-            transition: var(--transition-smooth);
-            width: 100%;
-            height: 100%;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        #video-container.active {
+        #video-box.active {
             border-color: var(--border-active);
-            box-shadow: var(--shadow-neon), var(--shadow-elevated);
+            box-shadow:
+                0 0 20px rgba(0,245,212,0.15),
+                0 0 60px rgba(0,245,212,0.05),
+                0 20px 60px rgba(0,0,0,0.5);
         }
 
-        #video-container.active::before {
+        /* Borde gradiente animado cuando activo */
+        #video-box.active::before {
             content: '';
             position: absolute;
             inset: -1px;
-            border-radius: var(--radius-xl);
+            border-radius: 24px;
             padding: 1px;
             background: linear-gradient(
                 135deg,
-                rgba(0, 245, 212, 0.2),
+                rgba(0,245,212,0.2),
                 transparent 40%,
                 transparent 60%,
-                rgba(155, 93, 229, 0.2)
+                rgba(155,93,229,0.2)
             );
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -299,20 +257,19 @@
             z-index: 2;
         }
 
-        #remote-video {
-            width: 100%;
-            height: 100%;
+        #stream {
+            width: 100%; height: 100%;
             object-fit: contain;
             background: #000;
-            border-radius: var(--radius-xl);
+            border-radius: 24px;
             cursor: crosshair;
         }
 
-        #remote-video.mode-3d {
+        #stream.mode3d {
             cursor: none;
         }
 
-        /* ── Placeholder (cuando no hay stream) ── */
+        /* ── Placeholder (antes de conectar) ── */
         #placeholder {
             position: absolute;
             inset: 0;
@@ -322,20 +279,20 @@
             justify-content: center;
             gap: 24px;
             z-index: 5;
-            transition: var(--transition-smooth);
+            transition: all 0.4s;
         }
 
-        #placeholder.hidden {
+        #placeholder.gone {
             opacity: 0;
             pointer-events: none;
+            transform: scale(0.95);
         }
 
-        .placeholder-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: var(--radius-lg);
+        .ph-icon {
+            width: 80px; height: 80px;
+            border-radius: 16px;
             background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -348,74 +305,132 @@
             50% { transform: translateY(-8px); }
         }
 
-        .placeholder-text {
+        .ph-text {
             text-align: center;
         }
 
-        .placeholder-text h2 {
-            font-size: 20px;
+        .ph-text h2 {
+            font-size: 22px;
             font-weight: 700;
             margin-bottom: 6px;
-            letter-spacing: -0.3px;
         }
 
-        .placeholder-text p {
+        .ph-text p {
             font-size: 13px;
-            color: var(--text-secondary);
-            max-width: 300px;
+            color: var(--text2);
+            max-width: 320px;
+            line-height: 1.5;
         }
 
-        /* ── Connect Button ── */
-        .btn-connect {
-            position: relative;
-            padding: 12px 32px;
+        /* ── Input de URL + Botón ── */
+        #connect-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .url-row {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 12px;
+            outline: none;
+            transition: all 0.25s;
+        }
+
+        .url-input::placeholder {
+            color: var(--text3);
+        }
+
+        .url-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,245,212,0.1);
+        }
+
+        .btn-go {
+            padding: 11px 28px;
             border: none;
-            border-radius: var(--radius-md);
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             color: var(--bg-deep);
-            font-family: var(--font-sans);
-            font-size: 14px;
+            font-family: var(--font);
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 0.3px;
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: all 0.25s;
+            white-space: nowrap;
+            position: relative;
             overflow: hidden;
         }
 
-        .btn-connect::before {
+        .btn-go::before {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, transparent, rgba(255,255,255,0.2), transparent);
             transform: translateX(-100%);
-            transition: transform 0.6s;
+            transition: transform 0.5s;
         }
 
-        .btn-connect:hover {
+        .btn-go:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 245, 212, 0.3);
+            box-shadow: 0 8px 30px rgba(0,245,212,0.3);
         }
 
-        .btn-connect:hover::before {
+        .btn-go:hover::before {
             transform: translateX(100%);
         }
 
-        .btn-connect:active {
-            transform: translateY(0);
-        }
-
-        .btn-connect:disabled {
+        .btn-go:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
-        .btn-connect:disabled::before {
-            display: none;
+        .hint {
+            font-size: 11px;
+            color: var(--text3);
+            text-align: center;
         }
 
-        /* ── Control Panel (Glassmorphism Floating Panel) ── */
-        #control-panel {
+        .hint a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ── Spinner de carga ── */
+        .spin {
+            display: inline-block;
+            width: 16px; height: 16px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Panel de control inferior ── */
+        #panel {
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -423,123 +438,117 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 12px;
-            background: rgba(18, 18, 26, 0.75);
-            backdrop-filter: blur(var(--blur-heavy));
-            -webkit-backdrop-filter: blur(var(--blur-heavy));
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-elevated);
+            padding: 8px 14px;
+            background: rgba(18,18,26,0.8);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             z-index: 1000;
-            transition: var(--transition-smooth);
             opacity: 0;
             pointer-events: none;
+            transition: all 0.4s;
         }
 
-        #control-panel.visible {
+        #panel.show {
             opacity: 1;
             pointer-events: all;
         }
 
-        .panel-divider {
+        .sep {
             width: 1px;
             height: 28px;
-            background: var(--border-glass);
+            background: var(--border);
             margin: 0 4px;
         }
 
-        /* ── Panel Controls ── */
-        .control-group {
+        .grp {
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        .control-label {
+        .lbl {
             font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: var(--text-muted);
+            color: var(--text3);
             margin-right: 4px;
             white-space: nowrap;
         }
 
-        .control-btn {
+        .pbtn {
             padding: 6px 12px;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             background: var(--bg-glass);
-            color: var(--text-secondary);
-            font-family: var(--font-mono);
+            color: var(--text2);
+            font-family: var(--mono);
             font-size: 11px;
             font-weight: 500;
             cursor: pointer;
-            transition: var(--transition-fast);
+            transition: all 0.15s;
             white-space: nowrap;
         }
 
-        .control-btn:hover {
+        .pbtn:hover {
             background: var(--bg-glass-hover);
-            color: var(--text-primary);
-            border-color: rgba(255,255,255,0.12);
+            color: var(--text);
         }
 
-        .control-btn.active {
-            background: rgba(0, 245, 212, 0.12);
-            color: var(--accent-primary);
-            border-color: rgba(0, 245, 212, 0.25);
+        .pbtn.on {
+            background: rgba(0,245,212,0.12);
+            color: var(--accent);
+            border-color: rgba(0,245,212,0.25);
         }
 
-        .control-btn-icon {
+        .ibtn {
             padding: 6px 10px;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             background: var(--bg-glass);
-            color: var(--text-secondary);
+            color: var(--text2);
             font-size: 15px;
             cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.15s;
         }
 
-        .control-btn-icon:hover {
+        .ibtn:hover {
             background: var(--bg-glass-hover);
-            color: var(--text-primary);
+            color: var(--text);
         }
 
-        .control-btn-icon.active {
-            background: rgba(0, 245, 212, 0.12);
-            color: var(--accent-primary);
+        .ibtn.on {
+            background: rgba(0,245,212,0.12);
+            color: var(--accent);
         }
 
-        .control-btn-icon.danger:hover {
-            background: rgba(241, 91, 181, 0.12);
-            color: var(--accent-danger);
-            border-color: rgba(241, 91, 181, 0.25);
+        .ibtn.red:hover {
+            background: rgba(241,91,181,0.12);
+            color: var(--danger);
+            border-color: rgba(241,91,181,0.25);
         }
 
-        /* ── Mode Toggle (Special) ── */
-        .mode-toggle {
+        .mtog {
             display: flex;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border);
         }
 
-        .mode-toggle .control-btn {
+        .mtog .pbtn {
             border: none;
             border-radius: 0;
         }
 
-        .mode-toggle .control-btn:first-child {
-            border-right: 1px solid var(--border-glass);
+        .mtog .pbtn:first-child {
+            border-right: 1px solid var(--border);
         }
 
-        /* ── Notification Toast ── */
-        #toast-container {
+        /* ── Toasts (notificaciones) ── */
+        #toasts {
             position: fixed;
             top: 64px;
             right: 20px;
@@ -551,122 +560,83 @@
 
         .toast {
             padding: 10px 16px;
-            border-radius: var(--radius-md);
-            background: rgba(18, 18, 26, 0.9);
-            backdrop-filter: blur(var(--blur-glass));
-            -webkit-backdrop-filter: blur(var(--blur-glass));
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-card);
+            border-radius: 12px;
+            background: rgba(18,18,26,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             font-size: 12px;
             font-weight: 500;
-            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
-            animation: toastIn 0.3s ease-out;
-            max-width: 340px;
+            animation: tin 0.3s ease-out;
+            max-width: 360px;
         }
 
-        .toast.removing {
-            animation: toastOut 0.3s ease-in forwards;
+        .toast.out {
+            animation: tout 0.3s ease-in forwards;
         }
 
-        @keyframes toastIn {
+        @keyframes tin {
             from { opacity: 0; transform: translateX(30px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
-        @keyframes toastOut {
+        @keyframes tout {
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(30px); }
         }
 
-        .toast-icon {
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        /* ── URL Input Modal ── */
-        #url-input-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .input-group {
-            display: flex;
-            width: 100%;
-            gap: 8px;
-        }
-
-        .input-url {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-md);
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 12px;
-            outline: none;
-            transition: var(--transition-normal);
-        }
-
-        .input-url::placeholder {
-            color: var(--text-muted);
-        }
-
-        .input-url:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.1);
-        }
-
-        .input-hint {
+        /* ── Stats overlay ── */
+        #stats {
+            position: fixed;
+            top: 62px; left: 20px;
+            padding: 12px 16px;
+            background: rgba(10,10,15,0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: var(--mono);
             font-size: 11px;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        /* ── Fullscreen adjustments ── */
-        :fullscreen #top-bar {
-            display: none;
-        }
-
-        :fullscreen #video-wrapper {
-            margin-top: 0;
-            height: 100%;
-            max-width: 100%;
-            width: 100%;
-        }
-
-        :fullscreen #video-container {
-            border-radius: 0;
-            border: none;
-        }
-
-        :fullscreen #remote-video {
-            border-radius: 0;
-        }
-
-        :fullscreen #control-panel {
-            bottom: 10px;
+            line-height: 1.7;
+            color: var(--text2);
+            z-index: 900;
             opacity: 0;
-            transition: opacity 0.3s;
+            pointer-events: none;
+            transition: all 0.25s;
+            min-width: 180px;
         }
 
-        :fullscreen #control-panel:hover,
-        :fullscreen #control-panel.visible {
+        #stats.show {
             opacity: 1;
+            pointer-events: all;
         }
+
+        .sr {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .sv {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── Fullscreen ── */
+        :fullscreen #top-bar { display: none; }
+        :fullscreen #video-wrap { margin-top: 0; height: 100%; max-width: 100%; width: 100%; }
+        :fullscreen #video-box { border-radius: 0; border: none; }
+        :fullscreen #stream { border-radius: 0; }
+        :fullscreen #panel { bottom: 10px; opacity: 0; }
+        :fullscreen #panel:hover, :fullscreen #panel.show { opacity: 1; }
 
         /* ── Responsive ── */
         @media (max-width: 900px) {
-            #control-panel {
+            #panel {
                 bottom: 10px;
                 padding: 6px 8px;
                 gap: 4px;
@@ -674,951 +644,725 @@
                 max-width: calc(100% - 20px);
                 justify-content: center;
             }
-
-            .control-label {
-                display: none;
-            }
-
-            #video-wrapper {
-                width: calc(100% - 16px);
-            }
+            .lbl { display: none; }
+            #video-wrap { width: calc(100% - 16px); }
         }
 
-        /* ── Scrollbar (hidden) ── */
         ::-webkit-scrollbar { display: none; }
-
-        /* ── Selection ── */
-        ::selection {
-            background: rgba(0, 245, 212, 0.2);
-            color: var(--accent-primary);
-        }
-
-        /* ── Loading Spinner ── */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid transparent;
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ── Stats Overlay ── */
-        #stats-overlay {
-            position: fixed;
-            top: 62px;
-            left: 20px;
-            padding: 10px 14px;
-            background: rgba(10, 10, 15, 0.85);
-            backdrop-filter: blur(var(--blur-glass));
-            -webkit-backdrop-filter: blur(var(--blur-glass));
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-md);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            z-index: 900;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-normal);
-        }
-
-        #stats-overlay.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .stat-value {
-            color: var(--accent-primary);
-            font-weight: 600;
-        }
+        ::selection { background: rgba(0,245,212,0.2); color: var(--accent); }
     </style>
 </head>
 <body>
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
 
-    <!-- Stats Overlay -->
-    <div id="stats-overlay">
-        <div class="stat-row"><span>RTT</span><span class="stat-value" id="stat-rtt">--</span></div>
-        <div class="stat-row"><span>Jitter</span><span class="stat-value" id="stat-jitter">--</span></div>
-        <div class="stat-row"><span>Bitrate</span><span class="stat-value" id="stat-bitrate">--</span></div>
-        <div class="stat-row"><span>FPS</span><span class="stat-value" id="stat-fps">--</span></div>
-        <div class="stat-row"><span>Resolución</span><span class="stat-value" id="stat-res">--</span></div>
-        <div class="stat-row"><span>Paquetes ↓</span><span class="stat-value" id="stat-packets">--</span></div>
+    <!-- Notificaciones -->
+    <div id="toasts"></div>
+
+    <!-- Stats overlay -->
+    <div id="stats">
+        <div class="sr"><span>RTT</span><span class="sv" id="s-rtt">--</span></div>
+        <div class="sr"><span>Jitter</span><span class="sv" id="s-jit">--</span></div>
+        <div class="sr"><span>Bitrate</span><span class="sv" id="s-bit">--</span></div>
+        <div class="sr"><span>FPS</span><span class="sv" id="s-fps">--</span></div>
+        <div class="sr"><span>Resolución</span><span class="sv" id="s-res">--</span></div>
+        <div class="sr"><span>Paquetes</span><span class="sv" id="s-pkt">--</span></div>
     </div>
 
-    <!-- Top Bar -->
+    <!-- Barra superior -->
     <div id="top-bar">
-        <div class="logo-section">
+        <div class="logo">
             <div class="logo-icon">P</div>
             <div class="logo-text"><span>Pedus</span>Cloud</div>
         </div>
-        <div class="status-section">
-            <div class="latency-badge" id="latency-display">
-                RTT: <strong>--</strong> ms
-            </div>
-            <div class="status-badge" id="status-badge">
-                <div class="status-dot"></div>
-                <span id="status-text">Desconectado</span>
+        <div class="status-area">
+            <div class="latency" id="lat">RTT: <strong>--</strong> ms</div>
+            <div class="badge" id="badge">
+                <div class="dot"></div>
+                <span id="badge-txt">Desconectado</span>
             </div>
         </div>
     </div>
 
-    <!-- Main Container -->
-    <div id="app-container">
-        <div id="video-wrapper">
-            <div id="video-container">
-                <!-- Remote Video -->
-                <video id="remote-video" autoplay playsinline muted></video>
+    <!-- Contenedor principal -->
+    <div id="video-wrap">
+        <div id="video-box">
+            <video id="stream" autoplay playsinline muted></video>
 
-                <!-- Placeholder -->
-                <div id="placeholder">
-                    <div class="placeholder-icon">🎮</div>
-                    <div class="placeholder-text">
-                        <h2>PedusCloud Gaming</h2>
-                        <p>Conecta a tu PC de casa y juega desde cualquier lugar con latencia ultra-baja.</p>
-                    </div>
-                    <div id="url-input-section">
-                        <div class="input-group">
-                            <input
-                                type="text"
-                                class="input-url"
-                                id="server-url"
-                                placeholder="URL del servidor (ej: https://xxxx.ngrok.io)"
-                                spellcheck="false"
-                                autocomplete="off"
-                            />
-                        </div>
-                        <button class="btn-connect" id="btn-connect" onclick="PedusApp.connect()">
+            <!-- Placeholder (se muestra antes de conectar) -->
+            <div id="placeholder">
+                <div class="ph-icon">🎮</div>
+                <div class="ph-text">
+                    <h2>PedusCloud Gaming</h2>
+                    <p>Conecta a tu PC de casa y juega desde cualquier lugar con latencia ultra-baja vía WebRTC.</p>
+                </div>
+                <div id="connect-area">
+                    <div class="url-row">
+                        <input
+                            type="text"
+                            class="url-input"
+                            id="url"
+                            placeholder="https://tu-url.ngrok-free.app"
+                            spellcheck="false"
+                            autocomplete="off"
+                        />
+                        <button class="btn-go" id="btn-go" onclick="App.connect()">
                             ⚡ Conectar
                         </button>
-                        <div class="input-hint">
-                            Deja vacío para usar la misma URL del navegador
-                        </div>
+                    </div>
+                    <div class="hint">
+                        Pega la URL que te da <a href="https://ngrok.com" target="_blank">ngrok</a> 
+                        al ejecutar <code>ngrok http 8080</code> en tu PC
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Control Panel -->
-    <div id="control-panel">
-        <!-- Resolución -->
-        <div class="control-group">
-            <span class="control-label">RES</span>
-            <button class="control-btn" data-res="480p" onclick="PedusApp.setResolution('480p')">480p</button>
-            <button class="control-btn active" data-res="720p" onclick="PedusApp.setResolution('720p')">720p</button>
-            <button class="control-btn" data-res="1080p" onclick="PedusApp.setResolution('1080p')">1080p</button>
+    <!-- Panel de control inferior -->
+    <div id="panel">
+        <div class="grp">
+            <span class="lbl">RES</span>
+            <button class="pbtn" data-res="480p" onclick="App.res('480p')">480p</button>
+            <button class="pbtn on" data-res="720p" onclick="App.res('720p')">720p</button>
+            <button class="pbtn" data-res="1080p" onclick="App.res('1080p')">1080p</button>
         </div>
-
-        <div class="panel-divider"></div>
-
-        <!-- FPS -->
-        <div class="control-group">
-            <span class="control-label">FPS</span>
-            <button class="control-btn" data-fps="30" onclick="PedusApp.setFPS(30)">30</button>
-            <button class="control-btn active" data-fps="60" onclick="PedusApp.setFPS(60)">60</button>
+        <div class="sep"></div>
+        <div class="grp">
+            <span class="lbl">FPS</span>
+            <button class="pbtn" data-fps="30" onclick="App.fps(30)">30</button>
+            <button class="pbtn on" data-fps="60" onclick="App.fps(60)">60</button>
         </div>
-
-        <div class="panel-divider"></div>
-
-        <!-- Modo de Control -->
-        <div class="control-group">
-            <span class="control-label">MODE</span>
-            <div class="mode-toggle">
-                <button class="control-btn active" data-mode="2d" onclick="PedusApp.setMode('2d')">🖱 2D</button>
-                <button class="control-btn" data-mode="3d" onclick="PedusApp.setMode('3d')">🎮 3D</button>
+        <div class="sep"></div>
+        <div class="grp">
+            <span class="lbl">MODE</span>
+            <div class="mtog">
+                <button class="pbtn on" data-mode="2d" onclick="App.mode('2d')">🖱 2D</button>
+                <button class="pbtn" data-mode="3d" onclick="App.mode('3d')">🎮 3D</button>
             </div>
         </div>
-
-        <div class="panel-divider"></div>
-
-        <!-- Acciones -->
-        <div class="control-group">
-            <button class="control-btn-icon" id="btn-stats" onclick="PedusApp.toggleStats()" title="Estadísticas">📊</button>
-            <button class="control-btn-icon" id="btn-fullscreen" onclick="PedusApp.toggleFullscreen()" title="Pantalla completa">⛶</button>
-            <button class="control-btn-icon danger" onclick="PedusApp.disconnect()" title="Desconectar">⏻</button>
+        <div class="sep"></div>
+        <div class="grp">
+            <button class="ibtn" id="btn-stats" onclick="App.stats()" title="Stats">📊</button>
+            <button class="ibtn" onclick="App.fullscreen()" title="Fullscreen">⛶</button>
+            <button class="ibtn red" onclick="App.disconnect()" title="Desconectar">⏻</button>
         </div>
     </div>
 
     <script>
-    /**
-     * ══════════════════════════════════════════════════════════════
-     *  PEDUS CLOUD GAMING - CLIENT ENGINE
-     *  WebRTC + DataChannel + Input Capture
-     * ══════════════════════════════════════════════════════════════
-     */
+    /*
+    ══════════════════════════════════════════════════════════════
+    PEDUS CLOUD GAMING - MOTOR DEL CLIENTE
+    
+    Este script hace lo siguiente:
+    1. Crea una conexión WebRTC con tu PC (via ngrok)
+    2. Recibe el vídeo de tu pantalla en tiempo real
+    3. Captura tu teclado y ratón y los envía por DataChannel
+    4. Todo con la mínima latencia posible
+    
+    IMPORTANTE PARA GITHUB PAGES:
+    - La URL del servidor se guarda en localStorage
+    - Las peticiones fetch usan CORS (el servidor lo permite)
+    - No se usa window.location.origin (no tendría sentido)
+    ══════════════════════════════════════════════════════════════
+    */
 
-    const PedusApp = (() => {
+    const App = (() => {
         'use strict';
 
-        // ── State ──
-        let state = {
-            pc: null,               // RTCPeerConnection
-            dc: null,               // DataChannel
-            serverUrl: '',
+        // ═══════════════════════════
+        //  ESTADO DE LA APLICACIÓN
+        // ═══════════════════════════
+
+        const S = {
+            pc: null,           // RTCPeerConnection
+            dc: null,           // DataChannel (para inputs)
+            url: '',            // URL del servidor
             connected: false,
             connecting: false,
-
-            // Settings
-            resolution: '720p',
-            fps: 60,
-            controlMode: '2d',       // '2d' or '3d'
-
-            // Pointer Lock
-            pointerLocked: false,
-
-            // Stats
-            statsVisible: false,
-            statsInterval: null,
-
-            // Ping
-            lastPingTime: 0,
-            currentRTT: 0,
-
-            // Bytes tracking for bitrate
-            prevBytesReceived: 0,
-            prevStatsTime: 0,
+            mode: '2d',         // '2d' o '3d'
+            locked: false,      // Pointer Lock activo
+            statsOn: false,
+            statsTimer: null,
+            pingTime: 0,
+            prevBytes: 0,
+            prevTime: 0,
         };
 
-        // ── DOM Refs ──
-        const $ = (id) => document.getElementById(id);
-        const video = () => $('remote-video');
-        const placeholder = () => $('placeholder');
-        const videoContainer = () => $('video-container');
-        const controlPanel = () => $('control-panel');
-        const statusBadge = () => $('status-badge');
-        const statusText = () => $('status-text');
-        const latencyDisplay = () => $('latency-display');
-        const statsOverlay = () => $('stats-overlay');
+        // ═══════════════
+        //  HELPERS DOM
+        // ═══════════════
 
-        // ══════════════════════════════════════════
-        //  TOAST NOTIFICATIONS
-        // ══════════════════════════════════════════
+        const $ = id => document.getElementById(id);
 
-        function showToast(message, icon = 'ℹ️', duration = 3500) {
-            const container = $('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
-            container.appendChild(toast);
+        // ═══════════════
+        //  TOASTS
+        // ═══════════════
 
+        function toast(msg, icon = 'ℹ️', ms = 3500) {
+            const c = $('toasts');
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+            c.appendChild(t);
             setTimeout(() => {
-                toast.classList.add('removing');
-                setTimeout(() => toast.remove(), 300);
-            }, duration);
+                t.classList.add('out');
+                setTimeout(() => t.remove(), 300);
+            }, ms);
         }
 
-        // ══════════════════════════════════════════
-        //  STATUS MANAGEMENT
-        // ══════════════════════════════════════════
+        // ═══════════════════════
+        //  ACTUALIZAR UI STATUS
+        // ═══════════════════════
 
-        function setStatus(status, text) {
-            const badge = statusBadge();
-            const sText = statusText();
-            badge.className = `status-badge ${status}`;
-            sText.textContent = text;
+        function setStatus(cls, txt) {
+            $('badge').className = `badge ${cls}`;
+            $('badge-txt').textContent = txt;
         }
 
-        function updateLatency(rtt) {
-            const display = latencyDisplay();
-            display.innerHTML = `RTT: <strong>${rtt}</strong> ms`;
-        }
-
-        // ══════════════════════════════════════════
-        //  WEBRTC CONNECTION
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════
+        //  CONECTAR (WebRTC Signaling)
+        // ═══════════════════════════════════════
 
         async function connect() {
-            if (state.connecting || state.connected) return;
+            if (S.connecting || S.connected) return;
 
-            // Obtener URL del servidor
-            const urlInput = $('server-url');
-            let serverUrl = urlInput.value.trim();
-
-            if (!serverUrl) {
-                // Usar la URL actual del navegador
-                serverUrl = window.location.origin;
+            // ── Obtener URL del servidor ──
+            let url = $('url').value.trim();
+            if (!url) {
+                toast('Escribe la URL de ngrok', '⚠️');
+                $('url').focus();
+                return;
             }
 
-            // Limpiar trailing slash
-       // CÓDIGO NUEVO:
-    serverUrl = serverUrl.replace(/\/+$/, '');
-    state.serverUrl = serverUrl;
+            // Limpiar URL
+            url = url.replace(/\/+$/, '');
 
-    // Guardar en localStorage para la próxima vez
-    localStorage.setItem('pedus_server_url', serverUrl);
-            state.connecting = true;
+            // Si el usuario pone la URL sin protocolo, añadir https
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
 
-            setStatus('connecting', 'Conectando...');
-            showToast('Iniciando conexión WebRTC...', '🔄');
+            S.url = url;
+            S.connecting = true;
 
-            const btn = $('btn-connect');
+            // Guardar URL en localStorage para la próxima vez
+            localStorage.setItem('pedus_url', url);
+
+            // Actualizar UI
+            setStatus('loading', 'Conectando...');
+            const btn = $('btn-go');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Conectando...';
+            btn.innerHTML = '<span class="spin"></span>Conectando';
+            toast('Conectando con el servidor...', '🔄');
 
             try {
-                // Crear PeerConnection
-                const config = {
+                // ── 1. Crear RTCPeerConnection ──
+                S.pc = new RTCPeerConnection({
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
                         { urls: 'stun:stun1.l.google.com:19302' },
                     ],
-                    iceCandidatePoolSize: 5,
-                };
-
-                state.pc = new RTCPeerConnection(config);
-
-                // ── Crear DataChannel para inputs ──
-                state.dc = state.pc.createDataChannel('inputs', {
-                    ordered: false,        // No garantizar orden (más rápido)
-                    maxRetransmits: 0,     // No reenviar (baja latencia)
                 });
 
-                state.dc.onopen = () => {
-                    console.log('[DC] DataChannel abierto');
-                    showToast('Canal de inputs activo', '📡');
-                    startPingLoop();
+                // ── 2. Crear DataChannel para enviar inputs ──
+                //
+                // ordered: false = no garantizar orden (más rápido)
+                // maxRetransmits: 0 = no reenviar paquetes perdidos
+                // Esto minimiza la latencia de los controles
+                //
+                S.dc = S.pc.createDataChannel('inputs', {
+                    ordered: false,
+                    maxRetransmits: 0,
+                });
+
+                S.dc.onopen = () => {
+                    console.log('📡 DataChannel abierto');
+                    toast('Canal de inputs activo', '📡');
+                    startPing();
                 };
 
-                state.dc.onclose = () => {
-                    console.log('[DC] DataChannel cerrado');
-                };
-
-                state.dc.onmessage = (event) => {
+                S.dc.onmessage = (e) => {
                     try {
-                        const data = JSON.parse(event.data);
-                        handleServerMessage(data);
-                    } catch (e) {
-                        console.warn('Mensaje DC no parseable:', event.data);
+                        const d = JSON.parse(e.data);
+                        if (d.type === 'pong') {
+                            const rtt = Date.now() - S.pingTime;
+                            $('lat').innerHTML = `RTT: <strong>${rtt}</strong> ms`;
+                        } else if (d.type === 'config_ack') {
+                            toast(`${d.setting}: ${d.value}`, '✅');
+                        }
+                    } catch(err) {}
+                };
+
+                // ── 3. Cuando llega el stream de vídeo ──
+                S.pc.ontrack = (e) => {
+                    if (e.track.kind === 'video') {
+                        console.log('🎬 Stream de vídeo recibido');
+                        const vid = $('stream');
+                        vid.srcObject = e.streams[0];
+                        vid.play().catch(() => {});
+
+                        // Mostrar el vídeo, ocultar placeholder
+                        $('placeholder').classList.add('gone');
+                        $('video-box').classList.add('active');
+                        $('panel').classList.add('show');
+
+                        S.connected = true;
+                        S.connecting = false;
+                        setStatus('on', 'Conectado');
+                        toast('¡Conectado! Viendo tu escritorio', '🎮');
+
+                        // Vincular eventos de input
+                        bindInputs();
+                        startStats();
                     }
                 };
 
-                // ── Track de vídeo remoto ──
-                state.pc.ontrack = (event) => {
-                    console.log('[WebRTC] Track recibido:', event.track.kind);
-                    if (event.track.kind === 'video') {
-                        const vid = video();
-                        vid.srcObject = event.streams[0];
-                        vid.play().catch(e => console.warn('Autoplay bloqueado:', e));
-
-                        // Mostrar vídeo, ocultar placeholder
-                        placeholder().classList.add('hidden');
-                        videoContainer().classList.add('active');
-                        controlPanel().classList.add('visible');
-
-                        setStatus('connected', 'Conectado');
-                        state.connected = true;
-                        state.connecting = false;
-                        showToast('¡Stream de vídeo activo!', '🎮');
-
-                        // Iniciar stats
-                        startStatsLoop();
-
-                        // Bind inputs
-                        bindInputEvents();
-                    }
-                };
-
-                // ── ICE Events ──
-                state.pc.onicecandidate = (event) => {
-                    if (event.candidate) {
-                        console.log('[ICE] Candidato:', event.candidate.type);
-                    }
-                };
-
-                state.pc.oniceconnectionstatechange = () => {
-                    const iceState = state.pc.iceConnectionState;
-                    console.log('[ICE] Estado:', iceState);
-
-                    if (iceState === 'disconnected' || iceState === 'failed') {
-                        showToast('Conexión perdida', '⚠️');
-                        setStatus('error', 'Desconectado');
+                // ── 4. Eventos de estado de conexión ──
+                S.pc.oniceconnectionstatechange = () => {
+                    const st = S.pc.iceConnectionState;
+                    console.log('🧊 ICE:', st);
+                    if (st === 'disconnected' || st === 'failed') {
+                        toast('Conexión perdida', '⚠️');
+                        setStatus('err', 'Desconectado');
                         cleanup();
                     }
                 };
 
-                state.pc.onconnectionstatechange = () => {
-                    const connState = state.pc.connectionState;
-                    console.log('[WebRTC] Connection state:', connState);
-
-                    if (connState === 'failed' || connState === 'closed') {
+                S.pc.onconnectionstatechange = () => {
+                    if (S.pc.connectionState === 'failed' || S.pc.connectionState === 'closed') {
                         cleanup();
                     }
                 };
 
-                // ── Añadir transceiver para recibir vídeo ──
-                state.pc.addTransceiver('video', { direction: 'recvonly' });
+                // ── 5. Añadir transceiver para recibir vídeo ──
+                S.pc.addTransceiver('video', { direction: 'recvonly' });
 
-                // ── Crear oferta SDP ──
-                const offer = await state.pc.createOffer();
-                await state.pc.setLocalDescription(offer);
+                // ── 6. Crear oferta SDP ──
+                const offer = await S.pc.createOffer();
+                await S.pc.setLocalDescription(offer);
 
-                // ── Esperar a que se completen los ICE candidates ──
-                await new Promise((resolve) => {
-                    if (state.pc.iceGatheringState === 'complete') {
+                // ── 7. Esperar a que se recojan los ICE candidates ──
+                await new Promise(resolve => {
+                    if (S.pc.iceGatheringState === 'complete') {
                         resolve();
                     } else {
-                        const checkState = () => {
-                            if (state.pc.iceGatheringState === 'complete') {
-                                state.pc.removeEventListener('icegatheringstatechange', checkState);
+                        S.pc.addEventListener('icegatheringstatechange', function check() {
+                            if (S.pc.iceGatheringState === 'complete') {
+                                S.pc.removeEventListener('icegatheringstatechange', check);
                                 resolve();
                             }
-                        };
-                        state.pc.addEventListener('icegatheringstatechange', checkState);
-
-                        // Timeout para no esperar eternamente
+                        });
+                        // No esperar más de 5 segundos
                         setTimeout(resolve, 5000);
                     }
                 });
 
-                // ── Enviar oferta al servidor (Signaling) ──
-                console.log('[Signaling] Enviando oferta a:', serverUrl + '/offer');
-                const response = await fetch(serverUrl + '/offer', {
+                // ── 8. Enviar oferta al servidor via HTTP POST ──
+                //
+                // Aquí es donde GitHub Pages se comunica con tu servidor ngrok.
+                // El servidor responde con su propia SDP answer.
+                // Después de esto, WebRTC se conecta directamente (peer-to-peer).
+                //
+                console.log('📤 Enviando oferta a:', url + '/offer');
+
+                const resp = await fetch(url + '/offer', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sdp: state.pc.localDescription.sdp,
-                        type: state.pc.localDescription.type,
+                        sdp: S.pc.localDescription.sdp,
+                        type: S.pc.localDescription.type,
                     }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                if (!resp.ok) {
+                    const txt = await resp.text();
+                    throw new Error(`Servidor respondió ${resp.status}: ${txt}`);
                 }
 
-                const answer = await response.json();
+                const answer = await resp.json();
 
                 if (answer.error) {
                     throw new Error(answer.error);
                 }
 
-                // ── Aplicar respuesta del servidor ──
-                await state.pc.setRemoteDescription(
-                    new RTCSessionDescription({
-                        sdp: answer.sdp,
-                        type: answer.type,
-                    })
-                );
+                // ── 9. Aplicar la respuesta del servidor ──
+                await S.pc.setRemoteDescription(new RTCSessionDescription({
+                    sdp: answer.sdp,
+                    type: answer.type,
+                }));
 
-                console.log('[Signaling] Conexión establecida. Session:', answer.session_id);
-                showToast(`Sesión: ${answer.session_id}`, '✅');
+                console.log('✅ Signaling completado. Sesión:', answer.session_id);
 
-            } catch (error) {
-                console.error('[Error]', error);
-                showToast(`Error: ${error.message}`, '❌', 5000);
-                setStatus('error', 'Error');
-                state.connecting = false;
+            } catch (err) {
+                console.error('❌ Error:', err);
+                toast(`Error: ${err.message}`, '❌', 6000);
+                setStatus('err', 'Error');
+                S.connecting = false;
                 cleanup();
-
                 btn.disabled = false;
                 btn.innerHTML = '⚡ Conectar';
             }
         }
 
+        // ═══════════════════
+        //  DESCONECTAR
+        // ═══════════════════
+
         function cleanup() {
-            state.connected = false;
-            state.connecting = false;
-            state.pointerLocked = false;
+            S.connected = false;
+            S.connecting = false;
+            S.locked = false;
 
-            unbindInputEvents();
+            unbindInputs();
 
-            if (state.statsInterval) {
-                clearInterval(state.statsInterval);
-                state.statsInterval = null;
-            }
+            if (S.statsTimer) { clearInterval(S.statsTimer); S.statsTimer = null; }
+            if (S.dc) { try { S.dc.close(); } catch(e){} S.dc = null; }
+            if (S.pc) { try { S.pc.close(); } catch(e){} S.pc = null; }
 
-            if (state.dc) {
-                try { state.dc.close(); } catch(e) {}
-                state.dc = null;
-            }
+            $('stream').srcObject = null;
+            $('placeholder').classList.remove('gone');
+            $('video-box').classList.remove('active');
+            $('panel').classList.remove('show');
+            $('stats').classList.remove('show');
 
-            if (state.pc) {
-                try { state.pc.close(); } catch(e) {}
-                state.pc = null;
-            }
-
-            // Reset UI
-            const vid = video();
-            vid.srcObject = null;
-            placeholder().classList.remove('hidden');
-            videoContainer().classList.remove('active');
-            controlPanel().classList.remove('visible');
-            statsOverlay().classList.remove('visible');
-
-            const btn = $('btn-connect');
+            const btn = $('btn-go');
             btn.disabled = false;
             btn.innerHTML = '⚡ Conectar';
 
             setStatus('', 'Desconectado');
-            updateLatency('--');
+            $('lat').innerHTML = 'RTT: <strong>--</strong> ms';
         }
 
         function disconnect() {
-            showToast('Desconectando...', '👋');
+            toast('Desconectado', '👋');
             cleanup();
+            if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            if (document.pointerLockElement) document.exitPointerLock();
+        }
 
-            // Salir de fullscreen si estamos
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(() => {});
-            }
+        // ═══════════════════════════════
+        //  ENVIAR INPUT POR DATACHANNEL
+        // ═══════════════════════════════
 
-            // Salir de pointer lock
-            if (document.pointerLockElement) {
-                document.exitPointerLock();
+        function send(data) {
+            if (S.dc && S.dc.readyState === 'open') {
+                try { S.dc.send(JSON.stringify(data)); } catch(e) {}
             }
         }
 
-        // ══════════════════════════════════════════
-        //  SERVER MESSAGES
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════
+        //  PING (Medición de latencia)
+        // ═══════════════════════════════════════
 
-        function handleServerMessage(data) {
-            if (data.type === 'pong') {
-                state.currentRTT = Date.now() - state.lastPingTime;
-                updateLatency(state.currentRTT);
-            } else if (data.type === 'config_ack') {
-                showToast(`${data.setting}: ${data.value}`, '✅');
-            }
-        }
-
-        // ══════════════════════════════════════════
-        //  PING LOOP (Latency Measurement)
-        // ══════════════════════════════════════════
-
-        function startPingLoop() {
+        function startPing() {
             setInterval(() => {
-                if (state.dc && state.dc.readyState === 'open') {
-                    state.lastPingTime = Date.now();
-                    sendInput({ type: 'ping', t: state.lastPingTime });
+                if (S.dc && S.dc.readyState === 'open') {
+                    S.pingTime = Date.now();
+                    send({ type: 'ping', t: S.pingTime });
                 }
             }, 2000);
         }
 
-        // ══════════════════════════════════════════
-        //  INPUT SYSTEM
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════════
+        //  CALCULAR POSICIÓN DEL RATÓN SOBRE EL VÍDEO
+        // ═══════════════════════════════════════════
+        //
+        // El vídeo usa object-fit: contain, así que puede tener
+        // barras negras (letterbox/pillarbox). Necesitamos calcular
+        // dónde está realmente el contenido del vídeo dentro del <video>.
+        //
 
-        function sendInput(data) {
-            if (state.dc && state.dc.readyState === 'open') {
-                try {
-                    state.dc.send(JSON.stringify(data));
-                } catch (e) {
-                    console.warn('Error enviando input:', e);
-                }
-            }
-        }
+        function videoPos(clientX, clientY) {
+            const v = $('stream');
+            const r = v.getBoundingClientRect();
+            const vw = v.videoWidth || 1280;
+            const vh = v.videoHeight || 720;
+            const cw = r.width;
+            const ch = r.height;
+            const va = vw / vh;
+            const ca = cw / ch;
 
-        // Calcula la posición relativa del ratón sobre el contenido del vídeo
-        function getVideoRelativePosition(clientX, clientY) {
-            const vid = video();
-            const rect = vid.getBoundingClientRect();
+            let rw, rh, ox, oy;
 
-            // El vídeo usa object-fit: contain, así que hay que calcular
-            // el área real donde se renderiza el vídeo
-            const videoWidth = vid.videoWidth || 1280;
-            const videoHeight = vid.videoHeight || 720;
-            const containerW = rect.width;
-            const containerH = rect.height;
-
-            const videoAspect = videoWidth / videoHeight;
-            const containerAspect = containerW / containerH;
-
-            let renderW, renderH, offsetX, offsetY;
-
-            if (containerAspect > videoAspect) {
-                // Barras laterales (pillarbox)
-                renderH = containerH;
-                renderW = containerH * videoAspect;
-                offsetX = (containerW - renderW) / 2;
-                offsetY = 0;
+            if (ca > va) {
+                // Barras a los lados
+                rh = ch;
+                rw = ch * va;
+                ox = (cw - rw) / 2;
+                oy = 0;
             } else {
-                // Barras arriba/abajo (letterbox)
-                renderW = containerW;
-                renderH = containerW / videoAspect;
-                offsetX = 0;
-                offsetY = (containerH - renderH) / 2;
+                // Barras arriba/abajo
+                rw = cw;
+                rh = cw / va;
+                ox = 0;
+                oy = (ch - rh) / 2;
             }
 
-            // Posición relativa dentro del vídeo renderizado
-            const relX = (clientX - rect.left - offsetX) / renderW;
-            const relY = (clientY - rect.top - offsetY) / renderH;
+            const rx = (clientX - r.left - ox) / rw;
+            const ry = (clientY - r.top - oy) / rh;
 
             return {
-                px: Math.max(0, Math.min(1, relX)),
-                py: Math.max(0, Math.min(1, relY)),
-                inBounds: relX >= 0 && relX <= 1 && relY >= 0 && relY <= 1,
+                px: Math.max(0, Math.min(1, rx)),
+                py: Math.max(0, Math.min(1, ry)),
+                ok: rx >= 0 && rx <= 1 && ry >= 0 && ry <= 1,
             };
         }
 
-        // ── Event Handlers ──
-        let boundHandlers = {};
+        // ═══════════════════════════════════════
+        //  VINCULAR EVENTOS DE INPUT
+        // ═══════════════════════════════════════
 
-        function bindInputEvents() {
-            const vid = video();
+        let H = {}; // Handlers guardados para poder desvincular
 
-            // ── Mouse Move ──
-            boundHandlers.mousemove = (e) => {
-                if (state.controlMode === '3d' && state.pointerLocked) {
-                    sendInput({
-                        type: 'mousemove_3d',
-                        dx: e.movementX,
-                        dy: e.movementY,
-                        sensitivity: 1.0,
-                    });
-                } else if (state.controlMode === '2d') {
-                    const pos = getVideoRelativePosition(e.clientX, e.clientY);
-                    if (pos.inBounds) {
-                        sendInput({
-                            type: 'mousemove_2d',
-                            px: pos.px,
-                            py: pos.py,
-                        });
-                    }
+        function bindInputs() {
+            const v = $('stream');
+
+            // ── RATÓN: MOVIMIENTO ──
+            H.mousemove = (e) => {
+                if (S.mode === '3d' && S.locked) {
+                    // Modo 3D: enviar movimiento relativo
+                    send({ type: 'mousemove_3d', dx: e.movementX, dy: e.movementY, sensitivity: 1.0 });
+                } else if (S.mode === '2d') {
+                    // Modo 2D: enviar posición absoluta (porcentaje)
+                    const p = videoPos(e.clientX, e.clientY);
+                    if (p.ok) send({ type: 'mousemove_2d', px: p.px, py: p.py });
                 }
             };
 
-            // ── Mouse Down ──
-            boundHandlers.mousedown = (e) => {
-                if (state.controlMode === '3d' && !state.pointerLocked) {
-                    // Primer clic en modo 3D = activar Pointer Lock
-                    vid.requestPointerLock();
+            // ── RATÓN: CLIC ──
+            H.mousedown = (e) => {
+                // En modo 3D, el primer clic activa Pointer Lock
+                if (S.mode === '3d' && !S.locked) {
+                    v.requestPointerLock();
                     return;
                 }
 
-                const data = {
-                    type: 'mousedown',
-                    button: e.button,
-                };
+                const d = { type: 'mousedown', button: e.button };
 
-                if (state.controlMode === '2d') {
-                    const pos = getVideoRelativePosition(e.clientX, e.clientY);
-                    data.px = pos.px;
-                    data.py = pos.py;
+                if (S.mode === '2d') {
+                    const p = videoPos(e.clientX, e.clientY);
+                    d.px = p.px;
+                    d.py = p.py;
                 }
 
-                sendInput(data);
+                send(d);
                 e.preventDefault();
             };
 
-            // ── Mouse Up ──
-            boundHandlers.mouseup = (e) => {
-                sendInput({
-                    type: 'mouseup',
-                    button: e.button,
-                });
+            H.mouseup = (e) => {
+                send({ type: 'mouseup', button: e.button });
                 e.preventDefault();
             };
 
-            // ── Scroll ──
-            boundHandlers.wheel = (e) => {
-                sendInput({
-                    type: 'scroll',
-                    deltaY: e.deltaY,
-                });
+            // ── RATÓN: SCROLL ──
+            H.wheel = (e) => {
+                send({ type: 'scroll', deltaY: e.deltaY });
                 e.preventDefault();
             };
 
-            // ── Keyboard ──
-            boundHandlers.keydown = (e) => {
-                // No capturar F11 (fullscreen nativo) ni F5 (refresh) ni Ctrl+shortcuts del navegador
-                if (e.key === 'F11' || (e.ctrlKey && ['r', 'w', 't', 'l', 'n'].includes(e.key.toLowerCase()))) {
-                    return;
-                }
+            // ── TECLADO ──
+            //
+            // Bloqueamos el comportamiento por defecto de teclas como
+            // Espacio (scroll), Flechas (scroll), Tab (cambiar foco), etc.
+            // para que no interfieran con el juego.
+            //
+            const BLOCK = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab','Backspace','Enter'];
 
-                // Prevenir scroll y otros comportamientos por defecto
-                if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-                     'Tab', 'Backspace', 'Enter'].includes(e.code)) {
-                    e.preventDefault();
-                }
-
-                sendInput({
-                    type: 'keydown',
-                    code: e.code,
-                    key: e.key,
-                });
-            };
-
-            boundHandlers.keyup = (e) => {
+            H.keydown = (e) => {
+                // Permitir shortcuts del navegador que son útiles
                 if (e.key === 'F11') return;
+                if (e.ctrlKey && ['r','w','t','l','n','shift'].includes(e.key.toLowerCase())) return;
 
-                e.preventDefault();
-                sendInput({
-                    type: 'keyup',
-                    code: e.code,
-                    key: e.key,
-                });
+                if (BLOCK.includes(e.code)) e.preventDefault();
+
+                send({ type: 'keydown', code: e.code, key: e.key });
             };
 
-            // ── Context Menu (Prevent) ──
-            boundHandlers.contextmenu = (e) => {
+            H.keyup = (e) => {
+                if (e.key === 'F11') return;
                 e.preventDefault();
+                send({ type: 'keyup', code: e.code, key: e.key });
             };
 
-            // ── Pointer Lock Change ──
-            boundHandlers.pointerlockchange = () => {
-                state.pointerLocked = document.pointerLockElement === vid;
-                if (state.pointerLocked) {
-                    showToast('Pointer Lock activado. ESC para salir.', '🔒');
-                    vid.classList.add('mode-3d');
+            // ── MENÚ CONTEXTUAL (bloquear) ──
+            H.ctx = (e) => e.preventDefault();
+
+            // ── POINTER LOCK (para modo 3D) ──
+            H.plock = () => {
+                S.locked = document.pointerLockElement === v;
+                if (S.locked) {
+                    toast('Ratón capturado. Pulsa ESC para salir.', '🔒');
+                    v.classList.add('mode3d');
                 } else {
-                    vid.classList.remove('mode-3d');
-                    if (state.controlMode === '3d') {
-                        showToast('Pointer Lock desactivado. Clic para reactivar.', '🔓');
-                    }
+                    v.classList.remove('mode3d');
+                    if (S.mode === '3d') toast('Clic en el vídeo para recapturar', '🔓');
                 }
             };
 
-            // ── Bind Everything ──
-            vid.addEventListener('mousemove', boundHandlers.mousemove);
-            vid.addEventListener('mousedown', boundHandlers.mousedown);
-            vid.addEventListener('mouseup', boundHandlers.mouseup);
-            vid.addEventListener('wheel', boundHandlers.wheel, { passive: false });
-            vid.addEventListener('contextmenu', boundHandlers.contextmenu);
-            document.addEventListener('keydown', boundHandlers.keydown);
-            document.addEventListener('keyup', boundHandlers.keyup);
-            document.addEventListener('pointerlockchange', boundHandlers.pointerlockchange);
-
-            console.log('[Inputs] Event handlers vinculados');
+            // ── Vincular todo ──
+            v.addEventListener('mousemove', H.mousemove);
+            v.addEventListener('mousedown', H.mousedown);
+            v.addEventListener('mouseup', H.mouseup);
+            v.addEventListener('wheel', H.wheel, { passive: false });
+            v.addEventListener('contextmenu', H.ctx);
+            document.addEventListener('keydown', H.keydown);
+            document.addEventListener('keyup', H.keyup);
+            document.addEventListener('pointerlockchange', H.plock);
         }
 
-        function unbindInputEvents() {
-            const vid = video();
+        function unbindInputs() {
+            const v = $('stream');
+            if (!H.mousemove) return;
 
-            if (boundHandlers.mousemove) {
-                vid.removeEventListener('mousemove', boundHandlers.mousemove);
-                vid.removeEventListener('mousedown', boundHandlers.mousedown);
-                vid.removeEventListener('mouseup', boundHandlers.mouseup);
-                vid.removeEventListener('wheel', boundHandlers.wheel);
-                vid.removeEventListener('contextmenu', boundHandlers.contextmenu);
-                document.removeEventListener('keydown', boundHandlers.keydown);
-                document.removeEventListener('keyup', boundHandlers.keyup);
-                document.removeEventListener('pointerlockchange', boundHandlers.pointerlockchange);
-            }
+            v.removeEventListener('mousemove', H.mousemove);
+            v.removeEventListener('mousedown', H.mousedown);
+            v.removeEventListener('mouseup', H.mouseup);
+            v.removeEventListener('wheel', H.wheel);
+            v.removeEventListener('contextmenu', H.ctx);
+            document.removeEventListener('keydown', H.keydown);
+            document.removeEventListener('keyup', H.keyup);
+            document.removeEventListener('pointerlockchange', H.plock);
 
-            if (document.pointerLockElement) {
-                document.exitPointerLock();
-            }
-
-            boundHandlers = {};
-            console.log('[Inputs] Event handlers desvinculados');
+            if (document.pointerLockElement) document.exitPointerLock();
+            H = {};
         }
 
-        // ══════════════════════════════════════════
-        //  SETTINGS
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════════════
+        //  CONTROLES DEL PANEL
+        // ═══════════════════════════════════════
 
-        function setResolution(res) {
-            state.resolution = res;
-            sendInput({ type: 'resolution', value: res });
-
-            // Update UI
-            document.querySelectorAll('[data-res]').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.res === res);
-            });
+        function res(v) {
+            send({ type: 'resolution', value: v });
+            document.querySelectorAll('[data-res]').forEach(b => b.classList.toggle('on', b.dataset.res === v));
         }
 
-        function setFPS(fps) {
-            state.fps = fps;
-            sendInput({ type: 'fps', value: fps });
-
-            document.querySelectorAll('[data-fps]').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.fps === String(fps));
-            });
+        function fps(v) {
+            send({ type: 'fps', value: v });
+            document.querySelectorAll('[data-fps]').forEach(b => b.classList.toggle('on', b.dataset.fps === String(v)));
         }
 
-        function setMode(mode) {
-            state.controlMode = mode;
+        function mode(m) {
+            S.mode = m;
+            document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('on', b.dataset.mode === m));
 
-            document.querySelectorAll('[data-mode]').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode === mode);
-            });
-
-            const vid = video();
-
-            if (mode === '2d') {
-                // Salir de pointer lock si estamos
-                if (document.pointerLockElement) {
-                    document.exitPointerLock();
-                }
-                vid.classList.remove('mode-3d');
-                showToast('Modo 2D: Escritorio / Navegador', '🖱');
+            if (m === '2d') {
+                if (document.pointerLockElement) document.exitPointerLock();
+                $('stream').classList.remove('mode3d');
+                toast('Modo 2D: Escritorio', '🖱');
             } else {
-                showToast('Modo 3D: Clic en el vídeo para capturar ratón', '🎮');
+                toast('Modo 3D: Clic en el vídeo para capturar ratón', '🎮');
             }
         }
 
-        // ══════════════════════════════════════════
-        //  FULLSCREEN
-        // ══════════════════════════════════════════
-
-        function toggleFullscreen() {
+        function fullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(e => {
-                    showToast('No se pudo activar pantalla completa', '⚠️');
+                document.documentElement.requestFullscreen().catch(() => {
+                    toast('Fullscreen no disponible', '⚠️');
                 });
             } else {
                 document.exitFullscreen();
             }
         }
 
-        // ══════════════════════════════════════════
-        //  STATS
-        // ══════════════════════════════════════════
-
-        function toggleStats() {
-            state.statsVisible = !state.statsVisible;
-            statsOverlay().classList.toggle('visible', state.statsVisible);
-            $('btn-stats').classList.toggle('active', state.statsVisible);
+        function stats() {
+            S.statsOn = !S.statsOn;
+            $('stats').classList.toggle('show', S.statsOn);
+            $('btn-stats').classList.toggle('on', S.statsOn);
         }
 
-        function startStatsLoop() {
-            state.prevStatsTime = Date.now();
-            state.prevBytesReceived = 0;
+        // ═══════════════════════════════
+        //  ESTADÍSTICAS WebRTC
+        // ═══════════════════════════════
 
-            state.statsInterval = setInterval(async () => {
-                if (!state.pc) return;
+        function startStats() {
+            S.prevTime = Date.now();
+            S.prevBytes = 0;
 
+            S.statsTimer = setInterval(async () => {
+                if (!S.pc) return;
                 try {
-                    const stats = await state.pc.getStats();
-                    let rtt = '--';
-                    let jitter = '--';
-                    let fps = '--';
-                    let resolution = '--';
-                    let bytesReceived = 0;
-                    let packetsReceived = 0;
+                    const st = await S.pc.getStats();
+                    let rtt='-', jit='-', fps='-', res='-', bytes=0, pkts=0;
 
-                    stats.forEach(report => {
-                        if (report.type === 'candidate-pair' && report.state === 'succeeded') {
-                            if (report.currentRoundTripTime !== undefined) {
-                                rtt = Math.round(report.currentRoundTripTime * 1000);
-                            }
+                    st.forEach(r => {
+                        if (r.type === 'candidate-pair' && r.state === 'succeeded' && r.currentRoundTripTime !== undefined) {
+                            rtt = Math.round(r.currentRoundTripTime * 1000);
                         }
-
-                        if (report.type === 'inbound-rtp' && report.kind === 'video') {
-                            if (report.jitter !== undefined) {
-                                jitter = (report.jitter * 1000).toFixed(1) + ' ms';
-                            }
-                            if (report.framesPerSecond !== undefined) {
-                                fps = Math.round(report.framesPerSecond);
-                            }
-                            if (report.frameWidth && report.frameHeight) {
-                                resolution = `${report.frameWidth}x${report.frameHeight}`;
-                            }
-                            if (report.bytesReceived !== undefined) {
-                                bytesReceived = report.bytesReceived;
-                            }
-                            if (report.packetsReceived !== undefined) {
-                                packetsReceived = report.packetsReceived;
-                            }
+                        if (r.type === 'inbound-rtp' && r.kind === 'video') {
+                            if (r.jitter !== undefined) jit = (r.jitter * 1000).toFixed(1) + ' ms';
+                            if (r.framesPerSecond !== undefined) fps = Math.round(r.framesPerSecond);
+                            if (r.frameWidth && r.frameHeight) res = r.frameWidth + 'x' + r.frameHeight;
+                            if (r.bytesReceived !== undefined) bytes = r.bytesReceived;
+                            if (r.packetsReceived !== undefined) pkts = r.packetsReceived;
                         }
                     });
 
-                    // Calcular bitrate
+                    // Bitrate
                     const now = Date.now();
-                    const elapsed = (now - state.prevStatsTime) / 1000;
-                    let bitrate = '--';
-                    if (elapsed > 0 && state.prevBytesReceived > 0) {
-                        const bps = ((bytesReceived - state.prevBytesReceived) * 8) / elapsed;
-                        if (bps > 1000000) {
-                            bitrate = (bps / 1000000).toFixed(1) + ' Mbps';
-                        } else {
-                            bitrate = (bps / 1000).toFixed(0) + ' kbps';
-                        }
+                    const dt = (now - S.prevTime) / 1000;
+                    let bit = '-';
+                    if (dt > 0 && S.prevBytes > 0) {
+                        const bps = ((bytes - S.prevBytes) * 8) / dt;
+                        bit = bps > 1e6 ? (bps/1e6).toFixed(1)+' Mbps' : (bps/1e3).toFixed(0)+' kbps';
                     }
-                    state.prevBytesReceived = bytesReceived;
-                    state.prevStatsTime = now;
+                    S.prevBytes = bytes;
+                    S.prevTime = now;
 
-                    // Update UI
-                    if (rtt !== '--') {
-                        updateLatency(rtt);
-                    }
-
-                    $('stat-rtt').textContent = rtt !== '--' ? rtt + ' ms' : '--';
-                    $('stat-jitter').textContent = jitter;
-                    $('stat-bitrate').textContent = bitrate;
-                    $('stat-fps').textContent = fps;
-                    $('stat-res').textContent = resolution;
-                    $('stat-packets').textContent = packetsReceived.toLocaleString();
-
-                } catch (e) {
-                    console.warn('Error obteniendo stats:', e);
-                }
+                    if (rtt !== '-') $('lat').innerHTML = `RTT: <strong>${rtt}</strong> ms`;
+                    $('s-rtt').textContent = rtt !== '-' ? rtt+' ms' : '-';
+                    $('s-jit').textContent = jit;
+                    $('s-bit').textContent = bit;
+                    $('s-fps').textContent = fps;
+                    $('s-res').textContent = res;
+                    $('s-pkt').textContent = pkts.toLocaleString();
+                } catch(e) {}
             }, 1500);
         }
 
-        // ══════════════════════════════════════════
-        //  INIT
-        // ══════════════════════════════════════════
+        // ═══════════════════════════════
+        //  INICIALIZACIÓN
+        // ═══════════════════════════════
 
         function init() {
-            console.log('%c PedusCloud Gaming v2.0 ', 'background: linear-gradient(135deg, #00f5d4, #00bbf9); color: #0a0a0f; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;');
+            console.log('%c PedusCloud Gaming v2.0 ',
+                'background:linear-gradient(135deg,#00f5d4,#00bbf9);color:#0a0a0f;font-weight:bold;font-size:14px;padding:4px 8px;border-radius:4px;');
 
- // CÓDIGO NUEVO - GITHUB PAGES COMPATIBLE:
-const urlInput = $('server-url');
+            // Recuperar URL guardada del localStorage
+            const saved = localStorage.getItem('pedus_url');
+            if (saved) {
+                $('url').value = saved;
+            }
 
-// 1. Intentar recuperar la URL guardada del servidor
-const savedUrl = localStorage.getItem('pedus_server_url');
-if (savedUrl) {
-    urlInput.value = savedUrl;
-}
-
-// 2. Cuando el usuario modifica la URL, guardarla automáticamente
-urlInput.addEventListener('input', () => {
-    const val = urlInput.value.trim();
-    if (val) {
-        localStorage.setItem('pedus_server_url', val);
-    }
-});
+            // Guardar URL al escribir
+            $('url').addEventListener('input', () => {
+                const v = $('url').value.trim();
+                if (v) localStorage.setItem('pedus_url', v);
+            });
 
             // Enter en el input = conectar
-            urlInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    connect();
-                }
+            $('url').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') connect();
             });
 
-            // Prevenir pérdida de datos al cerrar
+            // Limpiar al cerrar la pestaña
             window.addEventListener('beforeunload', () => {
-                if (state.connected) {
-                    cleanup();
-                }
+                if (S.connected) cleanup();
             });
 
-            showToast('PedusCloud Gaming listo', '🎮');
+            toast('PedusCloud Gaming listo', '🎮');
         }
 
-        // Auto-init
+        // Ejecutar init cuando el DOM esté listo
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
             init();
         }
 
-        // ── Public API ──
-        return {
-            connect,
-            disconnect,
-            setResolution,
-            setFPS,
-            setMode,
-            toggleFullscreen,
-            toggleStats,
-        };
+        // ═══════════════════════════════
+        //  API PÚBLICA
+        // ═══════════════════════════════
 
+        return { connect, disconnect, res, fps, mode, fullscreen, stats };
     })();
     </script>
 </body>
