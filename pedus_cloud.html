@@ -448,7 +448,7 @@
             z-index: 1000;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.4s;
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), bottom 0.4s;
         }
 
         #panel.show {
@@ -654,10 +654,8 @@
 </head>
 <body>
 
-    <!-- Notificaciones -->
     <div id="toasts"></div>
 
-    <!-- Stats overlay -->
     <div id="stats">
         <div class="sr"><span>RTT</span><span class="sv" id="s-rtt">--</span></div>
         <div class="sr"><span>Jitter</span><span class="sv" id="s-jit">--</span></div>
@@ -667,7 +665,6 @@
         <div class="sr"><span>Paquetes</span><span class="sv" id="s-pkt">--</span></div>
     </div>
 
-    <!-- Barra superior -->
     <div id="top-bar">
         <div class="logo">
             <div class="logo-icon">P</div>
@@ -682,12 +679,10 @@
         </div>
     </div>
 
-    <!-- Contenedor principal -->
     <div id="video-wrap">
         <div id="video-box">
             <video id="stream" autoplay playsinline muted></video>
 
-            <!-- Placeholder (se muestra antes de conectar) -->
             <div id="placeholder">
                 <div class="ph-icon">🎮</div>
                 <div class="ph-text">
@@ -717,17 +712,18 @@
         </div>
     </div>
 
-    <!-- Panel de control inferior -->
     <div id="panel">
         <div class="grp">
             <span class="lbl">RES</span>
             <button class="pbtn" data-res="480p" onclick="App.res('480p')">480p</button>
             <button class="pbtn on" data-res="720p" onclick="App.res('720p')">720p</button>
             <button class="pbtn" data-res="1080p" onclick="App.res('1080p')">1080p</button>
+            <button class="pbtn" data-res="4k_cine" onclick="App.res('4k_cine')" style="border-color: rgba(155,93,229,0.5); color: #b794f4;">🎬 4K Cine</button>
         </div>
         <div class="sep"></div>
         <div class="grp">
             <span class="lbl">FPS</span>
+            <button class="pbtn" data-fps="24" onclick="App.fps(24)">24</button>
             <button class="pbtn" data-fps="30" onclick="App.fps(30)">30</button>
             <button class="pbtn on" data-fps="60" onclick="App.fps(60)">60</button>
         </div>
@@ -751,17 +747,6 @@
     /*
     ══════════════════════════════════════════════════════════════
     PEDUS CLOUD GAMING - MOTOR DEL CLIENTE
-    
-    Este script hace lo siguiente:
-    1. Crea una conexión WebRTC con tu PC (via ngrok)
-    2. Recibe el vídeo de tu pantalla en tiempo real
-    3. Captura tu teclado y ratón y los envía por DataChannel
-    4. Todo con la mínima latencia posible
-    
-    IMPORTANTE PARA GITHUB PAGES:
-    - La URL del servidor se guarda en localStorage
-    - Las peticiones fetch usan CORS (el servidor lo permite)
-    - No se usa window.location.origin (no tendría sentido)
     ══════════════════════════════════════════════════════════════
     */
 
@@ -785,6 +770,8 @@
             pingTime: 0,
             prevBytes: 0,
             prevTime: 0,
+            menuTimer: null,    // Temporizador de inactividad para el menú
+            menuVisible: false  // Estado de visibilidad actual
         };
 
         // ═══════════════
@@ -819,13 +806,37 @@
         }
 
         // ═══════════════════════════════════════
+        //  CONTROL DE INACTIVIDAD DEL PANEL UI
+        // ═══════════════════════════════════════
+        
+        function resetMenuTimer() {
+            if (!S.connected) return;
+
+            if (!S.menuVisible) {
+                $('panel').classList.add('show');
+                S.menuVisible = true;
+            }
+
+            if (S.menuTimer) clearTimeout(S.menuTimer);
+
+            S.menuTimer = setTimeout(() => {
+                // Si el puntero del ratón está justo encima del menú, posponemos el ocultado
+                if ($('panel').matches(':hover')) {
+                    resetMenuTimer();
+                    return;
+                }
+                $('panel').classList.remove('show');
+                S.menuVisible = false;
+            }, 3000); // 3 segundos de gracia
+        }
+
+        // ═══════════════════════════════════════
         //  CONECTAR (WebRTC Signaling)
         // ═══════════════════════════════════════
 
         async function connect() {
             if (S.connecting || S.connected) return;
 
-            // ── Obtener URL del servidor ──
             let url = $('url').value.trim();
             if (!url) {
                 toast('Escribe la URL de ngrok', '⚠️');
@@ -833,10 +844,8 @@
                 return;
             }
 
-            // Limpiar URL
             url = url.replace(/\/+$/, '');
 
-            // Si el usuario pone la URL sin protocolo, añadir https
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 url = 'https://' + url;
             }
@@ -844,10 +853,8 @@
             S.url = url;
             S.connecting = true;
 
-            // Guardar URL en localStorage para la próxima vez
             localStorage.setItem('pedus_url', url);
 
-            // Actualizar UI
             setStatus('loading', 'Conectando...');
             const btn = $('btn-go');
             btn.disabled = true;
@@ -855,7 +862,6 @@
             toast('Conectando con el servidor...', '🔄');
 
             try {
-                // ── 1. Crear RTCPeerConnection ──
                 S.pc = new RTCPeerConnection({
                     iceServers: [
                         { urls: 'stun:stun.l.google.com:19302' },
@@ -863,12 +869,6 @@
                     ],
                 });
 
-                // ── 2. Crear DataChannel para enviar inputs ──
-                //
-                // ordered: false = no garantizar orden (más rápido)
-                // maxRetransmits: 0 = no reenviar paquetes perdidos
-                // Esto minimiza la latencia de los controles
-                //
                 S.dc = S.pc.createDataChannel('inputs', {
                     ordered: false,
                     maxRetransmits: 0,
@@ -892,7 +892,6 @@
                     } catch(err) {}
                 };
 
-                // ── 3. Cuando llega el stream de vídeo ──
                 S.pc.ontrack = (e) => {
                     if (e.track.kind === 'video') {
                         console.log('🎬 Stream de vídeo recibido');
@@ -900,23 +899,22 @@
                         vid.srcObject = e.streams[0];
                         vid.play().catch(() => {});
 
-                        // Mostrar el vídeo, ocultar placeholder
                         $('placeholder').classList.add('gone');
                         $('video-box').classList.add('active');
-                        $('panel').classList.add('show');
-
+                        
                         S.connected = true;
                         S.connecting = false;
                         setStatus('on', 'Conectado');
                         toast('¡Conectado! Viendo tu escritorio', '🎮');
 
-                        // Vincular eventos de input
+                        // Mostrar panel inicial y arrancar temporizador inteligente
+                        resetMenuTimer();
+
                         bindInputs();
                         startStats();
                     }
                 };
 
-                // ── 4. Eventos de estado de conexión ──
                 S.pc.oniceconnectionstatechange = () => {
                     const st = S.pc.iceConnectionState;
                     console.log('🧊 ICE:', st);
@@ -933,14 +931,11 @@
                     }
                 };
 
-                // ── 5. Añadir transceiver para recibir vídeo ──
                 S.pc.addTransceiver('video', { direction: 'recvonly' });
 
-                // ── 6. Crear oferta SDP ──
                 const offer = await S.pc.createOffer();
                 await S.pc.setLocalDescription(offer);
 
-                // ── 7. Esperar a que se recojan los ICE candidates ──
                 await new Promise(resolve => {
                     if (S.pc.iceGatheringState === 'complete') {
                         resolve();
@@ -951,30 +946,23 @@
                                 resolve();
                             }
                         });
-                        // No esperar más de 5 segundos
                         setTimeout(resolve, 5000);
                     }
                 });
 
-                // ── 8. Enviar oferta al servidor via HTTP POST ──
-                //
-                // Aquí es donde GitHub Pages se comunica con tu servidor ngrok.
-                // El servidor responde con su propia SDP answer.
-                // Después de esto, WebRTC se conecta directamente (peer-to-peer).
-                //
                 console.log('📤 Enviando oferta a:', url + '/offer');
 
-               const resp = await fetch(url + '/offer', {
-            method: 'POST',
-            headers: {
-         'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true',
-    },
-    body: JSON.stringify({
-        sdp: S.pc.localDescription.sdp,
-        type: S.pc.localDescription.type,
-    }),
-});
+                const resp = await fetch(url + '/offer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                    },
+                    body: JSON.stringify({
+                        sdp: S.pc.localDescription.sdp,
+                        type: S.pc.localDescription.type,
+                    }),
+                });
 
                 if (!resp.ok) {
                     const txt = await resp.text();
@@ -987,7 +975,6 @@
                     throw new Error(answer.error);
                 }
 
-                // ── 9. Aplicar la respuesta del servidor ──
                 await S.pc.setRemoteDescription(new RTCSessionDescription({
                     sdp: answer.sdp,
                     type: answer.type,
@@ -1016,6 +1003,9 @@
             S.locked = false;
 
             unbindInputs();
+
+            if (S.menuTimer) { clearTimeout(S.menuTimer); S.menuTimer = null; }
+            S.menuVisible = false;
 
             if (S.statsTimer) { clearInterval(S.statsTimer); S.statsTimer = null; }
             if (S.dc) { try { S.dc.close(); } catch(e){} S.dc = null; }
@@ -1068,11 +1058,6 @@
         // ═══════════════════════════════════════════
         //  CALCULAR POSICIÓN DEL RATÓN SOBRE EL VÍDEO
         // ═══════════════════════════════════════════
-        //
-        // El vídeo usa object-fit: contain, así que puede tener
-        // barras negras (letterbox/pillarbox). Necesitamos calcular
-        // dónde está realmente el contenido del vídeo dentro del <video>.
-        //
 
         function videoPos(clientX, clientY) {
             const v = $('stream');
@@ -1087,13 +1072,11 @@
             let rw, rh, ox, oy;
 
             if (ca > va) {
-                // Barras a los lados
                 rh = ch;
                 rw = ch * va;
                 ox = (cw - rw) / 2;
                 oy = 0;
             } else {
-                // Barras arriba/abajo
                 rw = cw;
                 rh = cw / va;
                 ox = 0;
@@ -1114,18 +1097,23 @@
         //  VINCULAR EVENTOS DE INPUT
         // ═══════════════════════════════════════
 
-        let H = {}; // Handlers guardados para poder desvincular
+        let H = {};
 
         function bindInputs() {
             const v = $('stream');
 
+            // Detectar interacción para mantener visible el panel
+            H.menuActivity = () => {
+                resetMenuTimer();
+            };
+            window.addEventListener('mousemove', H.menuActivity);
+            window.addEventListener('click', H.menuActivity);
+
             // ── RATÓN: MOVIMIENTO ──
             H.mousemove = (e) => {
                 if (S.mode === '3d' && S.locked) {
-                    // Modo 3D: enviar movimiento relativo
                     send({ type: 'mousemove_3d', dx: e.movementX, dy: e.movementY, sensitivity: 1.0 });
                 } else if (S.mode === '2d') {
-                    // Modo 2D: enviar posición absoluta (porcentaje)
                     const p = videoPos(e.clientX, e.clientY);
                     if (p.ok) send({ type: 'mousemove_2d', px: p.px, py: p.py });
                 }
@@ -1133,7 +1121,6 @@
 
             // ── RATÓN: CLIC ──
             H.mousedown = (e) => {
-                // En modo 3D, el primer clic activa Pointer Lock
                 if (S.mode === '3d' && !S.locked) {
                     v.requestPointerLock();
                     return;
@@ -1163,15 +1150,24 @@
             };
 
             // ── TECLADO ──
-            //
-            // Bloqueamos el comportamiento por defecto de teclas como
-            // Espacio (scroll), Flechas (scroll), Tab (cambiar foco), etc.
-            // para que no interfieran con el juego.
-            //
             const BLOCK = ['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Tab','Backspace','Enter'];
 
             H.keydown = (e) => {
-                // Permitir shortcuts del navegador que son útiles
+                // Atajo Shift + Escape para Forzar Ocultación / Visibilidad del Menú
+                if (e.shiftKey && e.code === 'Escape') {
+                    e.preventDefault();
+                    if (S.menuVisible) {
+                        if (S.menuTimer) clearTimeout(S.menuTimer);
+                        $('panel').classList.remove('show');
+                        S.menuVisible = false;
+                        toast('Menú ocultado', '🙈', 1500);
+                    } else {
+                        resetMenuTimer();
+                        toast('Menú visible', '👀', 1500);
+                    }
+                    return;
+                }
+
                 if (e.key === 'F11') return;
                 if (e.ctrlKey && ['r','w','t','l','n','shift'].includes(e.key.toLowerCase())) return;
 
@@ -1186,10 +1182,8 @@
                 send({ type: 'keyup', code: e.code, key: e.key });
             };
 
-            // ── MENÚ CONTEXTUAL (bloquear) ──
             H.ctx = (e) => e.preventDefault();
 
-            // ── POINTER LOCK (para modo 3D) ──
             H.plock = () => {
                 S.locked = document.pointerLockElement === v;
                 if (S.locked) {
@@ -1201,7 +1195,6 @@
                 }
             };
 
-            // ── Vincular todo ──
             v.addEventListener('mousemove', H.mousemove);
             v.addEventListener('mousedown', H.mousedown);
             v.addEventListener('mouseup', H.mouseup);
@@ -1215,6 +1208,9 @@
         function unbindInputs() {
             const v = $('stream');
             if (!H.mousemove) return;
+
+            window.removeEventListener('mousemove', H.menuActivity);
+            window.removeEventListener('click', H.menuActivity);
 
             v.removeEventListener('mousemove', H.mousemove);
             v.removeEventListener('mousedown', H.mousedown);
@@ -1234,6 +1230,10 @@
         // ═══════════════════════════════════════
 
         function res(v) {
+            if (v === '4k_cine') {
+                toast('Modo Cine 4K: Ajustando stream a 24 FPS para máxima fidelidad visual', '🎬', 4000);
+                fps(24); // Baja dinámicamente los FPS a 24 estándar de cine
+            }
             send({ type: 'resolution', value: v });
             document.querySelectorAll('[data-res]').forEach(b => b.classList.toggle('on', b.dataset.res === v));
         }
@@ -1299,7 +1299,6 @@
                         }
                     });
 
-                    // Bitrate
                     const now = Date.now();
                     const dt = (now - S.prevTime) / 1000;
                     let bit = '-';
@@ -1326,27 +1325,23 @@
         // ═══════════════════════════════
 
         function init() {
-            console.log('%c PedusCloud Gaming v2.0 ',
+            console.log('%c PedusCloud Gaming v2.1 ',
                 'background:linear-gradient(135deg,#00f5d4,#00bbf9);color:#0a0a0f;font-weight:bold;font-size:14px;padding:4px 8px;border-radius:4px;');
 
-            // Recuperar URL guardada del localStorage
             const saved = localStorage.getItem('pedus_url');
             if (saved) {
                 $('url').value = saved;
             }
 
-            // Guardar URL al escribir
             $('url').addEventListener('input', () => {
                 const v = $('url').value.trim();
                 if (v) localStorage.setItem('pedus_url', v);
             });
 
-            // Enter en el input = conectar
             $('url').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') connect();
             });
 
-            // Limpiar al cerrar la pestaña
             window.addEventListener('beforeunload', () => {
                 if (S.connected) cleanup();
             });
@@ -1354,16 +1349,11 @@
             toast('PedusCloud Gaming listo', '🎮');
         }
 
-        // Ejecutar init cuando el DOM esté listo
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
             init();
         }
-
-        // ═══════════════════════════════
-        //  API PÚBLICA
-        // ═══════════════════════════════
 
         return { connect, disconnect, res, fps, mode, fullscreen, stats };
     })();
