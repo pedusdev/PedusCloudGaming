@@ -964,14 +964,17 @@
                 //
                 console.log('📤 Enviando oferta a:', url + '/offer');
 
-                const resp = await fetch(url + '/offer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sdp: S.pc.localDescription.sdp,
-                        type: S.pc.localDescription.type,
-                    }),
-                });
+               const resp = await fetch(url + '/offer', {
+            method: 'POST',
+            headers: {
+         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+    },
+    body: JSON.stringify({
+        sdp: S.pc.localDescription.sdp,
+        type: S.pc.localDescription.type,
+    }),
+});
 
                 if (!resp.ok) {
                     const txt = await resp.text();
