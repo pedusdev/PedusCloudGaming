@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PedusCloud Gaming</title>
+    <style>
+        /* ═══════════════════════════════════════════════════════
+           PEDUS CLOUD GAMING - PREMIUM UI
+           Glassmorphism + Neón + Futurista
+           ═══════════════════════════════════════════════════════ */
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        /* ── CSS Variables (Design Tokens) ── */
+        :root {
+            --accent-primary: #00f5d4;
+            --accent-secondary: #00bbf9;
+            --accent-tertiary: #9b5de5;
+            --accent-danger: #f15bb5;
+            --accent-warning: #fee440;
+            --accent-success: #00f5d4;
+
+            --bg-deep: #0a0a0f;
+            --bg-dark: #12121a;
+            --bg-card: rgba(18, 18, 26, 0.65);
+            --bg-card-hover: rgba(18, 18, 26, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.06);
+
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-active: rgba(0, 245, 212, 0.3);
+
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --text-muted: #55556a;
+
+            --shadow-neon: 0 0 20px rgba(0, 245, 212, 0.15),
+                           0 0 60px rgba(0, 245, 212, 0.05);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4),
+                           0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.5),
+                               0 4px 16px rgba(0, 0, 0, 0.4);
+
+            --blur-glass: 20px;
+            --blur-heavy: 40px;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 400ms cubic-bezier(0.25, 0.8, 0.25, 1);
+
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+
+        /* ── Reset & Base ── */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* ── Animated Background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 800px 600px at 20% 30%, rgba(0, 245, 212, 0.04), transparent),
+                radial-gradient(ellipse 600px 800px at 80% 70%, rgba(155, 93, 229, 0.04), transparent),
+                radial-gradient(ellipse 900px 500px at 50% 50%, rgba(0, 187, 249, 0.02), transparent);
+            pointer-events: none;
+            z-index: 0;
+            animation: bgPulse 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* ── Grid Pattern Overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Main Container ── */
+        #app-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Top Bar ── */
+        #top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(var(--blur-glass));
+            -webkit-backdrop-filter: blur(var(--blur-glass));
+            border-bottom: 1px solid var(--border-glass);
+            z-index: 1000;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--bg-deep);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-text span {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            font-size: 12px;
+            font-weight: 500;
+            font-family: var(--font-mono);
+            transition: var(--transition-normal);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: var(--transition-normal);
+        }
+
+        .status-badge.connected .status-dot {
+            background: var(--accent-success);
+            box-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .status-badge.connecting .status-dot {
+            background: var(--accent-warning);
+            box-shadow: 0 0 8px rgba(254, 228, 64, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        .status-badge.error .status-dot {
+            background: var(--accent-danger);
+            box-shadow: 0 0 8px rgba(241, 91, 181, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .latency-badge {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .latency-badge strong {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* ── Video Container ── */
+        #video-wrapper {
+            position: relative;
+            width: calc(100% - 40px);
+            max-width: 1400px;
+            height: calc(100% - 112px);
+            margin-top: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #video-container {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-smooth);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #video-container.active {
+            border-color: var(--border-active);
+            box-shadow: var(--shadow-neon), var(--shadow-elevated);
+        }
+
+        #video-container.active::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius-xl);
+            padding: 1px;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 245, 212, 0.2),
+                transparent 40%,
+                transparent 60%,
+                rgba(155, 93, 229, 0.2)
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #remote-video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+            border-radius: var(--radius-xl);
+            cursor: crosshair;
+        }
+
+        #remote-video.mode-3d {
+            cursor: none;
+        }
+
+        /* ── Placeholder (cuando no hay stream) ── */
+        #placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 5;
+            transition: var(--transition-smooth);
+        }
+
+        #placeholder.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .placeholder-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-lg);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .placeholder-text {
+            text-align: center;
+        }
+
+        .placeholder-text h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .placeholder-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            max-width: 300px;
+        }
+
+        /* ── Connect Button ── */
+        .btn-connect {
+            position: relative;
+            padding: 12px 32px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--bg-deep);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            overflow: hidden;
+        }
+
+        .btn-connect::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn-connect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 245, 212, 0.3);
+        }
+
+        .btn-connect:hover::before {
+            transform: translateX(100%);
+        }
+
+        .btn-connect:active {
+            transform: translateY(0);
+        }
+
+        .btn-connect:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-connect:disabled::before {
+            display: none;
+        }
+
+        /* ── Control Panel (Glassmorphism Floating Panel) ── */
+        #control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(18, 18, 26, 0.75);
+            backdrop-filter: blur(var(--blur-heavy));
+            -webkit-backdrop-filter: blur(var(--blur-heavy));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-elevated);
+            z-index: 1000;
+            transition: var(--transition-smooth);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #control-panel.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .panel-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border-glass);
+            margin: 0 4px;
+        }
+
+        /* ── Panel Controls ── */
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .control-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-right: 4px;
+            white-space: nowrap;
+        }
+
+        .control-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .control-btn:hover {
+            background: var(--bg-glass-hover);
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 245, 212, 0.12);
+            color: var(--accent-primary);
+            border-color: rgba(0, 245, 212, 0.25);
+        }
+
+        .control-btn-icon {
+            padding: 6px 10px;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn-icon:hover {
+            background: var(--bg-glass-hover);
+            color: var(--text-primary);
+        }
+
+        .control-btn-icon.active {
+            background: rgba(0, 245, 212, 0.12);
+            color: var(--accent-primary);
+        }
+
+        .control-btn-icon.danger:hover {
+            background: rgba(241, 91, 181, 0.12);
+            color: var(--accent-danger);
+            border-color: rgba(241, 91, 181, 0.25);
+        }
+
+        /* ── Mode Toggle (Special) ── */
+        .mode-toggle {
+            display: flex;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+        }
+
+        .mode-toggle .control-btn {
+            border: none;
+            border-radius: 0;
+        }
+
+        .mode-toggle .control-btn:first-child {
+            border-right: 1px solid var(--border-glass);
+        }
+
+        /* ── Notification Toast ── */
+        #toast-container {
+            position: fixed;
+            top: 64px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            background: rgba(18, 18, 26, 0.9);
+            backdrop-filter: blur(var(--blur-glass));
+            -webkit-backdrop-filter: blur(var(--blur-glass));
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-card);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: toastIn 0.3s ease-out;
+            max-width: 340px;
+        }
+
+        .toast.removing {
+            animation: toastOut 0.3s ease-in forwards;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(30px); }
+        }
+
+        .toast-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ── URL Input Modal ── */
+        #url-input-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .input-group {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .input-url {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            outline: none;
+            transition: var(--transition-normal);
+        }
+
+        .input-url::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-url:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 245, 212, 0.1);
+        }
+
+        .input-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ── Fullscreen adjustments ── */
+        :fullscreen #top-bar {
+            display: none;
+        }
+
+        :fullscreen #video-wrapper {
+            margin-top: 0;
+            height: 100%;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        :fullscreen #video-container {
+            border-radius: 0;
+            border: none;
+        }
+
+        :fullscreen #remote-video {
+            border-radius: 0;
+        }
+
+        :fullscreen #control-panel {
+            bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        :fullscreen #control-panel:hover,
+        :fullscreen #control-panel.visible {
+            opacity: 1;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            #control-panel {
+                bottom: 10px;
+                padding: 6px 8px;
+                gap: 4px;
+                flex-wrap: wrap;
+                max-width: calc(100% - 20px);
+                justify-content: center;
+            }
+
+            .control-label {
+                display: none;
+            }
+
+            #video-wrapper {
+                width: calc(100% - 16px);
+            }
+        }
+
+        /* ── Scrollbar (hidden) ── */
+        ::-webkit-scrollbar { display: none; }
+
+        /* ── Selection ── */
+        ::selection {
+            background: rgba(0, 245, 212, 0.2);
+            color: var(--accent-primary);
+        }
+
+        /* ── Loading Spinner ── */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Stats Overlay ── */
+        #stats-overlay {
+            position: fixed;
+            top: 62px;
+            left: 20px;
+            padding: 10px 14px;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(var(--blur-glass));
+            -webkit-backdrop-filter: blur(var(--blur-glass));
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-normal);
+        }
+
+        #stats-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .stat-value {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Stats Overlay -->
+    <div id="stats-overlay">
+        <div class="stat-row"><span>RTT</span><span class="stat-value" id="stat-rtt">--</span></div>
+        <div class="stat-row"><span>Jitter</span><span class="stat-value" id="stat-jitter">--</span></div>
+        <div class="stat-row"><span>Bitrate</span><span class="stat-value" id="stat-bitrate">--</span></div>
+        <div class="stat-row"><span>FPS</span><span class="stat-value" id="stat-fps">--</span></div>
+        <div class="stat-row"><span>Resolución</span><span class="stat-value" id="stat-res">--</span></div>
+        <div class="stat-row"><span>Paquetes ↓</span><span class="stat-value" id="stat-packets">--</span></div>
+    </div>
+
+    <!-- Top Bar -->
+    <div id="top-bar">
+        <div class="logo-section">
+            <div class="logo-icon">P</div>
+            <div class="logo-text"><span>Pedus</span>Cloud</div>
+        </div>
+        <div class="status-section">
+            <div class="latency-badge" id="latency-display">
+                RTT: <strong>--</strong> ms
+            </div>
+            <div class="status-badge" id="status-badge">
+                <div class="status-dot"></div>
+                <span id="status-text">Desconectado</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="app-container">
+        <div id="video-wrapper">
+            <div id="video-container">
+                <!-- Remote Video -->
+                <video id="remote-video" autoplay playsinline muted></video>
+
+                <!-- Placeholder -->
+                <div id="placeholder">
+                    <div class="placeholder-icon">🎮</div>
+                    <div class="placeholder-text">
+                        <h2>PedusCloud Gaming</h2>
+                        <p>Conecta a tu PC de casa y juega desde cualquier lugar con latencia ultra-baja.</p>
+                    </div>
+                    <div id="url-input-section">
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                class="input-url"
+                                id="server-url"
+                                placeholder="URL del servidor (ej: https://xxxx.ngrok.io)"
+                                spellcheck="false"
+                                autocomplete="off"
+                            />
+                        </div>
+                        <button class="btn-connect" id="btn-connect" onclick="PedusApp.connect()">
+                            ⚡ Conectar
+                        </button>
+                        <div class="input-hint">
+                            Deja vacío para usar la misma URL del navegador
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div id="control-panel">
+        <!-- Resolución -->
+        <div class="control-group">
+            <span class="control-label">RES</span>
+            <button class="control-btn" data-res="480p" onclick="PedusApp.setResolution('480p')">480p</button>
+            <button class="control-btn active" data-res="720p" onclick="PedusApp.setResolution('720p')">720p</button>
+            <button class="control-btn" data-res="1080p" onclick="PedusApp.setResolution('1080p')">1080p</button>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- FPS -->
+        <div class="control-group">
+            <span class="control-label">FPS</span>
+            <button class="control-btn" data-fps="30" onclick="PedusApp.setFPS(30)">30</button>
+            <button class="control-btn active" data-fps="60" onclick="PedusApp.setFPS(60)">60</button>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- Modo de Control -->
+        <div class="control-group">
+            <span class="control-label">MODE</span>
+            <div class="mode-toggle">
+                <button class="control-btn active" data-mode="2d" onclick="PedusApp.setMode('2d')">🖱 2D</button>
+                <button class="control-btn" data-mode="3d" onclick="PedusApp.setMode('3d')">🎮 3D</button>
+            </div>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- Acciones -->
+        <div class="control-group">
+            <button class="control-btn-icon" id="btn-stats" onclick="PedusApp.toggleStats()" title="Estadísticas">📊</button>
+            <button class="control-btn-icon" id="btn-fullscreen" onclick="PedusApp.toggleFullscreen()" title="Pantalla completa">⛶</button>
+            <button class="control-btn-icon danger" onclick="PedusApp.disconnect()" title="Desconectar">⏻</button>
+        </div>
+    </div>
+
+    <script>
+    /**
+     * ══════════════════════════════════════════════════════════════
+     *  PEDUS CLOUD GAMING - CLIENT ENGINE
+     *  WebRTC + DataChannel + Input Capture
+     * ══════════════════════════════════════════════════════════════
+     */
+
+    const PedusApp = (() => {
+        'use strict';
+
+        // ── State ──
+        let state = {
+            pc: null,               // RTCPeerConnection
+            dc: null,               // DataChannel
+            serverUrl: '',
+            connected: false,
+            connecting: false,
+
+            // Settings
+            resolution: '720p',
+            fps: 60,
+            controlMode: '2d',       // '2d' or '3d'
+
+            // Pointer Lock
+            pointerLocked: false,
+
+            // Stats
+            statsVisible: false,
+            statsInterval: null,
+
+            // Ping
+            lastPingTime: 0,
+            currentRTT: 0,
+
+            // Bytes tracking for bitrate
+            prevBytesReceived: 0,
+            prevStatsTime: 0,
+        };
+
+        // ── DOM Refs ──
+        const $ = (id) => document.getElementById(id);
+        const video = () => $('remote-video');
+        const placeholder = () => $('placeholder');
+        const videoContainer = () => $('video-container');
+        const controlPanel = () => $('control-panel');
+        const statusBadge = () => $('status-badge');
+        const statusText = () => $('status-text');
+        const latencyDisplay = () => $('latency-display');
+        const statsOverlay = () => $('stats-overlay');
+
+        // ══════════════════════════════════════════
+        //  TOAST NOTIFICATIONS
+        // ══════════════════════════════════════════
+
+        function showToast(message, icon = 'ℹ️', duration = 3500) {
+            const container = $('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // ══════════════════════════════════════════
+        //  STATUS MANAGEMENT
+        // ══════════════════════════════════════════
+
+        function setStatus(status, text) {
+            const badge = statusBadge();
+            const sText = statusText();
+            badge.className = `status-badge ${status}`;
+            sText.textContent = text;
+        }
+
+        function updateLatency(rtt) {
+            const display = latencyDisplay();
+            display.innerHTML = `RTT: <strong>${rtt}</strong> ms`;
+        }
+
+        // ══════════════════════════════════════════
+        //  WEBRTC CONNECTION
+        // ══════════════════════════════════════════
+
+        async function connect() {
+            if (state.connecting || state.connected) return;
+
+            // Obtener URL del servidor
+            const urlInput = $('server-url');
+            let serverUrl = urlInput.value.trim();
+
+            if (!serverUrl) {
+                // Usar la URL actual del navegador
+                serverUrl = window.location.origin;
+            }
+
+            // Limpiar trailing slash
+            serverUrl = serverUrl.replace(/\/+$/, '');
+            state.serverUrl = serverUrl;
+            state.connecting = true;
+
+            setStatus('connecting', 'Conectando...');
+            showToast('Iniciando conexión WebRTC...', '🔄');
+
+            const btn = $('btn-connect');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Conectando...';
+
+            try {
+                // Crear PeerConnection
+                const config = {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                    ],
+                    iceCandidatePoolSize: 5,
+                };
+
+                state.pc = new RTCPeerConnection(config);
+
+                // ── Crear DataChannel para inputs ──
+                state.dc = state.pc.createDataChannel('inputs', {
+                    ordered: false,        // No garantizar orden (más rápido)
+                    maxRetransmits: 0,     // No reenviar (baja latencia)
+                });
+
+                state.dc.onopen = () => {
+                    console.log('[DC] DataChannel abierto');
+                    showToast('Canal de inputs activo', '📡');
+                    startPingLoop();
+                };
+
+                state.dc.onclose = () => {
+                    console.log('[DC] DataChannel cerrado');
+                };
+
+                state.dc.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleServerMessage(data);
+                    } catch (e) {
+                        console.warn('Mensaje DC no parseable:', event.data);
+                    }
+                };
+
+                // ── Track de vídeo remoto ──
+                state.pc.ontrack = (event) => {
+                    console.log('[WebRTC] Track recibido:', event.track.kind);
+                    if (event.track.kind === 'video') {
+                        const vid = video();
+                        vid.srcObject = event.streams[0];
+                        vid.play().catch(e => console.warn('Autoplay bloqueado:', e));
+
+                        // Mostrar vídeo, ocultar placeholder
+                        placeholder().classList.add('hidden');
+                        videoContainer().classList.add('active');
+                        controlPanel().classList.add('visible');
+
+                        setStatus('connected', 'Conectado');
+                        state.connected = true;
+                        state.connecting = false;
+                        showToast('¡Stream de vídeo activo!', '🎮');
+
+                        // Iniciar stats
+                        startStatsLoop();
+
+                        // Bind inputs
+                        bindInputEvents();
+                    }
+                };
+
+                // ── ICE Events ──
+                state.pc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('[ICE] Candidato:', event.candidate.type);
+                    }
+                };
+
+                state.pc.oniceconnectionstatechange = () => {
+                    const iceState = state.pc.iceConnectionState;
+                    console.log('[ICE] Estado:', iceState);
+
+                    if (iceState === 'disconnected' || iceState === 'failed') {
+                        showToast('Conexión perdida', '⚠️');
+                        setStatus('error', 'Desconectado');
+                        cleanup();
+                    }
+                };
+
+                state.pc.onconnectionstatechange = () => {
+                    const connState = state.pc.connectionState;
+                    console.log('[WebRTC] Connection state:', connState);
+
+                    if (connState === 'failed' || connState === 'closed') {
+                        cleanup();
+                    }
+                };
+
+                // ── Añadir transceiver para recibir vídeo ──
+                state.pc.addTransceiver('video', { direction: 'recvonly' });
+
+                // ── Crear oferta SDP ──
+                const offer = await state.pc.createOffer();
+                await state.pc.setLocalDescription(offer);
+
+                // ── Esperar a que se completen los ICE candidates ──
+                await new Promise((resolve) => {
+                    if (state.pc.iceGatheringState === 'complete') {
+                        resolve();
+                    } else {
+                        const checkState = () => {
+                            if (state.pc.iceGatheringState === 'complete') {
+                                state.pc.removeEventListener('icegatheringstatechange', checkState);
+                                resolve();
+                            }
+                        };
+                        state.pc.addEventListener('icegatheringstatechange', checkState);
+
+                        // Timeout para no esperar eternamente
+                        setTimeout(resolve, 5000);
+                    }
+                });
+
+                // ── Enviar oferta al servidor (Signaling) ──
+                console.log('[Signaling] Enviando oferta a:', serverUrl + '/offer');
+                const response = await fetch(serverUrl + '/offer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sdp: state.pc.localDescription.sdp,
+                        type: state.pc.localDescription.type,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const answer = await response.json();
+
+                if (answer.error) {
+                    throw new Error(answer.error);
+                }
+
+                // ── Aplicar respuesta del servidor ──
+                await state.pc.setRemoteDescription(
+                    new RTCSessionDescription({
+                        sdp: answer.sdp,
+                        type: answer.type,
+                    })
+                );
+
+                console.log('[Signaling] Conexión establecida. Session:', answer.session_id);
+                showToast(`Sesión: ${answer.session_id}`, '✅');
+
+            } catch (error) {
+                console.error('[Error]', error);
+                showToast(`Error: ${error.message}`, '❌', 5000);
+                setStatus('error', 'Error');
+                state.connecting = false;
+                cleanup();
+
+                btn.disabled = false;
+                btn.innerHTML = '⚡ Conectar';
+            }
+        }
+
+        function cleanup() {
+            state.connected = false;
+            state.connecting = false;
+            state.pointerLocked = false;
+
+            unbindInputEvents();
+
+            if (state.statsInterval) {
+                clearInterval(state.statsInterval);
+                state.statsInterval = null;
+            }
+
+            if (state.dc) {
+                try { state.dc.close(); } catch(e) {}
+                state.dc = null;
+            }
+
+            if (state.pc) {
+                try { state.pc.close(); } catch(e) {}
+                state.pc = null;
+            }
+
+            // Reset UI
+            const vid = video();
+            vid.srcObject = null;
+            placeholder().classList.remove('hidden');
+            videoContainer().classList.remove('active');
+            controlPanel().classList.remove('visible');
+            statsOverlay().classList.remove('visible');
+
+            const btn = $('btn-connect');
+            btn.disabled = false;
+            btn.innerHTML = '⚡ Conectar';
+
+            setStatus('', 'Desconectado');
+            updateLatency('--');
+        }
+
+        function disconnect() {
+            showToast('Desconectando...', '👋');
+            cleanup();
+
+            // Salir de fullscreen si estamos
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+
+            // Salir de pointer lock
+            if (document.pointerLockElement) {
+                document.exitPointerLock();
+            }
+        }
+
+        // ══════════════════════════════════════════
+        //  SERVER MESSAGES
+        // ══════════════════════════════════════════
+
+        function handleServerMessage(data) {
+            if (data.type === 'pong') {
+                state.currentRTT = Date.now() - state.lastPingTime;
+                updateLatency(state.currentRTT);
+            } else if (data.type === 'config_ack') {
+                showToast(`${data.setting}: ${data.value}`, '✅');
+            }
+        }
+
+        // ══════════════════════════════════════════
+        //  PING LOOP (Latency Measurement)
+        // ══════════════════════════════════════════
+
+        function startPingLoop() {
+            setInterval(() => {
+                if (state.dc && state.dc.readyState === 'open') {
+                    state.lastPingTime = Date.now();
+                    sendInput({ type: 'ping', t: state.lastPingTime });
+                }
+            }, 2000);
+        }
+
+        // ══════════════════════════════════════════
+        //  INPUT SYSTEM
+        // ══════════════════════════════════════════
+
+        function sendInput(data) {
+            if (state.dc && state.dc.readyState === 'open') {
+                try {
+                    state.dc.send(JSON.stringify(data));
+                } catch (e) {
+                    console.warn('Error enviando input:', e);
+                }
+            }
+        }
+
+        // Calcula la posición relativa del ratón sobre el contenido del vídeo
+        function getVideoRelativePosition(clientX, clientY) {
+            const vid = video();
+            const rect = vid.getBoundingClientRect();
+
+            // El vídeo usa object-fit: contain, así que hay que calcular
+            // el área real donde se renderiza el vídeo
+            const videoWidth = vid.videoWidth || 1280;
+            const videoHeight = vid.videoHeight || 720;
+            const containerW = rect.width;
+            const containerH = rect.height;
+
+            const videoAspect = videoWidth / videoHeight;
+            const containerAspect = containerW / containerH;
+
+            let renderW, renderH, offsetX, offsetY;
+
+            if (containerAspect > videoAspect) {
+                // Barras laterales (pillarbox)
+                renderH = containerH;
+                renderW = containerH * videoAspect;
+                offsetX = (containerW - renderW) / 2;
+                offsetY = 0;
+            } else {
+                // Barras arriba/abajo (letterbox)
+                renderW = containerW;
+                renderH = containerW / videoAspect;
+                offsetX = 0;
+                offsetY = (containerH - renderH) / 2;
+            }
+
+            // Posición relativa dentro del vídeo renderizado
+            const relX = (clientX - rect.left - offsetX) / renderW;
+            const relY = (clientY - rect.top - offsetY) / renderH;
+
+            return {
+                px: Math.max(0, Math.min(1, relX)),
+                py: Math.max(0, Math.min(1, relY)),
+                inBounds: relX >= 0 && relX <= 1 && relY >= 0 && relY <= 1,
+            };
+        }
+
+        // ── Event Handlers ──
+        let boundHandlers = {};
+
+        function bindInputEvents() {
+            const vid = video();
+
+            // ── Mouse Move ──
+            boundHandlers.mousemove = (e) => {
+                if (state.controlMode === '3d' && state.pointerLocked) {
+                    sendInput({
+                        type: 'mousemove_3d',
+                        dx: e.movementX,
+                        dy: e.movementY,
+                        sensitivity: 1.0,
+                    });
+                } else if (state.controlMode === '2d') {
+                    const pos = getVideoRelativePosition(e.clientX, e.clientY);
+                    if (pos.inBounds) {
+                        sendInput({
+                            type: 'mousemove_2d',
+                            px: pos.px,
+                            py: pos.py,
+                        });
+                    }
+                }
+            };
+
+            // ── Mouse Down ──
+            boundHandlers.mousedown = (e) => {
+                if (state.controlMode === '3d' && !state.pointerLocked) {
+                    // Primer clic en modo 3D = activar Pointer Lock
+                    vid.requestPointerLock();
+                    return;
+                }
+
+                const data = {
+                    type: 'mousedown',
+                    button: e.button,
+                };
+
+                if (state.controlMode === '2d') {
+                    const pos = getVideoRelativePosition(e.clientX, e.clientY);
+                    data.px = pos.px;
+                    data.py = pos.py;
+                }
+
+                sendInput(data);
+                e.preventDefault();
+            };
+
+            // ── Mouse Up ──
+            boundHandlers.mouseup = (e) => {
+                sendInput({
+                    type: 'mouseup',
+                    button: e.button,
+                });
+                e.preventDefault();
+            };
+
+            // ── Scroll ──
+            boundHandlers.wheel = (e) => {
+                sendInput({
+                    type: 'scroll',
+                    deltaY: e.deltaY,
+                });
+                e.preventDefault();
+            };
+
+            // ── Keyboard ──
+            boundHandlers.keydown = (e) => {
+                // No capturar F11 (fullscreen nativo) ni F5 (refresh) ni Ctrl+shortcuts del navegador
+                if (e.key === 'F11' || (e.ctrlKey && ['r', 'w', 't', 'l', 'n'].includes(e.key.toLowerCase()))) {
+                    return;
+                }
+
+                // Prevenir scroll y otros comportamientos por defecto
+                if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+                     'Tab', 'Backspace', 'Enter'].includes(e.code)) {
+                    e.preventDefault();
+                }
+
+                sendInput({
+                    type: 'keydown',
+                    code: e.code,
+                    key: e.key,
+                });
+            };
+
+            boundHandlers.keyup = (e) => {
+                if (e.key === 'F11') return;
+
+                e.preventDefault();
+                sendInput({
+                    type: 'keyup',
+                    code: e.code,
+                    key: e.key,
+                });
+            };
+
+            // ── Context Menu (Prevent) ──
+            boundHandlers.contextmenu = (e) => {
+                e.preventDefault();
+            };
+
+            // ── Pointer Lock Change ──
+            boundHandlers.pointerlockchange = () => {
+                state.pointerLocked = document.pointerLockElement === vid;
+                if (state.pointerLocked) {
+                    showToast('Pointer Lock activado. ESC para salir.', '🔒');
+                    vid.classList.add('mode-3d');
+                } else {
+                    vid.classList.remove('mode-3d');
+                    if (state.controlMode === '3d') {
+                        showToast('Pointer Lock desactivado. Clic para reactivar.', '🔓');
+                    }
+                }
+            };
+
+            // ── Bind Everything ──
+            vid.addEventListener('mousemove', boundHandlers.mousemove);
+            vid.addEventListener('mousedown', boundHandlers.mousedown);
+            vid.addEventListener('mouseup', boundHandlers.mouseup);
+            vid.addEventListener('wheel', boundHandlers.wheel, { passive: false });
+            vid.addEventListener('contextmenu', boundHandlers.contextmenu);
+            document.addEventListener('keydown', boundHandlers.keydown);
+            document.addEventListener('keyup', boundHandlers.keyup);
+            document.addEventListener('pointerlockchange', boundHandlers.pointerlockchange);
+
+            console.log('[Inputs] Event handlers vinculados');
+        }
+
+        function unbindInputEvents() {
+            const vid = video();
+
+            if (boundHandlers.mousemove) {
+                vid.removeEventListener('mousemove', boundHandlers.mousemove);
+                vid.removeEventListener('mousedown', boundHandlers.mousedown);
+                vid.removeEventListener('mouseup', boundHandlers.mouseup);
+                vid.removeEventListener('wheel', boundHandlers.wheel);
+                vid.removeEventListener('contextmenu', boundHandlers.contextmenu);
+                document.removeEventListener('keydown', boundHandlers.keydown);
+                document.removeEventListener('keyup', boundHandlers.keyup);
+                document.removeEventListener('pointerlockchange', boundHandlers.pointerlockchange);
+            }
+
+            if (document.pointerLockElement) {
+                document.exitPointerLock();
+            }
+
+            boundHandlers = {};
+            console.log('[Inputs] Event handlers desvinculados');
+        }
+
+        // ══════════════════════════════════════════
+        //  SETTINGS
+        // ══════════════════════════════════════════
+
+        function setResolution(res) {
+            state.resolution = res;
+            sendInput({ type: 'resolution', value: res });
+
+            // Update UI
+            document.querySelectorAll('[data-res]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.res === res);
+            });
+        }
+
+        function setFPS(fps) {
+            state.fps = fps;
+            sendInput({ type: 'fps', value: fps });
+
+            document.querySelectorAll('[data-fps]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.fps === String(fps));
+            });
+        }
+
+        function setMode(mode) {
+            state.controlMode = mode;
+
+            document.querySelectorAll('[data-mode]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+
+            const vid = video();
+
+            if (mode === '2d') {
+                // Salir de pointer lock si estamos
+                if (document.pointerLockElement) {
+                    document.exitPointerLock();
+                }
+                vid.classList.remove('mode-3d');
+                showToast('Modo 2D: Escritorio / Navegador', '🖱');
+            } else {
+                showToast('Modo 3D: Clic en el vídeo para capturar ratón', '🎮');
+            }
+        }
+
+        // ══════════════════════════════════════════
+        //  FULLSCREEN
+        // ══════════════════════════════════════════
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => {
+                    showToast('No se pudo activar pantalla completa', '⚠️');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // ══════════════════════════════════════════
+        //  STATS
+        // ══════════════════════════════════════════
+
+        function toggleStats() {
+            state.statsVisible = !state.statsVisible;
+            statsOverlay().classList.toggle('visible', state.statsVisible);
+            $('btn-stats').classList.toggle('active', state.statsVisible);
+        }
+
+        function startStatsLoop() {
+            state.prevStatsTime = Date.now();
+            state.prevBytesReceived = 0;
+
+            state.statsInterval = setInterval(async () => {
+                if (!state.pc) return;
+
+                try {
+                    const stats = await state.pc.getStats();
+                    let rtt = '--';
+                    let jitter = '--';
+                    let fps = '--';
+                    let resolution = '--';
+                    let bytesReceived = 0;
+                    let packetsReceived = 0;
+
+                    stats.forEach(report => {
+                        if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                            if (report.currentRoundTripTime !== undefined) {
+                                rtt = Math.round(report.currentRoundTripTime * 1000);
+                            }
+                        }
+
+                        if (report.type === 'inbound-rtp' && report.kind === 'video') {
+                            if (report.jitter !== undefined) {
+                                jitter = (report.jitter * 1000).toFixed(1) + ' ms';
+                            }
+                            if (report.framesPerSecond !== undefined) {
+                                fps = Math.round(report.framesPerSecond);
+                            }
+                            if (report.frameWidth && report.frameHeight) {
+                                resolution = `${report.frameWidth}x${report.frameHeight}`;
+                            }
+                            if (report.bytesReceived !== undefined) {
+                                bytesReceived = report.bytesReceived;
+                            }
+                            if (report.packetsReceived !== undefined) {
+                                packetsReceived = report.packetsReceived;
+                            }
+                        }
+                    });
+
+                    // Calcular bitrate
+                    const now = Date.now();
+                    const elapsed = (now - state.prevStatsTime) / 1000;
+                    let bitrate = '--';
+                    if (elapsed > 0 && state.prevBytesReceived > 0) {
+                        const bps = ((bytesReceived - state.prevBytesReceived) * 8) / elapsed;
+                        if (bps > 1000000) {
+                            bitrate = (bps / 1000000).toFixed(1) + ' Mbps';
+                        } else {
+                            bitrate = (bps / 1000).toFixed(0) + ' kbps';
+                        }
+                    }
+                    state.prevBytesReceived = bytesReceived;
+                    state.prevStatsTime = now;
+
+                    // Update UI
+                    if (rtt !== '--') {
+                        updateLatency(rtt);
+                    }
+
+                    $('stat-rtt').textContent = rtt !== '--' ? rtt + ' ms' : '--';
+                    $('stat-jitter').textContent = jitter;
+                    $('stat-bitrate').textContent = bitrate;
+                    $('stat-fps').textContent = fps;
+                    $('stat-res').textContent = resolution;
+                    $('stat-packets').textContent = packetsReceived.toLocaleString();
+
+                } catch (e) {
+                    console.warn('Error obteniendo stats:', e);
+                }
+            }, 1500);
+        }
+
+        // ══════════════════════════════════════════
+        //  INIT
+        // ══════════════════════════════════════════
+
+        function init() {
+            console.log('%c PedusCloud Gaming v2.0 ', 'background: linear-gradient(135deg, #00f5d4, #00bbf9); color: #0a0a0f; font-weight: bold; font-size: 14px; padding: 4px 8px; border-radius: 4px;');
+
+            // Auto-fill server URL if accessed via ngrok or custom domain
+            const urlInput = $('server-url');
+            if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                urlInput.value = window.location.origin;
+            }
+
+            // Enter en el input = conectar
+            urlInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    connect();
+                }
+            });
+
+            // Prevenir pérdida de datos al cerrar
+            window.addEventListener('beforeunload', () => {
+                if (state.connected) {
+                    cleanup();
+                }
+            });
+
+            showToast('PedusCloud Gaming listo', '🎮');
+        }
+
+        // Auto-init
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // ── Public API ──
+        return {
+            connect,
+            disconnect,
+            setResolution,
+            setFPS,
+            setMode,
+            toggleFullscreen,
+            toggleStats,
+        };
+
+    })();
+    </script>
+</body>
+</html>
