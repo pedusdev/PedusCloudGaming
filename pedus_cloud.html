@@ -1405,7 +1405,17 @@
                 inputField.focus();
                 return;
             }
-
+            // --- AÑADE ESTO EXACTAMENTE AQUÍ ---
+            let iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]; // Servidor por defecto
+            try {
+                const response = await fetch(`${urlString}/twilio-credentials`);
+                const data = await response.json();
+                if (data.ice_servers) {
+                    iceServers = data.ice_servers;
+                }
+            } catch (e) {
+                console.error("No se pudieron cargar servidores de Twilio, usando STUN básico", e);
+            }
             // Sanitización básica de la URL
             urlString = urlString.replace(/\/+$/, ''); // Eliminar slash final
             if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
