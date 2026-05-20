@@ -9,27 +9,46 @@
     <title>PedusCloud Gaming | Premium</title>
     
     <style>
+        /*
+        ================================================================================
+        1. FUENTES TIPOGRÁFICAS
+        ================================================================================
+        */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Share+Tech+Mono&display=swap');
 
+        /*
+        ================================================================================
+        2. SISTEMA DE TEMAS (CSS VARIABLES)
+        ================================================================================
+        El tema por defecto es el Minimalista Cálido.
+        Los demás se activan modificando el atributo data-theme en la etiqueta <html>.
+        */
+
         :root {
-            --color-bg-base: #F8F6F0;
-            --color-bg-panel: #FFFFFF;
+            /* ── TEMA POR DEFECTO: Minimalista, Cálido y Elegante ── */
+            
+            /* Paleta de Fondos */
+            --color-bg-base: #F8F6F0;       /* Crema muy suave, casi blanco cálido */
+            --color-bg-panel: #FFFFFF;      /* Blanco puro para los paneles de control */
             --color-bg-glass: rgba(255, 255, 255, 0.6);
             --color-bg-glass-hover: rgba(255, 255, 255, 0.9);
             --color-bg-toast: rgba(255, 255, 255, 0.95);
             --color-bg-video: #EAE6DE;
             
-            --color-text-main: #3D342B;
-            --color-text-muted: #8C7B6B;
-            --color-text-inverse: #FFFFFF;
+            /* Paleta de Textos */
+            --color-text-main: #3D342B;     /* Marrón muy oscuro, más suave que el negro */
+            --color-text-muted: #8C7B6B;    /* Tono arcilla para textos secundarios */
+            --color-text-inverse: #FFFFFF;  /* Texto blanco para botones rellenos */
             
-            --color-accent-primary: #D46A4C;
+            /* Colores de Acento y Estado */
+            --color-accent-primary: #D46A4C;   /* Terracota elegante */
             --color-accent-hover: #BF5A3E;
             --color-accent-secondary: #E39B7C;
             --color-success: #4CAF50;
             --color-warning: #FF9800;
             --color-danger: #E53935;
             
+            /* Bordes y Sombras */
             --border-color: rgba(212, 106, 76, 0.15);
             --border-color-active: rgba(212, 106, 76, 0.5);
             --border-width: 1px;
@@ -37,17 +56,20 @@
             --shadow-sm: 0 4px 12px rgba(140, 123, 107, 0.08);
             --shadow-md: 0 12px 35px rgba(140, 123, 107, 0.12);
             --shadow-lg: 0 24px 60px rgba(140, 123, 107, 0.15);
-            --shadow-neon: 0 0 0px transparent;
+            --shadow-neon: 0 0 0px transparent; /* Sin neón en modo minimalista */
             
+            /* Radios de borde (Muy redondeados para hacer la interfaz amigable) */
             --radius-sm: 8px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-xl: 32px;
             --radius-pill: 9999px;
             
+            /* Tipografía */
             --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
             
+            /* Filtros y Transiciones */
             --blur-amount: 24px;
             --transition-speed-fast: 0.15s;
             --transition-speed-normal: 0.3s;
@@ -55,7 +77,9 @@
             --transition-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        /* ── TEMA: GAMER (Oscuro con acentos Rosa Neón) ── */
         [data-theme="gamer"] {
+            /* Paleta de Fondos */
             --color-bg-base: #09090B;
             --color-bg-panel: rgba(18, 18, 24, 0.85);
             --color-bg-glass: rgba(255, 255, 255, 0.05);
@@ -63,17 +87,20 @@
             --color-bg-toast: rgba(18, 18, 24, 0.95);
             --color-bg-video: #000000;
             
+            /* Paleta de Textos */
             --color-text-main: #FFFFFF;
             --color-text-muted: #A1A1AA;
             --color-text-inverse: #FFFFFF;
             
-            --color-accent-primary: #F43F5E;
+            /* Colores de Acento y Estado */
+            --color-accent-primary: #F43F5E;   /* Rosa/Rojo Neón */
             --color-accent-hover: #E11D48;
-            --color-accent-secondary: #8B5CF6;
+            --color-accent-secondary: #8B5CF6; /* Púrpura secundario */
             --color-success: #10B981;
             --color-warning: #F59E0B;
             --color-danger: #EF4444;
             
+            /* Bordes y Sombras */
             --border-color: rgba(244, 63, 94, 0.2);
             --border-color-active: rgba(244, 63, 94, 0.6);
             
@@ -82,13 +109,16 @@
             --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.9);
             --shadow-neon: 0 0 20px rgba(244, 63, 94, 0.3), 0 0 40px rgba(244, 63, 94, 0.1);
             
+            /* Radios de borde (Más afilados y agresivos) */
             --radius-sm: 6px;
             --radius-md: 12px;
             --radius-lg: 18px;
             --radius-xl: 24px;
         }
 
+        /* ── TEMA: MATRIX (Negro puro con Verde Terminal) ── */
         [data-theme="matrix"] {
+            /* Paleta de Fondos */
             --color-bg-base: #000000;
             --color-bg-panel: rgba(0, 15, 0, 0.9);
             --color-bg-glass: rgba(0, 255, 65, 0.05);
@@ -96,10 +126,12 @@
             --color-bg-toast: rgba(0, 20, 0, 0.95);
             --color-bg-video: #000000;
             
-            --color-text-main: #00FF41;
-            --color-text-muted: #008F11;
-            --color-text-inverse: #000000;
+            /* Paleta de Textos */
+            --color-text-main: #00FF41;        /* Verde Matrix */
+            --color-text-muted: #008F11;       /* Verde oscuro */
+            --color-text-inverse: #000000;     /* Texto negro para contrastar */
             
+            /* Colores de Acento y Estado */
             --color-accent-primary: #00FF41;
             --color-accent-hover: #39FF14;
             --color-accent-secondary: #00FF41;
@@ -107,6 +139,7 @@
             --color-warning: #FFD700;
             --color-danger: #FF0000;
             
+            /* Bordes y Sombras */
             --border-color: rgba(0, 255, 65, 0.4);
             --border-color-active: rgba(0, 255, 65, 0.8);
             
@@ -115,22 +148,33 @@
             --shadow-lg: 0 0 40px rgba(0, 255, 65, 0.3);
             --shadow-neon: 0 0 15px rgba(0, 255, 65, 0.4);
             
+            /* Radios de borde (Casi cuadrados, estilo consola antigua) */
             --radius-sm: 2px;
             --radius-md: 4px;
             --radius-lg: 8px;
             --radius-xl: 12px;
             
+            /* Tipografía (Forzar fuente monoespaciada en todo) */
             --font-sans: 'Share Tech Mono', 'JetBrains Mono', monospace;
         }
 
-        *, *::before, *::after {
+        /*
+        ================================================================================
+        3. RESET Y ESTILOS BASE
+        ================================================================================
+        */
+
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        html, 
+        body {
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -151,6 +195,7 @@
             position: relative;
         }
 
+        /* Patrón de fondo opcional (solo visible en algunos temas) */
         body::after {
             content: '';
             position: fixed;
@@ -164,6 +209,13 @@
             z-index: 0;
         }
 
+        /*
+        ================================================================================
+        4. COMPONENTES DE LA INTERFAZ (UI)
+        ================================================================================
+        */
+
+        /* ── Barra Superior (Top Bar) ── */
         .top-bar {
             position: fixed;
             top: 0;
@@ -214,6 +266,7 @@
             color: var(--color-accent-primary);
         }
 
+        /* ── Controles de la barra superior (Tema y Estado) ── */
         .top-controls {
             display: flex;
             align-items: center;
@@ -253,6 +306,7 @@
             box-shadow: var(--shadow-sm);
         }
 
+        /* Indicador de Estado de Conexión */
         .status-badge {
             display: flex;
             align-items: center;
@@ -301,6 +355,7 @@
             color: var(--color-accent-primary);
         }
 
+        /* ── Área Principal (Contenedor del Vídeo) ── */
         .main-workspace {
             position: relative;
             z-index: 1;
@@ -346,6 +401,7 @@
             cursor: none;
         }
 
+        /* ── Pantalla de Inicio / Placeholder ── */
         .setup-screen {
             position: absolute;
             inset: 0;
@@ -408,6 +464,7 @@
             line-height: 1.6;
         }
 
+        /* ── Formulario de Conexión ── */
         .connection-form {
             display: flex;
             flex-direction: column;
@@ -487,6 +544,7 @@
             transform: none;
         }
 
+        /* Spinner para botones */
         .loader-spin {
             width: 18px;
             height: 18px;
@@ -514,6 +572,12 @@
             color: var(--color-text-muted);
             text-align: center;
         }
+
+        /*
+        ================================================================================
+        5. COMMAND CENTER (OVERLAY DASHBOARD CTRL+Q)
+        ================================================================================
+        */
 
         .dashboard-overlay {
             position: fixed;
@@ -588,6 +652,156 @@
             margin-top: 8px;
         }
 
+        .keyboard-shortcut {
+            background-color: var(--color-bg-glass);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-family: var(--font-mono);
+            font-weight: bold;
+            color: var(--color-text-main);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .settings-card {
+            background-color: var(--color-bg-base);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .settings-card.span-full {
+            grid-column: span 2;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--color-text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--color-text-muted);
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .setting-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+        }
+
+        /* Botones de segmentación (Toggle Groups) */
+        .segmented-control {
+            display: flex;
+            background-color: var(--color-bg-glass);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            padding: 4px;
+        }
+
+        .segment-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            border-radius: calc(var(--radius-md) - 4px);
+            transition: all var(--transition-speed-fast);
+        }
+
+        .segment-btn:hover {
+            color: var(--color-text-main);
+        }
+
+        .segment-btn.is-active {
+            background-color: var(--color-bg-panel);
+            color: var(--color-accent-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Botones de acción general */
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            background-color: var(--color-bg-glass);
+            border: var(--border-width) solid var(--border-color);
+            color: var(--color-text-main);
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            margin: 0 6px;
+            transition: all var(--transition-speed-fast);
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .action-btn:hover {
+            background-color: var(--color-bg-glass-hover);
+            border-color: var(--color-text-muted);
+            transform: translateY(-1px);
+        }
+
+        /* Botones de acción destructiva o de grabación */
+        .action-btn.is-danger {
+            color: var(--color-danger);
+            border-color: rgba(229, 57, 53, 0.3);
+            background-color: rgba(229, 57, 53, 0.05);
+        }
+
+        .action-btn.is-danger:hover {
+            background-color: rgba(229, 57, 53, 0.15);
+            border-color: var(--color-danger);
+        }
+
+        .action-btn.is-recording {
+            background-color: var(--color-danger);
+            color: #FFFFFF;
+            animation: pulse-record 2s infinite;
+        }
+
+        @keyframes pulse-record {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Botón de cierre del modal */
         .btn-close-modal {
             position: absolute;
             top: 24px;
@@ -617,6 +831,7 @@
             transform: rotate(90deg);
         }
 
+        /* Botón Flotante para Móviles */
         .mobile-fab {
             position: fixed;
             bottom: 32px;
@@ -655,6 +870,7 @@
             display: flex;
         }
 
+        /* Ocultar barra y atenuar botón en pantalla completa */
         :fullscreen .top-bar {
             transform: translateY(-100%);
         }
@@ -677,6 +893,12 @@
         :fullscreen .mobile-fab:hover {
             opacity: 1;
         }
+
+        /*
+        ================================================================================
+        6. SISTEMA DE NOTIFICACIONES (TOASTS) Y ESTADÍSTICAS
+        ================================================================================
+        */
 
         .toast-container {
             position: fixed;
@@ -726,6 +948,7 @@
             to { opacity: 0; transform: translateX(50px) scale(0.9); }
         }
 
+        /* Panel de Estadísticas Flotante */
         .stats-overlay {
             position: fixed;
             top: 84px;
@@ -751,243 +974,1455 @@
             opacity: 1;
             pointer-events: all;
         }
+
+        .stats-header {
+            font-weight: 700;
+            color: var(--color-text-main);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            font-family: var(--font-sans);
+            font-size: 14px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-line:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-value {
+            color: var(--color-accent-primary);
+            font-weight: 700;
+        }
+
+        /* ── Responsive Design ── */
+        @media (max-width: 900px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+            .settings-card.span-full {
+                grid-column: span 1;
+            }
+            .action-btn {
+                flex-direction: column;
+                padding: 10px;
+                font-size: 12px;
+                text-align: center;
+            }
+            .top-controls {
+                gap: 10px;
+            }
+            .logo-text {
+                display: none;
+            }
+        }
+        
+        /* Ocultar barras de desplazamiento para una UI más limpia */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color-active); border-radius: 4px; }
+        ::selection { background: var(--color-accent-primary); color: #fff; }
+
     </style>
 </head>
 <body>
-    <div class="top-bar">
+
+    <div id="ui-toast-container" class="toast-container"></div>
+    
+    <div id="ui-stats-panel" class="stats-overlay">
+        <div class="stats-header">Telemetría de Red</div>
+        <div class="stat-line"><span>Latencia (RTT)</span><span id="stat-rtt" class="stat-value">-- ms</span></div>
+        <div class="stat-line"><span>Ancho de Banda</span><span id="stat-bitrate" class="stat-value">--</span></div>
+        <div class="stat-line"><span>Cuadros/Seg</span><span id="stat-fps" class="stat-value">-- fps</span></div>
+        <div class="stat-line"><span>Resolución</span><span id="stat-res" class="stat-value">--</span></div>
+        <div class="stat-line"><span>Pérdida (Jitter)</span><span id="stat-jitter" class="stat-value">-- ms</span></div>
+    </div>
+
+    <header class="top-bar">
         <div class="logo-container">
             <div class="logo-icon">P</div>
-            <div class="logo-text">Pedus<span>Cloud</span></div>
+            <div class="logo-text"><span>Pedus</span>Cloud</div>
         </div>
+        
         <div class="top-controls">
             <div class="theme-selector">
-                <button class="theme-btn active" data-theme="default" title="Minimalista">☀️</button>
-                <button class="theme-btn" data-theme="gamer" title="Gamer">🎮</button>
-                <button class="theme-btn" data-theme="matrix" title="Matrix">💚</button>
+                <button class="theme-btn active" id="btn-theme-light" title="Modo Minimalista" onclick="App.setTheme('light')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </button>
+                <button class="theme-btn" id="btn-theme-gamer" title="Modo Gamer" onclick="App.setTheme('gamer')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="theme-btn" id="btn-theme-matrix" title="Modo Matrix" onclick="App.setTheme('matrix')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                </button>
             </div>
-            <div class="status-badge connecting">
+            
+            <div class="latency-text">
+                RTT: <strong id="ui-latency-val">--</strong> ms
+            </div>
+            
+            <div class="status-badge" id="ui-status-badge">
                 <div class="status-dot"></div>
-                <span class="latency-text">Conectando... <strong>--ms</strong></span>
+                <span id="ui-status-text">Desconectado</span>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="main-workspace">
-        <div class="video-container">
-            <canvas class="stream-element"></canvas>
-            <div class="setup-screen">
+    <main class="main-workspace">
+        <div class="video-container" id="ui-video-container">
+            
+            <video id="ui-video-stream" class="stream-element" autoplay playsinline></video>
+
+            <div class="setup-screen" id="ui-setup-screen">
+                
                 <div class="setup-icon-wrapper">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="6" y1="12" x2="10" y2="12"></line>
+                        <line x1="8" y1="10" x2="8" y2="14"></line>
+                        <line x1="15" y1="13" x2="15.01" y2="13"></line>
+                        <line x1="18" y1="11" x2="18.01" y2="11"></line>
+                        <rect x="2" y="6" width="20" height="12" rx="2"></rect>
                     </svg>
                 </div>
+                
                 <div class="setup-typography">
                     <h1>Bienvenido a PedusCloud</h1>
-                    <p>Configura tu servidor para comenzar a transmitir en la nube</p>
+                    <p>Conecta a tu servidor local de alto rendimiento. Experimenta latencia ultra-baja y resolución 4K con el nuevo motor CUBIC y audio estéreo de 48kHz.</p>
                 </div>
-                <form class="connection-form" id="connectionForm">
+                
+                <div class="connection-form">
                     <div class="input-group">
-                        <input type="text" class="server-input" id="serverInput" placeholder="ej: 192.168.1.100:8080" required>
-                        <button type="submit" class="btn-primary">
-                            <span class="btn-icon">🚀</span>
-                            <span class="loader-spin"></span>
-                            <span>Conectar</span>
-                        </button>
+                        <input 
+                            type="text" 
+                            id="ui-server-url" 
+                            class="server-input" 
+                            placeholder="Introduce la URL del servidor (ej: https://tucodigo.ngrok-free.app)"
+                            autocomplete="off"
+                            spellcheck="false"
+                        >
                     </div>
-                    <p class="helper-text">Ingresa la dirección IP y puerto de tu servidor</p>
-                </form>
+                    <button id="ui-btn-connect" class="btn-primary" onclick="App.connect()">
+                        <span class="btn-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        </span>
+                        <div class="loader-spin"></div>
+                        <span id="ui-btn-connect-text">Establecer Conexión</span>
+                    </button>
+                    <div class="helper-text">
+                        Asegúrate de tener el script <code>pedus_server.py</code> ejecutándose en tu PC principal.
+                    </div>
+                </div>
+                
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="toast-container"></div>
-    <div class="stats-overlay"></div>
-    <button class="mobile-fab">🎮 Controles</button>
+    <button class="mobile-fab" onclick="App.toggleCommandCenter()">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Command Center
+    </button>
 
-    <div class="dashboard-overlay">
-        <div class="dashboard-backdrop"></div>
+    <div class="dashboard-overlay" id="ui-dashboard">
+        <div class="dashboard-backdrop" onclick="App.toggleCommandCenter()"></div>
+        
         <div class="dashboard-modal">
-            <button class="btn-close-modal">✕</button>
+            <button class="btn-close-modal" onclick="App.toggleCommandCenter()" title="Cerrar (Esc)">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            
             <div class="modal-header">
-                <h2>⚙️ Panel de Control</h2>
-                <p>Presiona <span class="keyboard-shortcut">Ctrl+Q</span> para cerrar</p>
+                <h2>
+                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    PEDUS COMMAND CENTER
+                </h2>
+                <p>Puedes abrir o cerrar este panel rápidamente pulsando <span class="keyboard-shortcut">Ctrl + Q</span> en tu teclado.</p>
+            </div>
+            
+            <div class="settings-grid">
+                
+                <div class="settings-card">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                        Calidad del Streaming
+                    </div>
+                    
+                    <div class="setting-row">
+                        <span class="setting-label">Resolución:</span>
+                        <div class="segmented-control">
+                            <button class="segment-btn" data-ctrl-res="480p" onclick="App.changeResolution('480p')">480p</button>
+                            <button class="segment-btn is-active" data-ctrl-res="720p" onclick="App.changeResolution('720p')">720p</button>
+                            <button class="segment-btn" data-ctrl-res="1080p" onclick="App.changeResolution('1080p')">1080p</button>
+                            <button class="segment-btn" data-ctrl-res="4k_cine" onclick="App.changeResolution('4k_cine')" style="color: #8B5CF6;">4K Cine</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row" style="margin-top: 24px;">
+                        <span class="setting-label">Fluidez (FPS):</span>
+                        <div class="segmented-control">
+                            <button class="segment-btn" data-ctrl-fps="24" onclick="App.changeFPS(24)">24 fps</button>
+                            <button class="segment-btn" data-ctrl-fps="30" onclick="App.changeFPS(30)">30 fps</button>
+                            <button class="segment-btn is-active" data-ctrl-fps="60" onclick="App.changeFPS(60)">60 fps</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                        Periféricos y Vista
+                    </div>
+                    
+                    <div class="setting-row">
+                        <span class="setting-label">Comportamiento del Ratón:</span>
+                        <div class="segmented-control">
+                            <button class="segment-btn is-active" data-ctrl-mode="2d" onclick="App.changeInputMode('2d')" title="Posición absoluta. Ideal para el escritorio.">🖱 Modo 2D</button>
+                            <button class="segment-btn" data-ctrl-mode="3d" onclick="App.changeInputMode('3d')" title="Bloqueo de puntero (Pointer Lock). Ideal para Minecraft o shooters.">🎮 Modo 3D</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row" style="margin-top: 24px;">
+                        <button class="action-btn" onclick="App.requestFullscreen()">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            Pantalla Completa
+                        </button>
+                        <button class="action-btn" onclick="App.toggleStats()">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                            Métricas (OSD)
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-card span-full">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        Herramientas de Captura (Local)
+                    </div>
+                    
+                    <div class="setting-row" style="justify-content: center;">
+                        <button class="action-btn" id="ui-btn-record" onclick="App.toggleRecording()" style="max-width: 300px;">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                            <span id="ui-record-text">Iniciar Grabación de Vídeo</span>
+                        </button>
+                        <button class="action-btn" onclick="App.takeScreenshot()" style="max-width: 300px;">
+                            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Guardar Captura de Pantalla
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-card span-full" style="padding: 16px;">
+                    <button class="action-btn is-danger" onclick="App.disconnect()" style="width: 100%; justify-content: center;">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Finalizar Sesión y Desconectar del Servidor
+                    </button>
+                </div>
+                
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // APLICACIÓN PRINCIPAL - App Class
-        // ============================================
-        class App {
-            constructor() {
-                this.theme = 'default';
-                this.connected = false;
-                this.latency = 0;
-                this.init();
-            }
+    /**
+     * @fileoverview Motor principal de PedusCloud Gaming Frontend.
+     * Gestiona la conexión WebRTC, captura de inputs, renderizado de UI,
+     * gestión de temas y utilidades de grabación multimedia.
+     * @version 3.5
+     */
+    const App = (() => {
+        'use strict';
 
-            init() {
-                this.setupEventListeners();
-                this.loadTheme();
-            }
+        /*
+        ===========================================================================
+        ESTADO GLOBAL DE LA APLICACIÓN (STATE)
+        ===========================================================================
+        */
+        const State = {
+            // WebRTC Core
+            peerConnection: null,   // Instancia principal RTCPeerConnection
+            dataChannel: null,      // Canal UDP para envío rápido de inputs
+            serverUrl: '',          // Dirección del servidor ngrok o local
+            
+            // Flags de estado
+            isConnected: false,
+            isConnecting: false,
+            
+            // Configuración
+            inputMode: '2d',        // '2d' (absoluto) o '3d' (pointer lock relativo)
+            isPointerLocked: false,
+            
+            // Telemetría
+            showStats: false,
+            statsIntervalId: null,
+            lastPingTimestamp: 0,
+            previousBytesReceived: 0,
+            previousStatsTimestamp: 0,
+            
+            // Multimedia Local
+            mediaRecorderInstance: null,
+            recordedVideoChunks: []
+        };
 
-            setupEventListeners() {
-                // Theme switcher
-                document.querySelectorAll('.theme-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => this.changeTheme(e.target.dataset.theme));
-                });
+        /*
+        ===========================================================================
+        MAPEO DE TECLAS (TECLADO VIRTUAL EXTENDIDO)
+        ===========================================================================
+        Para optimizar el envío de datos a Python y evitar cadenas largas,
+        solo enviamos las teclas bloqueables si es estrictamente necesario,
+        pero procesamos la mayoría directamente.
+        */
+        const BLOCKED_KEYS_IN_GAME = [
+            'Space', 
+            'ArrowUp', 
+            'ArrowDown', 
+            'ArrowLeft', 
+            'ArrowRight', 
+            'Tab', 
+            'Backspace', 
+            'Enter',
+            'AltLeft',
+            'AltRight'
+        ];
 
-                // Connection form
-                document.getElementById('connectionForm')?.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleConnection();
-                });
+        /*
+        ===========================================================================
+        UTILIDADES DOM Y UI
+        ===========================================================================
+        */
 
-                // Keyboard shortcuts
-                document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.key === 'q') {
-                        e.preventDefault();
-                        this.toggleDashboard();
+        /**
+         * Selector de elementos del DOM simplificado.
+         * @param {string} id - El ID del elemento HTML.
+         * @returns {HTMLElement}
+         */
+        const $ = (id) => document.getElementById(id);
+
+        /**
+         * Muestra una notificación temporal en pantalla (Toast).
+         * @param {string} message - El texto a mostrar.
+         * @param {string} iconSVG - Código SVG del icono a mostrar.
+         * @param {number} durationMs - Tiempo de vida en milisegundos.
+         */
+        function showToast(message, iconSVG = '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>', durationMs = 3500) {
+            const container = $('ui-toast-container');
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast-message';
+            toastEl.innerHTML = `${iconSVG} <span>${message}</span>`;
+            
+            container.appendChild(toastEl);
+            
+            // Iniciar animación de salida
+            setTimeout(() => {
+                toastEl.classList.add('is-leaving');
+                setTimeout(() => {
+                    if (toastEl.parentNode === container) {
+                        container.removeChild(toastEl);
                     }
-                });
+                }, 400); // Duración de la animación en CSS
+            }, durationMs);
+        }
 
-                // Dashboard close button
-                document.querySelector('.btn-close-modal')?.addEventListener('click', () => {
-                    this.toggleDashboard();
-                });
-
-                // Mobile FAB
-                document.querySelector('.mobile-fab')?.addEventListener('click', () => {
-                    this.toggleDashboard();
-                });
+        /**
+         * Actualiza el indicador visual de conexión en la barra superior.
+         * @param {string} stateClass - Clase CSS ('connected', 'connecting', 'error', '').
+         * @param {string} text - Texto descriptivo del estado.
+         */
+        function updateConnectionBadge(stateClass, text) {
+            const badge = $('ui-status-badge');
+            const textSpan = $('ui-status-text');
+            
+            // Limpiar clases anteriores
+            badge.classList.remove('connected', 'connecting', 'error');
+            
+            if (stateClass) {
+                badge.classList.add(stateClass);
             }
+            
+            textSpan.textContent = text;
+        }
 
-            changeTheme(themeName) {
-                this.theme = themeName;
-                const themeValue = themeName === 'default' ? '' : themeName;
-                document.documentElement.setAttribute('data-theme', themeValue);
-                
-                document.querySelectorAll('.theme-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                document.querySelector(`[data-theme="${themeName}"]`)?.classList.add('active');
-                
-                localStorage.setItem('theme', themeName);
+        /*
+        ===========================================================================
+        GESTIÓN DE TEMAS VISUALES
+        ===========================================================================
+        */
+
+        /**
+         * Cambia el tema visual global manipulando las variables CSS del root.
+         * @param {string} themeName - Nombre del tema ('light', 'gamer', 'matrix').
+         */
+        function setTheme(themeName) {
+            const htmlElement = document.documentElement;
+            
+            // Actualizar atributo DOM
+            if (themeName === 'light') {
+                htmlElement.removeAttribute('data-theme');
+            } else {
+                htmlElement.setAttribute('data-theme', themeName);
             }
-
-            loadTheme() {
-                const savedTheme = localStorage.getItem('theme') || 'default';
-                this.changeTheme(savedTheme);
-            }
-
-            async handleConnection() {
-                const input = document.getElementById('serverInput');
-                const button = document.querySelector('.btn-primary');
-                const setupScreen = document.querySelector('.setup-screen');
-                
-                if (!input.value.trim()) {
-                    this.showToast('Por favor ingresa una dirección válida', 'error');
-                    return;
+            
+            // Guardar preferencia local
+            localStorage.setItem('pedus_theme', themeName);
+            
+            // Actualizar estado de los botones
+            ['light', 'gamer', 'matrix'].forEach(name => {
+                const btn = $(`btn-theme-${name}`);
+                if (btn) {
+                    if (name === themeName) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
                 }
+            });
+            
+            showToast(`Tema actualizado a: ${themeName.toUpperCase()}`, '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>', 2000);
+        }
 
-                button.classList.add('is-loading');
-                button.disabled = true;
+        /*
+        ===========================================================================
+        MOTOR NÚCLEO: WEBRTC SIGNALING Y CONEXIÓN
+        ===========================================================================
+        */
 
-                try {
-                    // Simular conexión
-                    await this.simulateConnection(input.value);
-                    
-                    this.connected = true;
-                    document.body.classList.add('is-connected');
-                    setupScreen.classList.add('hidden');
-                    this.updateStatus('connected');
-                    this.showToast('¡Conectado exitosamente!', 'success');
-                } catch (error) {
-                    this.showToast(`Error: ${error.message}`, 'error');
-                    this.updateStatus('disconnected');
-                } finally {
-                    button.classList.remove('is-loading');
-                    button.disabled = false;
-                }
+        /**
+         * Inicia el proceso de conexión al servidor Python.
+         * Ejecuta la negociación SDP, prepara los transceivers e inicia el ICE gathering.
+         */
+        async function connectToServer() {
+            if (State.isConnected || State.isConnecting) return;
+
+            // Validación de la URL ingresada
+            const inputField = $('ui-server-url');
+            let urlString = inputField.value.trim();
+            
+            if (!urlString) {
+                showToast('Por favor, ingresa la URL de tu servidor (Ngrok/Local IP).', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>');
+                inputField.focus();
+                return;
             }
 
-            async simulateConnection(serverAddress) {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        if (Math.random() > 0.3) {
-                            this.latency = Math.floor(Math.random() * 100) + 20;
-                            resolve();
-                        } else {
-                            reject(new Error('No se pudo conectar al servidor'));
-                        }
-                    }, 2000);
+            // Sanitización básica de la URL
+            urlString = urlString.replace(/\/+$/, ''); // Eliminar slash final
+            if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
+                // Asumir HTTPS para túneles ngrok, HTTP para IPs locales si es explícito no está claro, 
+                // pero por seguridad web moderna, probamos https.
+                urlString = 'https://' + urlString;
+            }
+
+            State.serverUrl = urlString;
+            State.isConnecting = true;
+            
+            // Persistir URL para conveniencia futura
+            localStorage.setItem('pedus_saved_url', urlString);
+
+            // Cambios de UI para estado "Cargando"
+            const btnConnect = $('ui-btn-connect');
+            btnConnect.disabled = true;
+            btnConnect.classList.add('is-loading');
+            $('ui-btn-connect-text').textContent = 'Negociando Conexión...';
+            
+            updateConnectionBadge('connecting', 'Conectando...');
+            showToast('Contactando con el servidor Cloud...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>', 4000);
+
+            try {
+                // 1. Instanciación del PeerConnection
+                // Utilizamos servidores STUN públicos de Google para descubrir nuestra IP pública
+                // y atravesar Firewalls/NATs escolares.
+                const configuration = {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                };
+                
+                State.peerConnection = new RTCPeerConnection(configuration);
+
+                // 2. Creación del DataChannel (El cable USB invisible)
+                // Esto es vital: No garantizamos el orden ni retransmitimos paquetes perdidos.
+                // Si se pierde un movimiento de ratón, no queremos que llegue medio segundo tarde.
+                State.dataChannel = State.peerConnection.createDataChannel('pedus-inputs', {
+                    ordered: false,
+                    maxRetransmits: 0
                 });
-            }
 
-            updateStatus(status) {
-                const badge = document.querySelector('.status-badge');
-                if (!badge) return;
+                // Callbacks del DataChannel
+                State.dataChannel.onopen = handleDataChannelOpen;
+                State.dataChannel.onmessage = handleDataChannelMessage;
 
-                badge.className = 'status-badge';
-                badge.innerHTML = '';
+                // 3. Recepción de Pistas Multimedia (Video & Audio)
+                State.peerConnection.ontrack = handleIncomingMediaTrack;
+
+                // 4. Configuración de Transceivers (Exigimos recibir vídeo y audio)
+                State.peerConnection.addTransceiver('video', { direction: 'recvonly' });
+                State.peerConnection.addTransceiver('audio', { direction: 'recvonly' });
+
+                // Callbacks de Estado de Red ICE
+                State.peerConnection.oniceconnectionstatechange = handleIceStateChange;
+                State.peerConnection.onconnectionstatechange = handleConnectionStateChange;
+
+                // 5. Generación de Oferta Local (SDP)
+                let localOffer = await State.peerConnection.createOffer();
                 
-                const dot = document.createElement('div');
-                dot.className = 'status-dot';
-                badge.appendChild(dot);
-
-                const text = document.createElement('span');
-                text.className = 'latency-text';
-
-                if (status === 'connected') {
-                    badge.classList.add('connected');
-                    text.innerHTML = `Conectado <strong>${this.latency}ms</strong>`;
-                } else if (status === 'connecting') {
-                    badge.classList.add('connecting');
-                    text.innerHTML = 'Conectando... <strong>--ms</strong>';
-                } else {
-                    text.innerHTML = 'Desconectado';
+                // --- HACK PARA 4K Y ALTA TASA DE BITS ---
+                // Por defecto, WebRTC limita artificialmente el bitrate para ahorrar datos.
+                // Al inyectar 'b=AS:50000', le decimos al navegador que permita hasta 50 Mbps.
+                // Esto es fundamental para que el Modo Cine 4K se vea nítido y sin artefactos.
+                if (localOffer.sdp.indexOf('b=AS:') === -1) {
+                    localOffer.sdp = localOffer.sdp.replace(/a=mid:video\r\n/g, 'a=mid:video\r\nb=AS:50000\r\n');
                 }
-
-                badge.appendChild(text);
-            }
-
-            showToast(message, type = 'info') {
-                const container = document.querySelector('.toast-container');
-                const toast = document.createElement('div');
-                toast.className = `toast-message is-${type}`;
                 
-                const icons = {
-                    success: '✓',
-                    error: '✕',
-                    info: 'ℹ'
+                await State.peerConnection.setLocalDescription(localOffer);
+
+                // 6. Recolección Síncrona de Candidatos ICE
+                // Esperamos un máximo de 2 segundos a recoger rutas locales antes de contactar al servidor.
+                await gatherIceCandidates(State.peerConnection, 2000);
+
+                // 7. Envío HTTP POST de la Oferta al Servidor Python (Signaling)
+                console.log(`[Signaling] Enviando oferta SDP a: ${State.serverUrl}/offer`);
+                
+                const fetchOptions = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Cabecera vital para saltarse la página de advertencia HTML gratuita de ngrok
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({
+                        sdp: State.peerConnection.localDescription.sdp,
+                        type: State.peerConnection.localDescription.type
+                    })
                 };
 
-                toast.innerHTML = `
-                    <span style="font-size: 18px;">${icons[type]}</span>
-                    <span>${message}</span>
-                `;
+                const response = await fetch(`${State.serverUrl}/offer`, fetchOptions);
 
-                container.appendChild(toast);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP Error ${response.status}: ${errorText}`);
+                }
 
-                setTimeout(() => {
-                    toast.classList.add('is-leaving');
-                    setTimeout(() => toast.remove(), 400);
-                }, 3000);
-            }
+                const serverAnswer = await response.json();
 
-            toggleDashboard() {
-                const overlay = document.querySelector('.dashboard-overlay');
-                overlay?.classList.toggle('is-visible');
+                if (serverAnswer.error) {
+                    throw new Error(`Server Error: ${serverAnswer.error}`);
+                }
+
+                // 8. Aplicación de la Respuesta del Servidor
+                await State.peerConnection.setRemoteDescription(new RTCSessionDescription({
+                    sdp: serverAnswer.sdp,
+                    type: serverAnswer.type
+                }));
+
+                console.log(`[Signaling] Éxito. ID de Sesión asignado: ${serverAnswer.session_id}`);
+
+            } catch (error) {
+                console.error('[WebRTC Fatal Error]', error);
+                showToast(`Fallo de conexión: ${error.message}`, '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>', 6000);
+                
+                // Restaurar UI a estado inicial
+                cleanupConnectionState();
             }
         }
 
-        // ============================================
-        // INICIALIZACIÓN
-        // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
-            window.app = new App();
-        });
+        /**
+         * Espera asíncronamente a que el navegador recoja candidatos de red (ICE).
+         * @param {RTCPeerConnection} pc - Instancia de la conexión.
+         * @param {number} timeoutMs - Tiempo máximo de espera en milisegundos.
+         * @returns {Promise<void>}
+         */
+        function gatherIceCandidates(pc, timeoutMs) {
+            return new Promise(resolve => {
+                if (pc.iceGatheringState === 'complete') {
+                    resolve();
+                    return;
+                }
+                
+                const checkState = () => {
+                    if (pc.iceGatheringState === 'complete') {
+                        pc.removeEventListener('icegatheringstatechange', checkState);
+                        clearTimeout(fallbackTimer);
+                        resolve();
+                    }
+                };
+                
+                pc.addEventListener('icegatheringstatechange', checkState);
+                
+                // Mecanismo de seguridad para no bloquearse indefinidamente
+                const fallbackTimer = setTimeout(() => {
+                    pc.removeEventListener('icegatheringstatechange', checkState);
+                    console.log('[ICE] Tiempo de espera agotado. Procediendo con los candidatos actuales.');
+                    resolve();
+                }, timeoutMs);
+            });
+        }
+
+        /*
+        ===========================================================================
+        MANEJADORES DE EVENTOS DE WEBRTC
+        ===========================================================================
+        */
+
+        /**
+         * Se ejecuta cuando el DataChannel se abre satisfactoriamente.
+         */
+        function handleDataChannelOpen() {
+            console.log('[DataChannel] Canal de control establecido.');
+            
+            // Iniciar bucle de latencia (Ping)
+            startLatencyPingLoop();
+        }
+
+        /**
+         * Procesa los mensajes recibidos desde el script de Python (JSON).
+         * @param {MessageEvent} event - Evento del DataChannel.
+         */
+        function handleDataChannelMessage(event) {
+            try {
+                const parsedData = JSON.parse(event.data);
+                
+                // Procesamiento de Pong (Cálculo de Latencia)
+                if (parsedData.type === 'pong') {
+                    const currentLatency = Date.now() - State.lastPingTimestamp;
+                    
+                    // Actualizar en UI (Barra Superior)
+                    $('ui-latency-val').textContent = currentLatency;
+                    
+                    // Actualizar en UI (Overlay de Stats)
+                    const rttElement = $('stat-rtt');
+                    if (rttElement) {
+                        rttElement.textContent = `${currentLatency} ms`;
+                        // Colorear si la latencia es alta
+                        if (currentLatency > 100) rttElement.style.color = 'var(--color-warning)';
+                        else rttElement.style.color = 'var(--color-accent-primary)';
+                    }
+                } 
+                // Confirmaciones de configuración por parte del servidor
+                else if (parsedData.type === 'config_ack') {
+                    showToast(`Ajuste Aplicado: ${parsedData.setting.toUpperCase()} = ${parsedData.value}`, '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>');
+                }
+            } catch (err) {
+                console.warn('[DataChannel] Mensaje no parseable recibido.', err);
+            }
+        }
+
+        /**
+         * Recibe los streams multimedia (Vídeo del escritorio y Audio del sistema).
+         * @param {RTCTrackEvent} event - Evento de pista de WebRTC.
+         */
+        function handleIncomingMediaTrack(event) {
+            if (event.track.kind === 'video') {
+                console.log('[Media] Pista de VÍDEO recibida.');
+                const videoElement = $('ui-video-stream');
+                
+                // Asignar el stream al elemento de vídeo HTML5
+                videoElement.srcObject = event.streams[0];
+                
+                // Asegurar que el audio esté activado por defecto (Vital para juegos y películas)
+                videoElement.muted = false;
+                videoElement.volume = 1.0;
+                
+                // Intentar reproducir automáticamente
+                const playPromise = videoElement.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.warn('[AutoPlay] Bloqueado por el navegador. Requiere interacción manual.', e);
+                        showToast('Haz clic en cualquier parte para activar el Audio', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>', 5000);
+                    });
+                }
+
+                // Transformaciones visuales (Esconder menú de conexión, mostrar escritorio)
+                $('ui-setup-screen').classList.add('hidden');
+                $('ui-video-container').classList.add('is-active');
+                document.body.classList.add('is-connected');
+                
+                State.isConnected = true;
+                State.isConnecting = false;
+                
+                updateConnectionBadge('connected', 'En Línea');
+                showToast('¡Conexión Exitosa! Retransmisión iniciada.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>');
+
+                // Inicializar sistemas secundarios
+                attachInputEventListeners();
+                startTelemetryEngine();
+            } else if (event.track.kind === 'audio') {
+                console.log('[Media] Pista de AUDIO recibida y acoplada al stream principal.');
+            }
+        }
+
+        /**
+         * Gestiona caídas o cambios en la ruta de red inferior (ICE).
+         */
+        function handleIceStateChange() {
+            if (!State.peerConnection) return;
+            const state = State.peerConnection.iceConnectionState;
+            console.log(`[ICE Monitor] Estado cambiado a: ${state}`);
+            
+            if (state === 'disconnected' || state === 'failed') {
+                showToast('Se ha perdido la conexión de red (ICE Failed)', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>', 5000);
+                updateConnectionBadge('error', 'Desconectado');
+                cleanupConnectionState();
+            }
+        }
+
+        /**
+         * Gestiona caídas lógicas en la conexión general Peer-to-Peer.
+         */
+        function handleConnectionStateChange() {
+            if (!State.peerConnection) return;
+            if (State.peerConnection.connectionState === 'failed' || State.peerConnection.connectionState === 'closed') {
+                cleanupConnectionState();
+            }
+        }
+
+        /*
+        ===========================================================================
+        RUTINAS DE DESCONEXIÓN Y LIMPIEZA
+        ===========================================================================
+        */
+
+        /**
+         * Limpia todos los recursos y devuelve la interfaz a su estado original.
+         */
+        function cleanupConnectionState() {
+            // Detener grabaciones si las hay
+            if (State.mediaRecorderInstance && State.mediaRecorderInstance.state === 'recording') {
+                State.mediaRecorderInstance.stop();
+            }
+
+            State.isConnected = false;
+            State.isConnecting = false;
+            State.isPointerLocked = false;
+            
+            document.body.classList.remove('is-connected');
+
+            // Desvincular eventos para no dejar memory leaks
+            detachInputEventListeners();
+
+            // Limpiar Timers
+            if (State.statsIntervalId) {
+                clearInterval(State.statsIntervalId);
+                State.statsIntervalId = null;
+            }
+
+            // Destruir WebRTC y DataChannels
+            if (State.dataChannel) {
+                try { State.dataChannel.close(); } catch (e) {}
+                State.dataChannel = null;
+            }
+            if (State.peerConnection) {
+                try { State.peerConnection.close(); } catch (e) {}
+                State.peerConnection = null;
+            }
+
+            // Restaurar Video
+            const videoEl = $('ui-video-stream');
+            if (videoEl) {
+                videoEl.srcObject = null;
+            }
+
+            // Restaurar Interfaz Gráfica
+            const setupScreen = $('ui-setup-screen');
+            if (setupScreen) setupScreen.classList.remove('hidden');
+            
+            const videoContainer = $('ui-video-container');
+            if (videoContainer) videoContainer.classList.remove('is-active');
+            
+            toggleCommandCenter(false); // Forzar cierre del modal
+            
+            // Si el menú de Stats estaba abierto, ocultarlo
+            State.showStats = false;
+            const statsPanel = $('ui-stats-panel');
+            if (statsPanel) statsPanel.classList.remove('is-visible');
+
+            // Restaurar Botón de Conexión
+            const btnConnect = $('ui-btn-connect');
+            if (btnConnect) {
+                btnConnect.disabled = false;
+                btnConnect.classList.remove('is-loading');
+                $('ui-btn-connect-text').textContent = 'Establecer Conexión';
+            }
+
+            updateConnectionBadge('', 'Desconectado');
+            $('ui-latency-val').textContent = '--';
+            
+            // Forzar salida de pantalla completa y pointer lock si quedaron "enganchados"
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(e => console.warn(e));
+            }
+            if (document.pointerLockElement) {
+                document.exitPointerLock();
+            }
+        }
+
+        /**
+         * Ejecutado por el usuario manualmente desde la interfaz.
+         */
+        function disconnectFromServer() {
+            showToast('Finalizando sesión y limpiando recursos...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>');
+            cleanupConnectionState();
+        }
+
+        /*
+        ===========================================================================
+        SISTEMA DE COMUNICACIÓN (DATACHANNEL SENDERS)
+        ===========================================================================
+        */
+
+        /**
+         * Envía un objeto JSON encapsulado al servidor de Python a través del canal UDP.
+         * @param {Object} dataPayload - El objeto con instrucciones.
+         */
+        function sendInputPayload(dataPayload) {
+            // Comprobación estricta de que el canal existe y está en estado 'open'
+            if (State.dataChannel && State.dataChannel.readyState === 'open') {
+                try {
+                    State.dataChannel.send(JSON.stringify(dataPayload));
+                } catch (e) {
+                    console.error('[DataChannel Error] Fallo al enviar payload de input.', e);
+                }
+            }
+        }
+
+        /**
+         * Envía un mensaje de ping al servidor de Python de forma periódica.
+         * Se ejecuta cada 2 segundos.
+         */
+        function startLatencyPingLoop() {
+            setInterval(() => {
+                if (State.dataChannel && State.dataChannel.readyState === 'open') {
+                    State.lastPingTimestamp = Date.now();
+                    sendInputPayload({ 
+                        type: 'ping', 
+                        t: State.lastPingTimestamp 
+                    });
+                }
+            }, 2000);
+        }
+
+        /*
+        ===========================================================================
+        SISTEMA DE CAPTURA DE EVENTOS DE USUARIO (INPUTS)
+        ===========================================================================
+        */
+
+        // Objeto global para almacenar referencias a las funciones de evento
+        // y poder removerlas limpiamente en la desconexión.
+        let EventHandlersCache = {};
+
+        /**
+         * Vincula los escuchadores de teclado y ratón al documento y al vídeo.
+         */
+        function attachInputEventListeners() {
+            const videoElement = $('ui-video-stream');
+
+            /* --- EVENTOS DE RATÓN (MOUSE) --- */
+            
+            EventHandlersCache.onMouseMove = (e) => {
+                // Si el Command Center está abierto, el ratón debe pertenecer a la UI web, no al PC remoto.
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+
+                if (State.inputMode === '3d' && State.isPointerLocked) {
+                    // Modo 3D: Enviamos deltas (cuántos píxeles se ha movido desde el frame anterior)
+                    sendInputPayload({ 
+                        type: 'mousemove_3d', 
+                        dx: e.movementX, 
+                        dy: e.movementY, 
+                        sensitivity: 1.0 
+                    });
+                } else if (State.inputMode === '2d') {
+                    // Modo 2D: Enviamos porcentaje absoluto para que funcione sin importar resoluciones.
+                    // Calculamos la posición relativa al ancho/alto total de la ventana (o contenedor).
+                    // Para mayor precisión ignorando letterboxing, usaríamos un cálculo más complejo,
+                    // pero asumiendo pantalla completa, clientX/innerWidth es muy fiable.
+                    const percentX = e.clientX / window.innerWidth;
+                    const percentY = e.clientY / window.innerHeight;
+                    
+                    sendInputPayload({ 
+                        type: 'mousemove_2d', 
+                        px: percentX, 
+                        py: percentY 
+                    });
+                }
+            };
+
+            EventHandlersCache.onMouseDown = (e) => {
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+
+                // En modo 3D, el primer click sobre el vídeo debe capturar (bloquear) el ratón invisible.
+                if (State.inputMode === '3d' && !State.isPointerLocked) {
+                    // API nativa del navegador para fijar el ratón al elemento
+                    videoElement.requestPointerLock();
+                    return; // Retornamos para no enviar este click "de configuración" al juego
+                }
+
+                // Enviar click real al servidor
+                sendInputPayload({ 
+                    type: 'mousedown', 
+                    button: e.button, 
+                    px: e.clientX / window.innerWidth, 
+                    py: e.clientY / window.innerHeight 
+                });
+                
+                // Evitar selecciones raras en el navegador web
+                e.preventDefault();
+            };
+
+            EventHandlersCache.onMouseUp = (e) => {
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+                
+                sendInputPayload({ 
+                    type: 'mouseup', 
+                    button: e.button 
+                });
+                e.preventDefault();
+            };
+
+            EventHandlersCache.onWheel = (e) => {
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+                
+                sendInputPayload({ 
+                    type: 'scroll', 
+                    deltaY: e.deltaY 
+                });
+                // Evitar que la página web haga scroll
+                e.preventDefault();
+            };
+
+            EventHandlersCache.onContextMenu = (e) => {
+                // Prevenir que el clic derecho abra el menú de Chrome/Firefox sobre el vídeo
+                if (!$('ui-dashboard').classList.contains('is-visible')) {
+                    e.preventDefault();
+                }
+            };
+
+            /* --- EVENTOS DE TECLADO (KEYBOARD) --- */
+
+            EventHandlersCache.onKeyDown = (e) => {
+                // ==========================================
+                // HOTKEY MAESTRA: ABRIR EL COMMAND CENTER
+                // Atajo: Ctrl + Q
+                // ==========================================
+                if (e.ctrlKey && e.key.toLowerCase() === 'q') {
+                    e.preventDefault();
+                    toggleCommandCenter();
+                    return; // No enviar la 'Q' al PC de casa
+                }
+
+                // Si el dashboard está abierto, permitimos escribir normalmente en inputs si los hubiera,
+                // y no enviamos comandos al servidor de juegos.
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+
+                // Ignorar F11 (Pantalla Completa Nativa) y combinaciones raras de DevTools (Ctrl+Shift+I)
+                if (e.key === 'F11') return;
+                if (e.ctrlKey && ['r', 'w', 't', 'n'].includes(e.key.toLowerCase())) return;
+
+                // Bloquear comportamiento por defecto del navegador para teclas de juego críticas
+                if (BLOCKED_KEYS_IN_GAME.includes(e.code)) {
+                    e.preventDefault();
+                }
+
+                // Transmitir tecla por WebRTC
+                sendInputPayload({ 
+                    type: 'keydown', 
+                    code: e.code, 
+                    key: e.key 
+                });
+            };
+
+            EventHandlersCache.onKeyUp = (e) => {
+                if ($('ui-dashboard').classList.contains('is-visible')) return;
+                if (e.key === 'F11') return;
+                
+                if (BLOCKED_KEYS_IN_GAME.includes(e.code)) {
+                    e.preventDefault();
+                }
+
+                sendInputPayload({ 
+                    type: 'keyup', 
+                    code: e.code, 
+                    key: e.key 
+                });
+            };
+
+            /* --- MONITOR DE POINTER LOCK --- */
+            
+            EventHandlersCache.onPointerLockChange = () => {
+                State.isPointerLocked = (document.pointerLockElement === videoElement);
+                
+                if (State.isPointerLocked) {
+                    // UI: Ocultar cursor en CSS
+                    videoElement.classList.add('mode-3d-active');
+                    showToast('Modo de juego activo. Ratón capturado. Pulsa ESC para salir.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M12 11V7a4 4 0 1 0-8 0"></path></svg>', 4000);
+                } else {
+                    // UI: Mostrar cursor
+                    videoElement.classList.remove('mode-3d-active');
+                    if (State.inputMode === '3d') {
+                        showToast('Haz clic dentro del vídeo para volver a capturar el ratón.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>');
+                    }
+                }
+            };
+
+            // Adhesión de los event listeners al BOM y DOM
+            window.addEventListener('mousemove', EventHandlersCache.onMouseMove);
+            videoElement.addEventListener('mousedown', EventHandlersCache.onMouseDown);
+            window.addEventListener('mouseup', EventHandlersCache.onMouseUp);
+            videoElement.addEventListener('wheel', EventHandlersCache.onWheel, { passive: false });
+            videoElement.addEventListener('contextmenu', EventHandlersCache.onContextMenu);
+            
+            document.addEventListener('keydown', EventHandlersCache.onKeyDown);
+            document.addEventListener('keyup', EventHandlersCache.onKeyUp);
+            document.addEventListener('pointerlockchange', EventHandlersCache.onPointerLockChange);
+        }
+
+        /**
+         * Desvincula todos los eventos creados para mantener el DOM limpio.
+         */
+        function detachInputEventListeners() {
+            if (!EventHandlersCache.onMouseMove) return; // Si no existen, salir
+
+            const videoElement = $('ui-video-stream');
+            
+            window.removeEventListener('mousemove', EventHandlersCache.onMouseMove);
+            if (videoElement) {
+                videoElement.removeEventListener('mousedown', EventHandlersCache.onMouseDown);
+                window.removeEventListener('mouseup', EventHandlersCache.onMouseUp);
+                videoElement.removeEventListener('wheel', EventHandlersCache.onWheel);
+                videoElement.removeEventListener('contextmenu', EventHandlersCache.onContextMenu);
+            }
+
+            document.removeEventListener('keydown', EventHandlersCache.onKeyDown);
+            document.removeEventListener('keyup', EventHandlersCache.onKeyUp);
+            document.removeEventListener('pointerlockchange', EventHandlersCache.onPointerLockChange);
+            
+            // Limpiar cache
+            EventHandlersCache = {};
+        }
+
+        /*
+        ===========================================================================
+        FUNCIONES DE INTERFAZ DEL COMMAND CENTER (MODAL)
+        ===========================================================================
+        */
+
+        /**
+         * Muestra u oculta el modal del Command Center.
+         * @param {boolean} [forceState] - Fuerzo un estado booleano explícito.
+         */
+        function toggleCommandCenter(forceState) {
+            const overlay = $('ui-dashboard');
+            const shouldShow = forceState !== undefined ? forceState : !overlay.classList.contains('is-visible');
+            
+            if (shouldShow) {
+                // Abrir modal
+                overlay.classList.add('is-visible');
+                // Si estábamos jugando en 3D, soltar el ratón para poder usar los botones web
+                if (document.pointerLockElement) {
+                    document.exitPointerLock();
+                }
+            } else {
+                // Cerrar modal
+                overlay.classList.remove('is-visible');
+            }
+        }
+
+        /**
+         * Solicita al servidor de Python cambiar la resolución de la captura.
+         * @param {string} resolutionStr - Cadena de resolución (ej: '720p', '1080p', '4k_cine').
+         */
+        function changeResolution(resolutionStr) {
+            if (resolutionStr === '4k_cine') {
+                showToast('Modo Cine 4K Detectado. Forzando ajuste inteligente a 24/30 fps por el servidor.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>', 5000);
+            }
+            
+            // Enviar instrucción por red UDP
+            sendInputPayload({ type: 'resolution', value: resolutionStr });
+            
+            // Actualizar interfaz segmentada visualmente
+            document.querySelectorAll('[data-ctrl-res]').forEach(button => {
+                if (button.dataset.ctrlRes === resolutionStr) {
+                    button.classList.add('is-active');
+                } else {
+                    button.classList.remove('is-active');
+                }
+            });
+        }
+
+        /**
+         * Solicita al servidor de Python modificar la tasa de cuadros objetivo.
+         * @param {number} fpsValue - Tasa en cuadros por segundo (24, 30, 60).
+         */
+        function changeFPS(fpsValue) {
+            sendInputPayload({ type: 'fps', value: fpsValue });
+            
+            document.querySelectorAll('[data-ctrl-fps]').forEach(button => {
+                if (button.dataset.ctrlFps === String(fpsValue)) {
+                    button.classList.add('is-active');
+                } else {
+                    button.classList.remove('is-active');
+                }
+            });
+        }
+
+        /**
+         * Cambia el paradigma de interpretación del ratón.
+         * @param {string} modeStr - '2d' (Absoluto porcentual) o '3d' (Deltas nativos).
+         */
+        function changeInputMode(modeStr) {
+            State.inputMode = modeStr;
+            
+            document.querySelectorAll('[data-ctrl-mode]').forEach(button => {
+                if (button.dataset.ctrlMode === modeStr) {
+                    button.classList.add('is-active');
+                } else {
+                    button.classList.remove('is-active');
+                }
+            });
+
+            // Lógica de seguridad
+            if (modeStr === '2d' && document.pointerLockElement) {
+                document.exitPointerLock();
+            }
+            
+            // Cerrar menú para aplicar rápido
+            toggleCommandCenter(false);
+            
+            const msg = modeStr === '2d' ? 'Escritorio (Absoluto)' : 'Gamer (Bloqueo de Puntero)';
+            showToast(`Modo Ratón: ${msg}`, '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="5" y="2" width="14" height="20" rx="7"></rect><line x1="12" y1="6" x2="12" y2="10"></line></svg>');
+        }
+
+        /**
+         * Pide al navegador expandir el contenedor del vídeo para llenar la pantalla física.
+         */
+        function requestFullscreen() {
+            const documentElement = document.documentElement;
+            
+            if (!document.fullscreenElement) {
+                documentElement.requestFullscreen().then(() => {
+                    toggleCommandCenter(false);
+                }).catch(err => {
+                    console.error('Error de Fullscreen API', err);
+                    showToast('El navegador ha bloqueado la pantalla completa.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg>');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        /**
+         * Activa o desactiva la visualización del panel OSD con telemetría en tiempo real.
+         */
+        function toggleStats() {
+            State.showStats = !State.showStats;
+            const statsOverlay = $('ui-stats-panel');
+            
+            if (State.showStats) {
+                statsOverlay.classList.add('is-visible');
+            } else {
+                statsOverlay.classList.remove('is-visible');
+            }
+            
+            // Cerrar menú
+            toggleCommandCenter(false);
+        }
+
+        /*
+        ===========================================================================
+        SISTEMA DE MOTOR DE TELEMETRÍA (GETSTATS API)
+        ===========================================================================
+        */
+
+        /**
+         * Inicia un loop que interroga a la API de WebRTC del navegador cada 2 segundos.
+         * Sirve para mostrar los FPS reales de red, paquetes perdidos, resolución de stream y Bitrate de bajada.
+         */
+        function startTelemetryEngine() {
+            State.previousTimestamp = Date.now();
+            State.previousBytesReceived = 0;
+
+            State.statsIntervalId = setInterval(async () => {
+                if (!State.peerConnection) return;
+                
+                try {
+                    // Ejecutar llamada a la API subyacente del engine C++ de WebRTC
+                    const statsReport = await State.peerConnection.getStats();
+                    
+                    let jitterVal = '--', fpsVal = '--', resVal = '--', currentBytes = 0;
+
+                    // Parsear el diccionario gigantesco de reportes
+                    statsReport.forEach(report => {
+                        // Buscar el track entrante de vídeo
+                        if (report.type === 'inbound-rtp' && report.kind === 'video') {
+                            if (report.jitter !== undefined) {
+                                jitterVal = (report.jitter * 1000).toFixed(1);
+                            }
+                            if (report.framesPerSecond !== undefined) {
+                                fpsVal = Math.round(report.framesPerSecond);
+                            }
+                            if (report.frameWidth && report.frameHeight) {
+                                resVal = `${report.frameWidth} x ${report.frameHeight}`;
+                            }
+                            if (report.bytesReceived !== undefined) {
+                                currentBytes = report.bytesReceived;
+                            }
+                        }
+                    });
+
+                    // Cálculo matemático del Bitrate actual en Megabits por segundo (Mbps)
+                    const now = Date.now();
+                    const secondsDelta = (now - State.previousTimestamp) / 1000;
+                    let bitrateString = '--';
+                    
+                    if (secondsDelta > 0 && State.previousBytesReceived > 0) {
+                        // (Bytes actuales - Bytes anteriores) * 8 (bits) / Segundos Transcurridos
+                        const bitsPerSecond = ((currentBytes - State.previousBytesReceived) * 8) / secondsDelta;
+                        
+                        if (bitsPerSecond > 1000000) {
+                            bitrateString = (bitsPerSecond / 1000000).toFixed(2) + ' Mbps';
+                        } else {
+                            bitrateString = (bitsPerSecond / 1000).toFixed(0) + ' kbps';
+                        }
+                    }
+                    
+                    // Actualizar referencias temporales para el siguiente ciclo
+                    State.previousBytesReceived = currentBytes;
+                    State.previousTimestamp = now;
+
+                    // Renderizar en UI DOM
+                    if ($('stat-jitter')) $('stat-jitter').textContent = jitterVal !== '--' ? `${jitterVal} ms` : '--';
+                    if ($('stat-bitrate')) $('stat-bitrate').textContent = bitrateString;
+                    if ($('stat-fps')) $('stat-fps').textContent = fpsVal !== '--' ? `${fpsVal} fps` : '--';
+                    if ($('stat-res')) $('stat-res').textContent = resVal;
+
+                } catch(error) {
+                    // Fail silently to not spam console
+                }
+            }, 2000);
+        }
+
+        /*
+        ===========================================================================
+        SISTEMA DE CREACIÓN MULTIMEDIA LOCAL
+        ===========================================================================
+        */
+
+        /**
+         * Intercepta el flujo WebRTC y lo canaliza a un archivo WebM nativo localmente en la RAM del navegador.
+         * Esto permite hacer clips sin usar procesamiento del servidor remoto.
+         */
+        function toggleRecording() {
+            const btnRecord = $('ui-btn-record');
+            const btnText = $('ui-record-text');
+
+            if (State.mediaRecorderInstance && State.mediaRecorderInstance.state === 'recording') {
+                // Detener grabación
+                State.mediaRecorderInstance.stop();
+                
+                // Actualizar interfaz
+                btnRecord.classList.remove('is-recording');
+                btnText.textContent = 'Iniciar Grabación de Vídeo';
+                showToast('Procesando y empaquetando archivo de vídeo local...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>', 4000);
+                
+            } else {
+                // Empezar grabación
+                const videoEl = $('ui-video-stream');
+                const mediaStream = videoEl.srcObject;
+                
+                if (!mediaStream) {
+                    showToast('Error: No hay conexión de vídeo activa para grabar.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>');
+                    return;
+                }
+
+                // Construcción de la instancia grabadora (Formato WebM)
+                State.mediaRecorderInstance = new MediaRecorder(mediaStream, { 
+                    mimeType: 'video/webm; codecs=vp8,opus' 
+                });
+                
+                State.recordedVideoChunks = []; // Reset chunks
+
+                // Evento: Al llegar datos (buffers) del codec
+                State.mediaRecorderInstance.ondataavailable = (event) => { 
+                    if (event.data && event.data.size > 0) {
+                        State.recordedVideoChunks.push(event.data); 
+                    }
+                };
+
+                // Evento: Al finalizar (Empaquetar blob y forzar descarga)
+                State.mediaRecorderInstance.onstop = () => {
+                    const finalBlob = new Blob(State.recordedVideoChunks, { type: 'video/webm' });
+                    State.recordedVideoChunks = []; // Liberar RAM
+                    
+                    const blobUrl = URL.createObjectURL(finalBlob);
+                    
+                    // Crear hipervínculo invisible y clicarlo programáticamente
+                    const anchorElement = document.createElement('a');
+                    anchorElement.href = blobUrl;
+                    
+                    // Nombre automático del archivo
+                    const date = new Date();
+                    const timestamp = `${date.getFullYear()}${date.getMonth()+1}${date.getDate()}_${date.getHours()}${date.getMinutes()}`;
+                    anchorElement.download = `PedusCloud_Clip_${timestamp}.webm`;
+                    
+                    document.body.appendChild(anchorElement);
+                    anchorElement.click();
+                    document.body.removeChild(anchorElement);
+                    
+                    // Revocar para limpieza de memoria
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                    
+                    showToast('Clip guardado en la carpeta Descargas de tu equipo.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>', 5000);
+                };
+
+                // Iniciar proceso
+                State.mediaRecorderInstance.start();
+                
+                // UI Updates
+                btnRecord.classList.add('is-recording');
+                btnText.textContent = 'Detener Grabación y Guardar';
+                
+                toggleCommandCenter(false); // Esconder dashboard para no grabar la UI
+                
+                showToast('Grabando Escritorio y Audio Interno...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>', 4000);
+            }
+        }
+
+        /**
+         * Pinta el frame actual del vídeo en un elemento Canvas invisible y lo extrae como PNG.
+         */
+        function takeScreenshot() {
+            const videoEl = $('ui-video-stream');
+            
+            if (!videoEl.srcObject) {
+                showToast('No hay stream activo.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle></svg>');
+                return;
+            }
+
+            // Crear canvas en la RAM con las dimensiones nativas del stream
+            const renderCanvas = document.createElement('canvas');
+            renderCanvas.width = videoEl.videoWidth || 1920;
+            renderCanvas.height = videoEl.videoHeight || 1080;
+            
+            const context2D = renderCanvas.getContext('2d');
+            
+            try {
+                // Dibujar
+                context2D.drawImage(videoEl, 0, 0, renderCanvas.width, renderCanvas.height);
+                
+                // Exportar a base64 Data URL
+                const pngDataUrl = renderCanvas.toDataURL('image/png');
+                
+                // Forzar descarga programática
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.href = pngDataUrl;
+                downloadAnchor.download = `PedusCloud_Screenshot_${Date.now()}.png`;
+                
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                document.body.removeChild(downloadAnchor);
+                
+                toggleCommandCenter(false);
+                showToast('¡Fotografía guardada con éxito!', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>');
+                
+            } catch (error) {
+                console.error("Fallo al capturar frame: ", error);
+                showToast('Error de renderizado gráfico al extraer frame.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>');
+            }
+        }
+
+        /*
+        ===========================================================================
+        RUTINAS DE INICIALIZACIÓN Y CICLO DE VIDA (BOOTSTRAP)
+        ===========================================================================
+        */
+
+        /**
+         * Setup inicial de la UI al cargar la página en el navegador.
+         */
+        function bootstrapApp() {
+            // Imprimir firma en la consola para hackers curiosos
+            console.log(
+                '%c PedusCloud Gaming v3.5 %c Motor WebRTC y Tema Minimalista Inicializado. ',
+                'background:linear-gradient(135deg,#D46A4C,#E39B7C);color:#FFFFFF;font-weight:bold;font-size:12px;padding:4px 8px;border-radius:4px 0 0 4px;',
+                'background:#F8F6F0;color:#3D342B;font-size:12px;padding:4px 8px;border-radius:0 4px 4px 0;border:1px solid rgba(212,106,76,0.3);'
+            );
+
+            // 1. Restauración de Datos Sensibles (URL guardada de sesiones previas)
+            const memoryUrl = localStorage.getItem('pedus_saved_url');
+            if (memoryUrl) {
+                const inputNode = $('ui-server-url');
+                if (inputNode) inputNode.value = memoryUrl;
+            }
+            
+            // 2. Restauración de Tema Gráfico Preferido
+            const memoryTheme = localStorage.getItem('pedus_theme') || 'light';
+            setTheme(memoryTheme);
+
+            // 3. Vinculación de Eventos Estáticos de Interfaz
+            
+            // Evento 'Enter' en el input de conexión
+            const urlInput = $('ui-server-url');
+            if (urlInput) {
+                urlInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        // Prevenir postback de forms por defecto si estuviese envuelto en uno
+                        event.preventDefault(); 
+                        connectToServer();
+                    }
+                });
+            }
+
+            // Advertencia anti-abandono en medio de una partida
+            window.addEventListener('beforeunload', (event) => {
+                if (State.isConnected) {
+                    // Disparar rutina de limpieza de sockets y canales
+                    cleanupConnectionState();
+                    // Al escribir property message se fuerza el modal nativo en navegadores legacy
+                    event.returnValue = "La sesión de juego actual terminará. ¿Continuar?";
+                }
+            });
+
+            // Bienvenida oficial UI
+            setTimeout(() => {
+                showToast('Interfaz de Sistema Operativa. Esperando input.', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>', 4500);
+            }, 800);
+        }
+
+        // Auto-Lanzador Seguro esperando pintado del DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bootstrapApp);
+        } else {
+            bootstrapApp();
+        }
+
+        /*
+        ===========================================================================
+        EXPORTACIÓN DE API PÚBLICA AL DOM HTML (CLOSURE REVEALING PATTERN)
+        ===========================================================================
+        */
+        return { 
+            // Core Connection Actions
+            connect: connectToServer, 
+            disconnect: disconnectFromServer,
+            
+            // Command Center / UI
+            toggleCommandCenter: toggleCommandCenter,
+            toggleStats: toggleStats,
+            requestFullscreen: requestFullscreen,
+            setTheme: setTheme,
+            
+            // Hardware Controls sent to Backend
+            changeResolution: changeResolution, 
+            changeFPS: changeFPS, 
+            changeInputMode: changeInputMode, 
+            
+            // Local Media Creators
+            toggleRecording: toggleRecording, 
+            takeScreenshot: takeScreenshot
+        };
+    })();
     </script>
 </body>
 </html>
