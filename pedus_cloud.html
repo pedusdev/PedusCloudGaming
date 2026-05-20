@@ -1,1472 +1,740 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CloudPlay — Remote Gaming</title>
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CloudPlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 
   <style>
-    /* ═══════════════════════════════════════════
-       RESET & VARIABLES
-    ═══════════════════════════════════════════ */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
     :root {
-      --bg-void:      #050508;
-      --bg-deep:      #0a0a12;
-      --bg-card:      #0f0f1a;
-      --bg-card2:     #141422;
-      --bg-input:     #1a1a2e;
-      --border:       #ffffff0f;
-      --border-glow:  #6c63ff40;
-
-      --accent:       #6c63ff;
-      --accent-bright:#8b7fff;
-      --accent-dim:   #6c63ff60;
-      --accent2:      #ff6b9d;
-      --accent3:      #00d4aa;
-      --accent4:      #ffd93d;
-
-      --text-primary: #f0f0ff;
-      --text-secondary:#9898b8;
-      --text-dim:     #55556a;
-
-      --success:      #00d4aa;
-      --warning:      #ffd93d;
-      --danger:       #ff4d6d;
-      --info:         #4dc8ff;
-
-      --radius-sm:    8px;
-      --radius-md:    14px;
-      --radius-lg:    20px;
-      --radius-xl:    28px;
-
-      --shadow-glow:  0 0 40px #6c63ff20;
-      --shadow-card:  0 8px 32px #00000060;
-      --shadow-hover: 0 16px 48px #00000080;
-
-      --font-main:    'Outfit', sans-serif;
-      --font-mono:    'JetBrains Mono', monospace;
-
-      --transition:   all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg:      #050508;
+      --card:    #0f0f1a;
+      --card2:   #141422;
+      --input:   #1a1a2e;
+      --border:  #ffffff0f;
+      --borderg: #6c63ff40;
+      --accent:  #6c63ff;
+      --accentb: #8b7fff;
+      --accent2: #ff6b9d;
+      --accent3: #00d4aa;
+      --accent4: #ffd93d;
+      --t1:      #f0f0ff;
+      --t2:      #9898b8;
+      --t3:      #55556a;
+      --ok:      #00d4aa;
+      --warn:    #ffd93d;
+      --err:     #ff4d6d;
+      --info:    #4dc8ff;
+      --r1:8px; --r2:14px; --r3:20px; --r4:28px;
+      --shadow:  0 8px 32px #00000060;
+      --glow:    0 0 40px #6c63ff20;
+      --tr:      all 0.25s cubic-bezier(.4,0,.2,1);
+      --f1:      'Outfit', sans-serif;
+      --f2:      'JetBrains Mono', monospace;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: var(--bg-void);
-      color: var(--text-primary);
-      font-family: var(--font-main);
-      overflow: hidden;
-    }
+    html,body { width:100%; height:100%; background:var(--bg); color:var(--t1);
+                font-family:var(--f1); overflow:hidden; }
 
-    /* ═══════════════════════════════════════════
-       FONDO ANIMADO
-    ═══════════════════════════════════════════ */
-    .bg-orbs {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
+    /* ── Fondo ── */
+    .bg-orbs { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:.12;
+           animation:orbF 20s ease-in-out infinite; }
+    .o1 { width:600px;height:600px;background:var(--accent);top:-200px;left:-200px;animation-duration:25s; }
+    .o2 { width:400px;height:400px;background:var(--accent2);bottom:-100px;right:-100px;animation-duration:18s;animation-delay:-8s; }
+    .o3 { width:300px;height:300px;background:var(--accent3);top:50%;left:50%;animation-duration:22s;animation-delay:-5s; }
+    @keyframes orbF {
+      0%,100%{transform:translate(0,0) scale(1)}
+      33%{transform:translate(40px,-30px) scale(1.05)}
+      66%{transform:translate(-20px,20px) scale(.95)}
     }
+    .bg-grid { position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:linear-gradient(rgba(108,99,255,.03) 1px,transparent 1px),
+                       linear-gradient(90deg,rgba(108,99,255,.03) 1px,transparent 1px);
+      background-size:50px 50px; }
 
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.12;
-      animation: orbFloat 20s ease-in-out infinite;
-    }
+    /* ── Layout ── */
+    #app { position:relative;z-index:1;width:100vw;height:100vh;
+           display:flex;flex-direction:column; }
 
-    .orb-1 {
-      width: 600px; height: 600px;
-      background: var(--accent);
-      top: -200px; left: -200px;
-      animation-duration: 25s;
-    }
-    .orb-2 {
-      width: 400px; height: 400px;
-      background: var(--accent2);
-      bottom: -100px; right: -100px;
-      animation-duration: 18s;
-      animation-delay: -8s;
-    }
-    .orb-3 {
-      width: 300px; height: 300px;
-      background: var(--accent3);
-      top: 50%; left: 50%;
-      animation-duration: 22s;
-      animation-delay: -5s;
-    }
+    /* ── Connect Screen ── */
+    #connectScreen { flex:1;display:flex;align-items:center;
+                     justify-content:center;padding:20px; }
+    .cw { width:100%;max-width:460px;display:flex;flex-direction:column;gap:20px; }
 
-    @keyframes orbFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33%       { transform: translate(40px, -30px) scale(1.05); }
-      66%       { transform: translate(-20px, 20px) scale(0.95); }
+    /* Brand */
+    .brand { text-align:center;margin-bottom:4px; }
+    .brand-logo { display:inline-flex;align-items:center;justify-content:center;
+      width:68px;height:68px;border-radius:18px;margin-bottom:14px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060;
+      animation:lp 3s ease-in-out infinite; }
+    @keyframes lp {
+      0%,100%{box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060}
+      50%{box-shadow:0 0 50px #6c63ff60,0 8px 24px #00000060}
     }
-
-    /* Grid lines decoration */
-    .bg-grid {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      background-image:
-        linear-gradient(rgba(108,99,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(108,99,255,0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-    }
-
-    /* ═══════════════════════════════════════════
-       APP LAYOUT
-    ═══════════════════════════════════════════ */
-    #app {
-      position: relative;
-      z-index: 1;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ═══════════════════════════════════════════
-       PANTALLA DE CONEXIÓN
-    ═══════════════════════════════════════════ */
-    #connectScreen {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .connect-wrapper {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    /* Logo & Header */
-    .brand {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .brand-logo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      margin-bottom: 16px;
-      box-shadow: 0 0 30px var(--accent-dim), 0 8px 24px #00000060;
-      animation: logoPulse 3s ease-in-out infinite;
-    }
-
-    @keyframes logoPulse {
-      0%, 100% { box-shadow: 0 0 30px var(--accent-dim), 0 8px 24px #00000060; }
-      50%       { box-shadow: 0 0 50px #6c63ff50, 0 8px 24px #00000060; }
-    }
-
-    .brand-logo svg {
-      width: 36px;
-      height: 36px;
-      fill: white;
-    }
-
-    .brand h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .brand h1 span.grad {
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .brand p {
-      font-size: 0.95rem;
-      color: var(--text-secondary);
-      font-weight: 400;
-    }
+    .brand-logo svg { width:32px;height:32px;fill:white; }
+    .brand h1 { font-size:2.2rem;font-weight:800;letter-spacing:-.03em;
+                line-height:1;margin-bottom:5px; }
+    .grad { background:linear-gradient(135deg,var(--accentb),var(--accent2));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .brand p { font-size:.9rem;color:var(--t2); }
 
     /* Card */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 28px;
-      backdrop-filter: blur(20px);
-      box-shadow: var(--shadow-card);
-      transition: var(--transition);
-    }
-
-    .card:hover {
-      border-color: var(--border-glow);
-      box-shadow: var(--shadow-hover), var(--shadow-glow);
-    }
-
-    .card-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-dim);
-      margin-bottom: 16px;
-    }
-
-    /* Form elements */
-    .field {
-      margin-bottom: 14px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      padding-left: 2px;
-    }
-
-    .field input {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 11px 14px;
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      color: var(--text-primary);
-      outline: none;
-      transition: var(--transition);
-    }
-
-    .field input:focus {
-      border-color: var(--accent);
-      background: #1a1a35;
-      box-shadow: 0 0 0 3px var(--accent-dim);
-    }
-
-    .field input::placeholder {
-      color: var(--text-dim);
-    }
-
-    /* Botones */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-main);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: white;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-
-    .btn:active::after {
-      opacity: 0.1;
-    }
-
-    .btn-primary {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent), #5a52dd);
-      color: white;
-      box-shadow: 0 4px 20px var(--accent-dim);
-      letter-spacing: 0.02em;
-      padding: 14px;
-      font-size: 1rem;
-      border-radius: var(--radius-md);
-      margin-top: 4px;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px #6c63ff50;
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-sm {
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      border-radius: var(--radius-sm);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--accent);
-      color: var(--accent-bright);
-      background: var(--accent-dim);
-    }
-
-    .btn-danger {
-      background: rgba(255,77,109,0.15);
-      border: 1px solid rgba(255,77,109,0.3);
-      color: var(--danger);
-    }
-
-    .btn-danger:hover {
-      background: rgba(255,77,109,0.25);
-    }
-
-    .btn-success {
-      background: rgba(0,212,170,0.15);
-      border: 1px solid rgba(0,212,170,0.3);
-      color: var(--success);
-    }
-
-    /* Status badge */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-
-    .status-badge .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .status-disconnected { background: rgba(255,77,109,0.12); color: var(--danger);  border: 1px solid rgba(255,77,109,0.2); }
-    .status-connecting   { background: rgba(255,217,61,0.12); color: var(--warning); border: 1px solid rgba(255,217,61,0.2); }
-    .status-connected    { background: rgba(0,212,170,0.12);  color: var(--success); border: 1px solid rgba(0,212,170,0.2); }
-
-    .status-disconnected .dot { background: var(--danger);  }
-    .status-connecting   .dot { background: var(--warning); animation: pulse 1s infinite; }
-    .status-connected    .dot { background: var(--success); animation: pulse 2s infinite; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.5; transform: scale(0.7); }
-    }
-
-    /* Info badges */
-    .info-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-    }
-
-    .badge .badge-label {
-      color: var(--text-dim);
-      font-size: 0.7rem;
-    }
-
-    .badge .badge-val {
-      color: var(--accent-bright);
-      font-weight: 500;
-    }
-
-    /* Log box */
-    .log-box {
-      background: var(--bg-void);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      max-height: 80px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      line-height: 1.6;
-    }
-
-    .log-box::-webkit-scrollbar { width: 4px; }
-    .log-box::-webkit-scrollbar-track { background: transparent; }
-    .log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-    .log-entry {
-      display: flex;
-      gap: 8px;
-    }
-
-    .log-entry .log-time { color: var(--text-dim); }
-    .log-entry.log-ok    .log-msg { color: var(--success); }
-    .log-entry.log-err   .log-msg { color: var(--danger); }
-    .log-entry.log-warn  .log-msg { color: var(--warning); }
-    .log-entry.log-info  .log-msg { color: var(--info); }
-
-    /* ═══════════════════════════════════════════
-       PANTALLA DE JUEGO
-    ═══════════════════════════════════════════ */
-    #gameScreen {
-      display: none;
-      flex-direction: column;
-      width: 100vw;
-      height: 100vh;
-    }
-
-    /* Top HUD */
-    .hud-top {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: linear-gradient(180deg, rgba(5,5,8,0.95) 0%, transparent 100%);
-      backdrop-filter: blur(10px);
-      transition: opacity 0.5s ease;
-    }
-
-    .hud-top.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .hud-brand {
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .hud-brand .grad {
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hud-stats {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hud-stat {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-    }
-
-    .hud-stat .s-label { color: var(--text-dim); }
-    .hud-stat .s-val   { color: var(--text-primary); font-weight: 600; }
-
-    .hud-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Canvas gaming */
-    #gameCanvas {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      object-fit: contain;
-      background: #000;
-      cursor: none;
-    }
-
-    #gameCanvas.cursor-default { cursor: default; }
-
-    /* Cursor personalizado */
-    #customCursor {
-      position: fixed;
-      width: 16px;
-      height: 16px;
-      background: white;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      mix-blend-mode: difference;
-      transition: transform 0.05s;
-      display: none;
-    }
-
-    /* Loading overlay */
-    #loadingOverlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-void);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      gap: 24px;
-    }
-
-    .loader-ring {
-      width: 60px;
-      height: 60px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loader-text {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    /* Toast notifications */
-    #toastContainer {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .toast {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 18px;
-      background: var(--bg-card2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      font-size: 0.85rem;
-      font-weight: 500;
-      box-shadow: var(--shadow-card);
-      animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1);
-      max-width: 320px;
-    }
-
-    .toast.toast-success { border-color: rgba(0,212,170,0.3);  color: var(--success); }
-    .toast.toast-error   { border-color: rgba(255,77,109,0.3); color: var(--danger); }
-    .toast.toast-info    { border-color: rgba(77,200,255,0.3); color: var(--info); }
-    .toast.toast-warning { border-color: rgba(255,217,61,0.3); color: var(--warning); }
-
-    @keyframes toastIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to   { transform: translateX(0);   opacity: 1; }
-    }
-
-    .toast.out {
-      animation: toastOut 0.3s cubic-bezier(0.4,0,0.2,1) forwards;
-    }
-
-    @keyframes toastOut {
-      to { transform: translateX(120%); opacity: 0; }
-    }
-
-    /* Fullscreen button */
-    .btn-icon {
-      width: 34px;
-      height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: var(--transition);
-      color: var(--text-secondary);
-      flex-shrink: 0;
-    }
-
-    .btn-icon:hover {
-      border-color: var(--accent);
-      color: var(--accent-bright);
-      background: var(--accent-dim);
-    }
-
-    .btn-icon svg {
-      width: 16px;
-      height: 16px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* ═══════════════════════════════════════════
-       QUALITY SELECTOR
-    ═══════════════════════════════════════════ */
-    .quality-tabs {
-      display: flex;
-      gap: 6px;
-    }
-
-    .q-tab {
-      flex: 1;
-      padding: 8px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      text-align: center;
-      transition: var(--transition);
-    }
-
-    .q-tab:hover { border-color: var(--accent-dim); color: var(--accent-bright); }
-
-    .q-tab.active {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent-bright);
-    }
-
-    /* ═══════════════════════════════════════════
-       SCROLLBAR GLOBAL
-    ═══════════════════════════════════════════ */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
-
-    /* Separador con texto */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 4px 0;
-    }
-
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .divider span {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    /* ═══════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════ */
-    @media (max-width: 520px) {
-      .connect-wrapper { max-width: 100%; }
-      .card { padding: 20px; }
-      .brand h1 { font-size: 2rem; }
-      .hud-stat { display: none; }
-    }
-
-    /* Transición de pantallas */
-    .screen-fade-out {
-      animation: fadeOut 0.4s ease forwards;
-    }
-
-    .screen-fade-in {
-      animation: fadeIn 0.4s ease forwards;
-    }
-
-    @keyframes fadeOut {
-      to { opacity: 0; transform: scale(0.98); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(1.01); }
-      to   { opacity: 1; transform: scale(1); }
-    }
+    .card { background:var(--card);border:1px solid var(--border);
+            border-radius:var(--r4);padding:24px;backdrop-filter:blur(20px);
+            box-shadow:var(--shadow);transition:var(--tr); }
+    .card:hover { border-color:var(--borderg);box-shadow:0 16px 48px #00000080,var(--glow); }
+    .card-title { font-size:.72rem;font-weight:600;text-transform:uppercase;
+                  letter-spacing:.12em;color:var(--t3);margin-bottom:14px; }
+
+    /* Fields */
+    .field { margin-bottom:12px; }
+    .field label { display:block;font-size:.8rem;font-weight:500;color:var(--t2);
+                   margin-bottom:5px;padding-left:2px; }
+    .field input { width:100%;background:var(--input);border:1px solid var(--border);
+                   border-radius:var(--r1);padding:10px 13px;font-family:var(--f2);
+                   font-size:.86rem;color:var(--t1);outline:none;transition:var(--tr); }
+    .field input:focus { border-color:var(--accent);background:#1a1a35;
+                         box-shadow:0 0 0 3px #6c63ff40; }
+    .field input::placeholder { color:var(--t3); }
+
+    /* Buttons */
+    .btn { display:inline-flex;align-items:center;justify-content:center;gap:7px;
+           padding:11px 20px;border:none;border-radius:var(--r1);font-family:var(--f1);
+           font-size:.88rem;font-weight:600;cursor:pointer;transition:var(--tr); }
+    .btn-primary { width:100%;background:linear-gradient(135deg,var(--accent),#5a52dd);
+                   color:white;box-shadow:0 4px 20px #6c63ff40;padding:13px;
+                   font-size:.95rem;border-radius:var(--r2);margin-top:2px; }
+    .btn-primary:hover { transform:translateY(-2px);box-shadow:0 8px 30px #6c63ff50; }
+    .btn-primary:disabled { opacity:.45;cursor:not-allowed;transform:none; }
+
+    /* Status */
+    .sb { display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
+          border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.04em; }
+    .sb .dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
+    .s-dc  { background:rgba(255,77,109,.12);color:var(--err); border:1px solid rgba(255,77,109,.2); }
+    .s-cn  { background:rgba(255,217,61,.12);color:var(--warn);border:1px solid rgba(255,217,61,.2); }
+    .s-ok  { background:rgba(0,212,170,.12); color:var(--ok); border:1px solid rgba(0,212,170,.2); }
+    .s-dc .dot { background:var(--err); }
+    .s-cn .dot { background:var(--warn);animation:pu 1s infinite; }
+    .s-ok .dot { background:var(--ok); animation:pu 2s infinite; }
+    @keyframes pu { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)} }
+
+    /* Log */
+    .logbox { background:var(--bg);border:1px solid var(--border);border-radius:var(--r1);
+              padding:10px 13px;max-height:75px;overflow-y:auto;
+              font-family:var(--f2);font-size:.73rem;line-height:1.6; }
+    .logbox::-webkit-scrollbar{width:3px}
+    .logbox::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+    .le { display:flex;gap:7px; }
+    .lt { color:var(--t3); }
+    .lo .lm{color:var(--ok)}.le-e .lm{color:var(--err)}
+    .lw .lm{color:var(--warn)}.li .lm{color:var(--info)}
+
+    /* Quality tabs */
+    .qtabs { display:flex;gap:5px;margin:10px 0; }
+    .qt { flex:1;padding:7px;background:var(--input);border:1px solid var(--border);
+          border-radius:var(--r1);font-size:.76rem;font-weight:600;color:var(--t2);
+          cursor:pointer;text-align:center;transition:var(--tr); }
+    .qt:hover { border-color:#6c63ff60;color:var(--accentb); }
+    .qt.active { background:#6c63ff25;border-color:var(--accent);color:var(--accentb); }
+
+    /* Divider */
+    .div { display:flex;align-items:center;gap:9px;margin:3px 0; }
+    .div::before,.div::after { content:'';flex:1;height:1px;background:var(--border); }
+    .div span { font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em; }
+
+    /* Preset row */
+    .presets { display:flex;gap:5px; }
+    .preset-btn { flex:1;padding:6px 4px;background:var(--input);border:1px solid var(--border);
+                  border-radius:6px;font-size:.72rem;font-weight:600;color:var(--t2);
+                  cursor:pointer;text-align:center;transition:var(--tr); }
+    .preset-btn:hover { border-color:var(--accent);color:var(--accentb); }
+    .preset-btn.active { background:#6c63ff20;border-color:var(--accent);color:var(--accentb); }
 
     /* Key hints */
-    .key-hints {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
+    .hints { display:flex;gap:8px;flex-wrap:wrap;justify-content:center; }
+    .hint { display:inline-flex;align-items:center;gap:3px;font-size:.72rem;color:var(--t3); }
+    .key { display:inline-flex;align-items:center;justify-content:center;
+           min-width:21px;height:19px;padding:0 5px;background:var(--input);
+           border:1px solid var(--border);border-bottom:2px solid var(--border);
+           border-radius:4px;font-family:var(--f2);font-size:.65rem;color:var(--t2); }
 
-    .key-hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.74rem;
-      color: var(--text-dim);
-    }
+    /* ── Game Screen ── */
+    #gameScreen { display:none;flex-direction:column;width:100vw;height:100vh; }
 
-    .key {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 22px;
-      height: 20px;
-      padding: 0 5px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-bottom: 2px solid var(--border);
-      border-radius: 4px;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--text-secondary);
-    }
+    .hud { position:fixed;top:0;left:0;right:0;z-index:100;height:42px;
+           display:flex;align-items:center;justify-content:space-between;
+           padding:0 14px;background:linear-gradient(180deg,rgba(5,5,8,.95),transparent);
+           backdrop-filter:blur(10px);transition:opacity .5s; }
+    .hud.hidden { opacity:0;pointer-events:none; }
+    .hud-brand { font-size:.88rem;font-weight:700;letter-spacing:-.02em; }
+    .hud-stats { display:flex;align-items:center;gap:6px; }
+    .hs { display:flex;align-items:center;gap:3px;padding:3px 9px;
+          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+          border-radius:6px;font-family:var(--f2);font-size:.7rem; }
+    .hs .sl { color:var(--t3); }
+    .hs .sv { color:var(--t1);font-weight:600; }
+    .hud-btns { display:flex;align-items:center;gap:5px; }
+    .bicon { width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+             border:1px solid var(--border);background:rgba(255,255,255,.05);border-radius:7px;
+             cursor:pointer;transition:var(--tr);color:var(--t2); }
+    .bicon:hover { border-color:var(--accent);color:var(--accentb);background:#6c63ff25; }
+    .bicon svg { width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+                 stroke-linecap:round;stroke-linejoin:round; }
+    .btn-exit { padding:0 11px;font-size:.76rem;font-family:var(--f1);font-weight:600;
+                background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
+                color:var(--err);cursor:pointer;border-radius:7px;height:32px;
+                transition:var(--tr); }
+    .btn-exit:hover { background:rgba(255,77,109,.25); }
+
+    #gameCanvas { display:block;width:100vw;height:100vh;background:#000;cursor:none; }
+
+    /* Loading */
+    #loadingOv { position:fixed;inset:0;background:var(--bg);display:flex;
+                 flex-direction:column;align-items:center;justify-content:center;
+                 z-index:200;gap:20px; }
+    .ring { width:52px;height:52px;border:3px solid var(--border);
+            border-top-color:var(--accent);border-radius:50%;
+            animation:spin .8s linear infinite; }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .lt2 { font-size:.88rem;color:var(--t2);font-weight:500; }
+
+    /* Cursor */
+    #cur { position:fixed;width:14px;height:14px;background:#fff;border-radius:50%;
+           pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
+           mix-blend-mode:difference;display:none;transition:transform .04s; }
+
+    /* Toast */
+    #toast-ct { position:fixed;bottom:22px;right:22px;z-index:9999;
+                display:flex;flex-direction:column;gap:7px;pointer-events:none; }
+    .toast { display:flex;align-items:center;gap:9px;padding:11px 16px;
+             background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);
+             font-size:.83rem;font-weight:500;box-shadow:var(--shadow);
+             animation:tIn .3s cubic-bezier(.4,0,.2,1);max-width:300px; }
+    .toast.tok { border-color:rgba(0,212,170,.3);color:var(--ok); }
+    .toast.terr{ border-color:rgba(255,77,109,.3);color:var(--err); }
+    .toast.tinf{ border-color:rgba(77,200,255,.3);color:var(--info); }
+    .toast.twrn{ border-color:rgba(255,217,61,.3);color:var(--warn); }
+    @keyframes tIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    .toast.out{animation:tOut .3s cubic-bezier(.4,0,.2,1) forwards}
+    @keyframes tOut{to{transform:translateX(120%);opacity:0}}
+
+    /* Quality panel en juego */
+    #qPanel { position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+              z-index:150;display:flex;gap:6px;align-items:center;
+              background:rgba(5,5,8,.85);border:1px solid var(--border);
+              border-radius:999px;padding:6px 14px;backdrop-filter:blur(10px);
+              transition:opacity .5s; }
+    #qPanel.hidden { opacity:0;pointer-events:none; }
+    .qp-btn { padding:4px 12px;border-radius:999px;font-size:.74rem;font-weight:600;
+              border:1px solid transparent;color:var(--t2);cursor:pointer;
+              background:transparent;transition:var(--tr);font-family:var(--f1); }
+    .qp-btn:hover { color:var(--accentb); }
+    .qp-btn.active { background:var(--accent);color:white;
+                     box-shadow:0 0 12px #6c63ff50; }
+
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
   </style>
 </head>
 
 <body>
-  <!-- FONDO -->
-  <div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-  <div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+<div class="bg-grid"></div>
+<div id="toast-ct"></div>
+<div id="cur"></div>
 
-  <!-- TOAST CONTAINER -->
-  <div id="toastContainer"></div>
+<div id="app">
 
-  <!-- CUSTOM CURSOR -->
-  <div id="customCursor"></div>
+  <!-- ══ CONNECT ══ -->
+  <div id="connectScreen">
+    <div class="cw">
 
-  <!-- APP -->
-  <div id="app">
-
-    <!-- ══════════════════════════════
-         PANTALLA DE CONEXIÓN
-    ══════════════════════════════ -->
-    <div id="connectScreen">
-      <div class="connect-wrapper">
-
-        <!-- Brand -->
-        <div class="brand">
-          <div class="brand-logo">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 6H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
-            </svg>
-          </div>
-          <h1>Cloud<span class="grad">Play</span></h1>
-          <p>Gaming remoto desde tu PC de casa · 1080p 60fps</p>
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24"><path d="M21 6H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
         </div>
-
-        <!-- Card de conexión -->
-        <div class="card">
-          <div class="card-title">🔌 Configuración del servidor</div>
-
-          <div class="field">
-            <label>WebSocket URL (desde Ngrok)</label>
-            <input
-              type="text"
-              id="serverUrl"
-              placeholder="wss://xxxx-xx-xx.ngrok-free.app"
-              autocomplete="off"
-              spellcheck="false"
-            />
-          </div>
-
-          <div class="field">
-            <label>Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <div class="divider"><span>Calidad del stream</span></div>
-
-          <div class="quality-tabs" style="margin: 12px 0;">
-            <div class="q-tab" data-q="50">🔋 Bajo</div>
-            <div class="q-tab active" data-q="75">⚖️ Medio</div>
-            <div class="q-tab" data-q="90">🎯 Alto</div>
-            <div class="q-tab" data-q="100">💎 Ultra</div>
-          </div>
-
-          <button class="btn btn-primary" id="connectBtn" onclick="connect()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <polyline points="5 12 12 5 19 12"/>
-              <polyline points="5 20 12 13 19 20"/>
-            </svg>
-            Conectar al servidor
-          </button>
-        </div>
-
-        <!-- Estado y log -->
-        <div class="card" style="padding: 16px 20px;">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <div class="card-title" style="margin:0">Estado</div>
-            <div id="statusBadge" class="status-badge status-disconnected">
-              <div class="dot"></div>
-              <span id="statusText">Desconectado</span>
-            </div>
-          </div>
-
-          <div class="log-box" id="logBox">
-            <div class="log-entry log-info">
-              <span class="log-time">--:--:--</span>
-              <span class="log-msg">Sistema listo. Introduce la URL de ngrok y conecta.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Atajos -->
-        <div style="text-align:center;">
-          <div class="key-hints" style="justify-content:center;">
-            <div class="key-hint"><span class="key">F11</span> Pantalla completa</div>
-            <div class="key-hint"><span class="key">Esc</span><span class="key">Esc</span> Salir del juego</div>
-            <div class="key-hint"><span class="key">~</span> Mostrar HUD</div>
-          </div>
-        </div>
-
+        <h1>Cloud<span class="grad">Play</span></h1>
+        <p>Gaming remoto desde tu PC · 1080p 60fps</p>
       </div>
-    </div>
 
-    <!-- ══════════════════════════════
-         PANTALLA DE JUEGO
-    ══════════════════════════════ -->
-    <div id="gameScreen">
-
-      <!-- HUD Superior -->
-      <div class="hud-top" id="hudTop">
-        <div class="hud-brand">Cloud<span class="grad">Play</span></div>
-
-        <div class="hud-stats">
-          <div class="hud-stat">
-            <span class="s-label">FPS</span>
-            <span class="s-val" id="hudFps">--</span>
-          </div>
-          <div class="hud-stat">
-            <span class="s-label">PING</span>
-            <span class="s-val" id="hudPing">--</span>ms
-          </div>
-          <div class="hud-stat">
-            <span class="s-label">KB/s</span>
-            <span class="s-val" id="hudBw">--</span>
-          </div>
+      <div class="card">
+        <div class="card-title">🔌 Servidor</div>
+        <div class="field">
+          <label>URL WebSocket (ngrok)</label>
+          <input id="urlInput" type="text" placeholder="wss://xxxx.ngrok-free.app" spellcheck="false" autocomplete="off"/>
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input id="passInput" type="password" placeholder="••••••••"/>
         </div>
 
-        <div class="hud-controls">
-          <button class="btn-icon" title="Pantalla completa" onclick="toggleFullscreen()">
-            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
-          </button>
-          <button class="btn-icon btn-danger" title="Desconectar" onclick="disconnect()" style="width:auto; padding:0 12px; font-size:0.78rem; font-family:var(--font-main); font-weight:600;">
-            Salir
-          </button>
+        <div class="div"><span>Preset de conexión</span></div>
+        <div class="presets" style="margin:10px 0 4px;">
+          <div class="preset-btn" data-w="1280" data-h="720"  data-q="60" data-fps="30">🔋 720p·30</div>
+          <div class="preset-btn active" data-w="1280" data-h="720"  data-q="75" data-fps="60">⚡ 720p·60</div>
+          <div class="preset-btn" data-w="1920" data-h="1080" data-q="70" data-fps="30">🎯 1080p·30</div>
+          <div class="preset-btn" data-w="1920" data-h="1080" data-q="80" data-fps="60">💎 1080p·60</div>
+        </div>
+
+        <button class="btn btn-primary" id="connectBtn" onclick="connect()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="5 12 12 5 19 12"/><polyline points="5 20 12 13 19 20"/>
+          </svg>
+          Conectar
+        </button>
+      </div>
+
+      <div class="card" style="padding:14px 18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="card-title" style="margin:0">Estado</div>
+          <div id="statusBadge" class="sb s-dc">
+            <div class="dot"></div>
+            <span id="statusTxt">Desconectado</span>
+          </div>
+        </div>
+        <div class="logbox" id="logBox">
+          <div class="le li"><span class="lt">--:--:--</span><span class="lm">Sistema listo. Introduce la URL de ngrok.</span></div>
         </div>
       </div>
 
-      <!-- Canvas del juego -->
-      <canvas id="gameCanvas"></canvas>
-
-      <!-- Loading overlay -->
-      <div id="loadingOverlay">
-        <div class="loader-ring"></div>
-        <div class="loader-text">Esperando primer frame...</div>
+      <div class="hints">
+        <div class="hint"><span class="key">Esc×2</span>Salir del juego</div>
+        <div class="hint"><span class="key">F11</span>Pantalla completa</div>
+        <div class="hint"><span class="key">~</span>Mostrar HUD</div>
       </div>
 
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════
-       JAVASCRIPT
-  ══════════════════════════════════════════════════ -->
-  <script>
-  'use strict';
+  <!-- ══ GAME ══ -->
+  <div id="gameScreen">
+    <div class="hud" id="hud">
+      <div class="hud-brand">Cloud<span class="grad">Play</span></div>
+      <div class="hud-stats">
+        <div class="hs"><span class="sl">FPS</span><span class="sv" id="hFps">--</span></div>
+        <div class="hs"><span class="sl">PING</span><span class="sv" id="hPing">--</span><span class="sl">ms</span></div>
+        <div class="hs"><span class="sl">KB/s</span><span class="sv" id="hBw">--</span></div>
+        <div class="hs"><span class="sl">RES</span><span class="sv" id="hRes">--</span></div>
+      </div>
+      <div class="hud-btns">
+        <button class="bicon" onclick="toggleFullscreen()" title="Pantalla completa">
+          <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+        </button>
+        <button class="btn-exit" onclick="disconnect()">⏹ Salir</button>
+      </div>
+    </div>
 
-  // ═══════════════════════════════════════════
-  // ESTADO GLOBAL
-  // ═══════════════════════════════════════════
-  const State = {
-    ws: null,
-    connected: false,
-    authenticated: false,
-    streaming: false,
-    quality: 75,
-    pingStart: 0,
-    lastPing: 0,
-    frameCount: 0,
-    lastFpsTime: Date.now(),
-    displayFps: 0,
-    bytesReceived: 0,
-    lastBwTime: Date.now(),
-    displayBw: 0,
-    hudVisible: true,
-    hudTimer: null,
-    escPressCount: 0,
-    escTimer: null,
-  };
+    <canvas id="gameCanvas"></canvas>
 
-  // ═══════════════════════════════════════════
-  // REFERENCIAS DOM
-  // ═══════════════════════════════════════════
-  const $ = id => document.getElementById(id);
+    <!-- Quality panel in-game -->
+    <div id="qPanel">
+      <span style="font-size:.72rem;color:var(--t3);margin-right:4px">CALIDAD</span>
+      <button class="qp-btn" data-q="50">Bajo</button>
+      <button class="qp-btn active" data-q="75">Medio</button>
+      <button class="qp-btn" data-q="85">Alto</button>
+      <button class="qp-btn" data-q="95">Ultra</button>
+    </div>
 
-  const Els = {
-    connectScreen:  $('connectScreen'),
-    gameScreen:     $('gameScreen'),
-    serverUrl:      $('serverUrl'),
-    password:       $('password'),
-    connectBtn:     $('connectBtn'),
-    statusBadge:    $('statusBadge'),
-    statusText:     $('statusText'),
-    logBox:         $('logBox'),
-    canvas:         $('gameCanvas'),
-    loadingOverlay: $('loadingOverlay'),
-    hudTop:         $('hudTop'),
-    hudFps:         $('hudFps'),
-    hudPing:        $('hudPing'),
-    hudBw:          $('hudBw'),
-    customCursor:   $('customCursor'),
-  };
+    <div id="loadingOv">
+      <div class="ring"></div>
+      <div class="lt2">Esperando primer frame...</div>
+    </div>
+  </div>
 
-  const ctx = Els.canvas.getContext('2d', { alpha: false });
+</div>
 
-  // ═══════════════════════════════════════════
-  // UTILIDADES
-  // ═══════════════════════════════════════════
-  function now() {
-    const d = new Date();
-    return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
-  }
+<script>
+'use strict';
 
-  function log(msg, type = 'info') {
-    const box = Els.logBox;
-    const entry = document.createElement('div');
-    entry.className = `log-entry log-${type}`;
-    entry.innerHTML = `<span class="log-time">${now()}</span><span class="log-msg">${msg}</span>`;
-    box.appendChild(entry);
-    box.scrollTop = box.scrollHeight;
+// ══ CONFIG ══
+const PRESETS = {
+  "720p30":  { w:1280, h:720,  q:60, fps:30 },
+  "720p60":  { w:1280, h:720,  q:75, fps:60 },
+  "1080p30": { w:1920, h:1080, q:70, fps:30 },
+  "1080p60": { w:1920, h:1080, q:80, fps:60 },
+};
 
-    // Máximo 50 entradas
-    while (box.children.length > 50) box.removeChild(box.firstChild);
-  }
+const S = {
+  ws: null, connected: false, auth: false, streaming: false,
+  quality: 75, width: 1280, height: 720, fps: 60,
+  pingStart: 0, lastPing: 0,
+  bytesRx: 0, lastBwT: Date.now(), displayBw: 0,
+  hudVisible: true, hudTimer: null,
+  escCount: 0, escTimer: null,
+  renderScale: 1, renderOX: 0, renderOY: 0,
+  renderSW: 1280, renderSH: 720,
+};
 
-  function toast(msg, type = 'info', duration = 3000) {
-    const container = $('toastContainer');
-    const t = document.createElement('div');
-    t.className = `toast toast-${type}`;
+// ══ DOM ══
+const $  = id => document.getElementById(id);
+const CS = $('connectScreen'), GS = $('gameScreen');
+const urlI = $('urlInput'), passI = $('passInput'), cbtn = $('connectBtn');
+const sBadge = $('statusBadge'), sTxt = $('statusTxt'), logBox = $('logBox');
+const canvas = $('gameCanvas'), ctx = canvas.getContext('2d',{alpha:false});
+const loadOv = $('loadingOv'), hud = $('hud'), qPanel = $('qPanel');
+const hFps = $('hFps'), hPing = $('hPing'), hBw = $('hBw'), hRes = $('hRes');
+const cur  = $('cur');
 
-    const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
-    t.innerHTML = `<span>${icons[type] || '●'}</span><span>${msg}</span>`;
-    container.appendChild(t);
+// ══ UTILS ══
+function ts() {
+  const d = new Date();
+  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+}
 
-    setTimeout(() => {
-      t.classList.add('out');
-      setTimeout(() => t.remove(), 300);
-    }, duration);
-  }
+function log(msg, type='i') {
+  const cls = {i:'li',o:'lo',e:'le-e',w:'lw'}[type]||'li';
+  const div = document.createElement('div');
+  div.className = `le ${cls}`;
+  div.innerHTML = `<span class="lt">${ts()}</span><span class="lm">${msg}</span>`;
+  logBox.appendChild(div);
+  logBox.scrollTop = logBox.scrollHeight;
+  while(logBox.children.length > 60) logBox.removeChild(logBox.firstChild);
+}
 
-  function setStatus(status, text) {
-    Els.statusBadge.className = `status-badge status-${status}`;
-    Els.statusText.textContent = text;
-  }
+function toast(msg, type='i', dur=3000) {
+  const cls = {o:'tok',e:'terr',i:'tinf',w:'twrn'}[type]||'tinf';
+  const icons = {o:'✓',e:'✕',w:'⚠',i:'ℹ'};
+  const t = document.createElement('div');
+  t.className = `toast ${cls}`;
+  t.innerHTML = `<span>${icons[type]||'●'}</span><span>${msg}</span>`;
+  $('toast-ct').appendChild(t);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),300); }, dur);
+}
 
-  // ═══════════════════════════════════════════
-  // QUALITY TABS
-  // ═══════════════════════════════════════════
-  document.querySelectorAll('.q-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.q-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      State.quality = parseInt(tab.dataset.q);
-      log(`Calidad seleccionada: ${tab.textContent.trim()} (${State.quality})`, 'info');
-    });
+function setStatus(cls, txt) {
+  sBadge.className = `sb ${cls}`;
+  sTxt.textContent = txt;
+}
+
+// ══ PRESETS ══
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    S.width   = parseInt(btn.dataset.w);
+    S.height  = parseInt(btn.dataset.h);
+    S.quality = parseInt(btn.dataset.q);
+    S.fps     = parseInt(btn.dataset.fps);
+    log(`Preset: ${btn.textContent.trim()} (${S.width}x${S.height} ${S.fps}fps Q${S.quality})`,'i');
   });
+});
 
-  // ═══════════════════════════════════════════
-  // CONEXIÓN WEBSOCKET
-  // ═══════════════════════════════════════════
-  async function connect() {
-    const url      = Els.serverUrl.value.trim();
-    const password = Els.password.value.trim();
+// ══ IN-GAME QUALITY ══
+document.querySelectorAll('.qp-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.qp-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const q = parseInt(btn.dataset.q);
+    S.quality = q;
+    send({type:'set_quality', quality: q});
+    toast(`Calidad → ${btn.textContent.trim()}`,'i',1500);
+  });
+});
 
-    if (!url) { toast('Introduce la URL de ngrok', 'error'); return; }
-    if (!password) { toast('Introduce la contraseña', 'error'); return; }
+// ══ WEBSOCKET ══
+async function connect() {
+  let url  = urlI.value.trim();
+  const pw = passI.value.trim();
+  if(!url){ toast('Introduce la URL de ngrok','e'); return; }
+  if(!pw)  { toast('Introduce la contraseña','e'); return; }
+  if(!url.startsWith('ws')) url = 'wss://' + url.replace(/^https?:\/\//,'');
 
-    // Normalizar URL
-    let wsUrl = url;
-    if (!wsUrl.startsWith('ws')) {
-      wsUrl = 'wss://' + wsUrl.replace(/^https?:\/\//, '');
-    }
+  cbtn.disabled = true;
+  setStatus('s-cn','Conectando...');
+  log(`Conectando → ${url}`,'i');
 
-    Els.connectBtn.disabled = true;
-    setStatus('connecting', 'Conectando...');
-    log(`Conectando a ${wsUrl}`, 'info');
+  try {
+    S.ws = new WebSocket(url);
+    S.ws.binaryType = 'arraybuffer'; // ← Recibir binario
 
-    try {
-      State.ws = new WebSocket(wsUrl);
-
-      State.ws.onopen = () => {
-        log('WebSocket abierto — autenticando...', 'ok');
-        setStatus('connecting', 'Autenticando...');
-
-        // Enviar auth
-        send({ type: 'auth', password });
-      };
-
-      State.ws.onmessage = (event) => {
-        handleMessage(event.data);
-      };
-
-      State.ws.onerror = (e) => {
-        log('Error de WebSocket', 'err');
-        toast('Error de conexión. ¿URL correcta?', 'error', 5000);
-        resetConnection();
-      };
-
-      State.ws.onclose = (e) => {
-        log(`Conexión cerrada (${e.code})`, 'warn');
-        if (State.connected) {
-          toast('Conexión perdida', 'warning');
-        }
-        resetConnection();
-      };
-
-    } catch (err) {
-      log(`Error: ${err.message}`, 'err');
-      toast('No se pudo conectar', 'error');
-      resetConnection();
-    }
-  }
-
-  function send(data) {
-    if (State.ws && State.ws.readyState === WebSocket.OPEN) {
-      State.ws.send(JSON.stringify(data));
-    }
-  }
-
-  function handleMessage(rawData) {
-    let data;
-    try { data = JSON.parse(rawData); } catch { return; }
-
-    switch (data.type) {
-
-      case 'auth_ok':
-        State.connected = true;
-        State.authenticated = true;
-        setStatus('connected', 'Conectado');
-        log('Autenticación OK — iniciando stream', 'ok');
-        toast('Conectado correctamente ✓', 'success');
-        send({ type: 'start_stream' });
-        State.streaming = true;
-        showGameScreen();
-        startPingLoop();
-        startStatsLoop();
-        break;
-
-      case 'auth_fail':
-        log('Contraseña incorrecta', 'err');
-        toast('Contraseña incorrecta', 'error');
-        resetConnection();
-        break;
-
-      case 'frame':
-        handleFrame(data);
-        break;
-
-      case 'pong':
-        State.lastPing = Math.round((Date.now() - State.pingStart));
-        Els.hudPing.textContent = State.lastPing;
-        break;
-
-      case 'error':
-        log(`Server error: ${data.message}`, 'err');
-        break;
-    }
-  }
-
-  function disconnect() {
-    if (State.ws) {
-      send({ type: 'stop_stream' });
-      State.ws.close();
-    }
-    resetConnection();
-    showConnectScreen();
-    toast('Desconectado', 'info');
-  }
-
-  function resetConnection() {
-    State.connected = false;
-    State.authenticated = false;
-    State.streaming = false;
-    State.ws = null;
-    Els.connectBtn.disabled = false;
-    setStatus('disconnected', 'Desconectado');
-    stopPingLoop();
-    stopStatsLoop();
-  }
-
-  // ═══════════════════════════════════════════
-  // RENDERIZADO DE FRAMES
-  // ═══════════════════════════════════════════
-  let frameImage = new Image();
-  let firstFrame = true;
-
-  function handleFrame(data) {
-    // Ocultar loading en primer frame
-    if (firstFrame) {
-      Els.loadingOverlay.style.display = 'none';
-      firstFrame = false;
-    }
-
-    // Estadísticas de ancho de banda
-    const bytes = data.data ? data.data.length * 0.75 : 0; // base64 overhead
-    State.bytesReceived += bytes;
-
-    // FPS counter
-    State.frameCount++;
-
-    // FPS del servidor
-    if (data.fps) {
-      Els.hudFps.textContent = data.fps;
-    }
-
-    // Dibujar frame
-    const img = new Image();
-    img.onload = () => {
-      // Ajustar canvas al tamaño del viewport
-      if (Els.canvas.width !== window.innerWidth || Els.canvas.height !== window.innerHeight) {
-        Els.canvas.width  = window.innerWidth;
-        Els.canvas.height = window.innerHeight;
-      }
-
-      // Calcular posición centrada manteniendo aspect ratio
-      const cw = Els.canvas.width;
-      const ch = Els.canvas.height;
-      const iw = img.width;
-      const ih = img.height;
-      const scale = Math.min(cw / iw, ch / ih);
-      const dx = (cw - iw * scale) / 2;
-      const dy = (ch - ih * scale) / 2;
-
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, cw, ch);
-      ctx.drawImage(img, dx, dy, iw * scale, ih * scale);
-
-      // Guardar escala para input
-      State.renderScale = scale;
-      State.renderOffsetX = dx;
-      State.renderOffsetY = dy;
-      State.renderSrcW = iw;
-      State.renderSrcH = ih;
+    S.ws.onopen = () => {
+      log('Conexión abierta — autenticando...','o');
+      setStatus('s-cn','Autenticando...');
+      send({type:'auth', password: pw});
     };
-    img.src = 'data:image/jpeg;base64,' + data.data;
-  }
 
-  // ═══════════════════════════════════════════
-  // PING LOOP
-  // ═══════════════════════════════════════════
-  let pingInterval = null;
-
-  function startPingLoop() {
-    pingInterval = setInterval(() => {
-      if (State.connected) {
-        State.pingStart = Date.now();
-        send({ type: 'ping' });
+    S.ws.onmessage = (e) => {
+      // ¿Binario (frame) o texto (JSON)?
+      if(e.data instanceof ArrayBuffer) {
+        handleBinaryFrame(e.data);
+      } else {
+        handleJSON(JSON.parse(e.data));
       }
-    }, 2000);
+    };
+
+    S.ws.onerror = () => {
+      log('Error de WebSocket','e');
+      toast('Error de conexión','e',5000);
+      resetConn();
+    };
+
+    S.ws.onclose = (e) => {
+      log(`Conexión cerrada (${e.code})`,'w');
+      if(S.connected) toast('Conexión perdida','w');
+      resetConn();
+    };
+  } catch(err) {
+    log(`Error: ${err.message}`,'e');
+    toast('No se pudo conectar','e');
+    resetConn();
+  }
+}
+
+function send(data) {
+  if(S.ws && S.ws.readyState === WebSocket.OPEN)
+    S.ws.send(JSON.stringify(data));
+}
+
+function handleJSON(data) {
+  switch(data.type) {
+    case 'auth_ok':
+      S.connected = true; S.auth = true;
+      setStatus('s-ok','Conectado');
+      log('Autenticado ✓ — iniciando stream','o');
+      toast('Conectado ✓','o');
+      // Aplicar preset al servidor
+      send({type:'set_resolution', width: S.width, height: S.height});
+      send({type:'set_quality',    quality: S.quality});
+      send({type:'start_stream'});
+      S.streaming = true;
+      showGame();
+      startPing();
+      startStats();
+      break;
+    case 'auth_fail':
+      log('Contraseña incorrecta','e');
+      toast('Contraseña incorrecta','e');
+      resetConn();
+      break;
+    case 'pong':
+      S.lastPing = Date.now() - S.pingStart;
+      hPing.textContent = S.lastPing;
+      // Color del ping
+      hPing.style.color =
+        S.lastPing < 80  ? 'var(--ok)' :
+        S.lastPing < 150 ? 'var(--warn)' : 'var(--err)';
+      break;
+    case 'error':
+      log(`Server: ${data.message}`,'e');
+      break;
+  }
+}
+
+// ══ FRAME BINARIO ══
+// Protocolo: [4 bytes FPS uint32 big-endian] [JPEG bytes...]
+function handleBinaryFrame(buffer) {
+  if(firstFrame) {
+    loadOv.style.display = 'none';
+    firstFrame = false;
   }
 
-  function stopPingLoop() {
-    if (pingInterval) { clearInterval(pingInterval); pingInterval = null; }
+  const view = new DataView(buffer);
+  const fps  = view.getUint32(0, false); // big-endian
+  const jpeg = buffer.slice(4);          // JPEG raw
+
+  S.bytesRx += jpeg.byteLength;
+  hFps.textContent = fps > 0 ? fps : hFps.textContent;
+
+  // Dibujar
+  const blob = new Blob([jpeg], {type:'image/jpeg'});
+  const url  = URL.createObjectURL(blob);
+  const img  = new Image();
+  img.onload = () => {
+    const cw = canvas.width, ch = canvas.height;
+    const iw = img.width,    ih = img.height;
+    const scale = Math.min(cw/iw, ch/ih);
+    const dx = (cw - iw*scale)/2;
+    const dy = (ch - ih*scale)/2;
+
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0,0,cw,ch);
+    ctx.drawImage(img, dx, dy, iw*scale, ih*scale);
+
+    // Guardar para transformar input
+    S.renderScale = scale;
+    S.renderOX = dx; S.renderOY = dy;
+    S.renderSW = iw; S.renderSH = ih;
+
+    URL.revokeObjectURL(url); // Liberar memoria
+  };
+  img.src = url;
+}
+
+let firstFrame = true;
+
+// ══ PING & STATS ══
+let pingInt = null, statsInt = null;
+
+function startPing() {
+  pingInt = setInterval(() => {
+    if(S.connected) { S.pingStart = Date.now(); send({type:'ping', t: S.pingStart}); }
+  }, 1500);
+}
+
+function startStats() {
+  statsInt = setInterval(() => {
+    const now = Date.now();
+    const elapsed = (now - S.lastBwT) / 1000;
+    S.displayBw = Math.round(S.bytesRx / 1024 / elapsed);
+    S.bytesRx   = 0; S.lastBwT = now;
+    hBw.textContent = S.displayBw;
+    hRes.textContent = `${S.width}x${S.height}`;
+  }, 1000);
+}
+
+function stopPing()  { clearInterval(pingInt);  pingInt  = null; }
+function stopStats() { clearInterval(statsInt); statsInt = null; }
+
+// ══ SCREENS ══
+function showGame() {
+  firstFrame = true;
+  loadOv.style.display = 'flex';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  CS.style.display = 'none';
+  GS.style.display = 'flex';
+  GS.style.flexDirection = 'column';
+  cur.style.display = 'block';
+  reqFS();
+  showHud();
+}
+
+function disconnect() {
+  if(S.ws) { send({type:'stop_stream'}); S.ws.close(); }
+  resetConn();
+  GS.style.display = 'none';
+  CS.style.display = 'flex';
+  cur.style.display = 'none';
+  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  toast('Desconectado','i');
+}
+
+function resetConn() {
+  S.connected = false; S.auth = false; S.streaming = false; S.ws = null;
+  cbtn.disabled = false;
+  setStatus('s-dc','Desconectado');
+  stopPing(); stopStats();
+}
+
+// ══ HUD ══
+let hudTimer = null;
+function showHud() {
+  hud.classList.remove('hidden');
+  qPanel.classList.remove('hidden');
+  clearTimeout(hudTimer);
+  hudTimer = setTimeout(()=>{
+    hud.classList.add('hidden');
+    qPanel.classList.add('hidden');
+  }, 3500);
+}
+
+canvas.addEventListener('mousemove', showHud);
+
+// ══ FULLSCREEN ══
+function reqFS() {
+  const el = document.documentElement;
+  (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(()=>{});
+}
+function toggleFullscreen() {
+  if(!document.fullscreenElement && !document.webkitFullscreenElement) reqFS();
+  else (document.exitFullscreen || document.webkitExitFullscreen).call(document).catch(()=>{});
+}
+
+// ══ INPUT — TECLADO ══
+const pressedKeys = new Set();
+
+document.addEventListener('keydown', e => {
+  // Doble Esc = salir
+  if(e.key === 'Escape') {
+    S.escCount++;
+    clearTimeout(S.escTimer);
+    if(S.escCount >= 2 && S.connected) { S.escCount=0; disconnect(); return; }
+    S.escTimer = setTimeout(()=>S.escCount=0, 600);
   }
+  if(e.key==='`'||e.key==='~') { showHud(); return; }
+  if(e.key==='F11') { e.preventDefault(); toggleFullscreen(); return; }
 
-  // ═══════════════════════════════════════════
-  // STATS LOOP (bandwidth)
-  // ═══════════════════════════════════════════
-  let statsInterval = null;
+  if(!S.connected) return;
 
-  function startStatsLoop() {
-    statsInterval = setInterval(() => {
-      const now = Date.now();
-      const elapsed = (now - State.lastBwTime) / 1000;
-      State.displayBw = Math.round(State.bytesReceived / 1024 / elapsed);
-      State.bytesReceived = 0;
-      State.lastBwTime = now;
-      Els.hudBw.textContent = State.displayBw;
-    }, 1000);
+  const noDefault = ['F1','F3','F5','F12','Tab','Backspace'];
+  if(noDefault.includes(e.key)) e.preventDefault();
+
+  if(!pressedKeys.has(e.key)) {
+    pressedKeys.add(e.key);
+    send({type:'keydown', key: e.key});
   }
+});
 
-  function stopStatsLoop() {
-    if (statsInterval) { clearInterval(statsInterval); statsInterval = null; }
-  }
+document.addEventListener('keyup', e => {
+  pressedKeys.delete(e.key);
+  if(S.connected) send({type:'keyup', key: e.key});
+});
 
-  // ═══════════════════════════════════════════
-  // PANTALLAS
-  // ═══════════════════════════════════════════
-  function showGameScreen() {
-    firstFrame = true;
-    Els.loadingOverlay.style.display = 'flex';
-    Els.canvas.width  = window.innerWidth;
-    Els.canvas.height = window.innerHeight;
+// ══ INPUT — RATÓN ══
+function toGame(cx, cy) {
+  const rx = (cx - S.renderOX) / S.renderScale;
+  const ry = (cy - S.renderOY) / S.renderScale;
+  return { x: Math.round(rx), y: Math.round(ry) };
+}
 
-    Els.connectScreen.style.display = 'none';
-    Els.gameScreen.style.display = 'flex';
-    Els.gameScreen.style.flexDirection = 'column';
-    Els.customCursor.style.display = 'block';
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+  if(!S.connected) return;
+  const {x,y} = toGame(e.clientX, e.clientY);
+  send({type:'mousemove', x, y});
+});
 
-    // Pedir fullscreen
-    requestFullscreen();
+document.addEventListener('mousedown', e => {
+  if(!S.connected) return;
+  e.preventDefault();
+  const {x,y} = toGame(e.clientX, e.clientY);
+  send({type:'mousedown', button: e.button, x, y});
+});
 
-    // Auto-ocultar HUD
-    autoHideHud();
-  }
+document.addEventListener('mouseup', e => {
+  if(!S.connected) return;
+  const {x,y} = toGame(e.clientX, e.clientY);
+  send({type:'mouseup', button: e.button, x, y});
+});
 
-  function showConnectScreen() {
-    Els.gameScreen.style.display = 'none';
-    Els.connectScreen.style.display = 'flex';
-    Els.customCursor.style.display = 'none';
+document.addEventListener('contextmenu', e => { if(S.connected) e.preventDefault(); });
 
-    // Salir de fullscreen
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    }
-  }
+document.addEventListener('wheel', e => {
+  if(!S.connected) return;
+  e.preventDefault();
+  send({type:'wheel', deltaY: e.deltaY});
+}, {passive:false});
 
-  // ═══════════════════════════════════════════
-  // HUD AUTO-HIDE
-  // ═══════════════════════════════════════════
-  function showHud() {
-    State.hudVisible = true;
-    Els.hudTop.classList.remove('hidden');
-    clearTimeout(State.hudTimer);
-    State.hudTimer = setTimeout(hideHud, 3000);
-  }
+// ══ RESIZE ══
+window.addEventListener('resize', () => {
+  if(S.streaming) { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+});
 
-  function hideHud() {
-    State.hudVisible = false;
-    Els.hudTop.classList.add('hidden');
-  }
+// ══ PERSISTENCIA URL ══
+const savedUrl = localStorage.getItem('cp_url');
+if(savedUrl) urlI.value = savedUrl;
+urlI.addEventListener('input', ()=>localStorage.setItem('cp_url', urlI.value.trim()));
 
-  function autoHideHud() {
-    showHud();
-    Els.canvas.addEventListener('mousemove', showHud);
-  }
+// ══ ENTER shortcuts ══
+passI.addEventListener('keydown', e=>{ if(e.key==='Enter') connect(); });
+urlI.addEventListener('keydown',  e=>{ if(e.key==='Enter') passI.focus(); });
 
-  // ═══════════════════════════════════════════
-  // FULLSCREEN
-  // ═══════════════════════════════════════════
-  function requestFullscreen() {
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-  }
-
-  function toggleFullscreen() {
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      requestFullscreen();
-    } else {
-      if (document.exitFullscreen) document.exitFullscreen();
-      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    }
-  }
-
-  // ═══════════════════════════════════════════
-  // INPUT — TECLADO
-  // ═══════════════════════════════════════════
-  const pressedKeys = new Set();
-
-  document.addEventListener('keydown', (e) => {
-    // Doble ESC = desconectar
-    if (e.key === 'Escape') {
-      State.escPressCount++;
-      clearTimeout(State.escTimer);
-      if (State.escPressCount >= 2) {
-        State.escPressCount = 0;
-        if (State.connected) { disconnect(); return; }
-      }
-      State.escTimer = setTimeout(() => State.escPressCount = 0, 500);
-    }
-
-    // ~ = toggle HUD
-    if (e.key === '`' || e.key === '~') {
-      if (State.hudVisible) hideHud(); else showHud();
-    }
-
-    // F11 = fullscreen
-    if (e.key === 'F11') {
-      e.preventDefault();
-      toggleFullscreen();
-      return;
-    }
-
-    if (!State.connected || !State.streaming) return;
-
-    // Prevenir comportamientos del navegador en el juego
-    const preventKeys = ['F1','F3','F5','F12','Tab','Backspace'];
-    if (preventKeys.includes(e.key)) e.preventDefault();
-
-    const key = e.key;
-    if (!pressedKeys.has(key)) {
-      pressedKeys.add(key);
-      send({ type: 'keydown', key });
-    }
-  });
-
-  document.addEventListener('keyup', (e) => {
-    if (!State.connected) return;
-    const key = e.key;
-    pressedKeys.delete(key);
-    send({ type: 'keyup', key });
-  });
-
-  // ═══════════════════════════════════════════
-  // INPUT — RATÓN
-  // ═══════════════════════════════════════════
-  function canvasToGame(clientX, clientY) {
-    if (!State.renderScale) return { x: clientX, y: clientY };
-
-    // Convertir coordenadas de pantalla a coordenadas del juego
-    const rx = (clientX - State.renderOffsetX) / State.renderScale;
-    const ry = (clientY - State.renderOffsetY) / State.renderScale;
-    return { x: Math.round(rx), y: Math.round(ry) };
-  }
-
-  // Cursor personalizado
-  document.addEventListener('mousemove', (e) => {
-    Els.customCursor.style.left = e.clientX + 'px';
-    Els.customCursor.style.top  = e.clientY + 'px';
-
-    if (!State.connected) return;
-    const { x, y } = canvasToGame(e.clientX, e.clientY);
-    send({ type: 'mousemove', x, y });
-  });
-
-  document.addEventListener('mousedown', (e) => {
-    if (!State.connected) return;
-    e.preventDefault();
-    const { x, y } = canvasToGame(e.clientX, e.clientY);
-    send({ type: 'mousedown', button: e.button, x, y });
-  });
-
-  document.addEventListener('mouseup', (e) => {
-    if (!State.connected) return;
-    const { x, y } = canvasToGame(e.clientX, e.clientY);
-    send({ type: 'mouseup', button: e.button, x, y });
-  });
-
-  document.addEventListener('contextmenu', (e) => {
-    if (State.connected) e.preventDefault();
-  });
-
-  document.addEventListener('wheel', (e) => {
-    if (!State.connected) return;
-    e.preventDefault();
-    send({ type: 'wheel', deltaY: e.deltaY });
-  }, { passive: false });
-
-  // ═══════════════════════════════════════════
-  // RESIZE
-  // ═══════════════════════════════════════════
-  window.addEventListener('resize', () => {
-    if (State.streaming) {
-      Els.canvas.width  = window.innerWidth;
-      Els.canvas.height = window.innerHeight;
-    }
-  });
-
-  // ═══════════════════════════════════════════
-  // FULLSCREEN CHANGE
-  // ═══════════════════════════════════════════
-  document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement && State.streaming) {
-      // Salió de fullscreen - volver a pedir
-      // No forzamos para no molestar
-    }
-  });
-
-  // ═══════════════════════════════════════════
-  // PERSISTENCIA DE URL
-  // ═══════════════════════════════════════════
-  const savedUrl = localStorage.getItem('cloudplay_url');
-  if (savedUrl) Els.serverUrl.value = savedUrl;
-
-  Els.serverUrl.addEventListener('input', () => {
-    localStorage.setItem('cloudplay_url', Els.serverUrl.value.trim());
-  });
-
-  // ═══════════════════════════════════════════
-  // ENTER para conectar
-  // ═══════════════════════════════════════════
-  Els.password.addEventListener('keydown', e => {
-    if (e.key === 'Enter') connect();
-  });
-
-  Els.serverUrl.addEventListener('keydown', e => {
-    if (e.key === 'Enter') Els.password.focus();
-  });
-
-  // ═══════════════════════════════════════════
-  // INIT
-  // ═══════════════════════════════════════════
-  log('CloudPlay listo. Configura la URL de ngrok y conecta.', 'info');
-  log('Tip: Usa datos móviles para evitar el firewall escolar.', 'info');
-  </script>
-
+// ══ INIT ══
+log('CloudPlay listo. Introduce la URL de ngrok y conecta.','i');
+log('💡 Usa datos móviles para evitar el firewall escolar.','w');
+</script>
 </body>
 </html>
