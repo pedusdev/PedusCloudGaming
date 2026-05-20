@@ -1389,47 +1389,143 @@
         ===========================================================================
         */
 
-        /**
-         * Inicia el proceso de conexión al servidor Python.
-         * Ejecuta la negociación SDP, prepara los transceivers e inicia el ICE gathering.
-         */
-        async function connectToServer() {
-            if (State.isConnected || State.isConnecting) return;
+/**
+     * Punto de Entrada Principal: Conexión Inicial.
+     * Realiza un fetch al servidor Python para traer los tokens de Twilio,
+     * instancia el PeerConnection con bypass de firewalls e inicia el ICE gathering.
+     */
+    async function connectToServer() {
+        if (State.isConnected || State.isConnecting) return;
 
-            // Validación de la URL ingresada
-            const inputField = $('ui-server-url');
-            let urlString = inputField.value.trim();
+        // Validación de la URL ingresada
+        const inputField = $('ui-server-url');
+        let urlString = inputField.value.trim();
+        if (!urlString) {
+            showToast('Por favor, ingresa la URL de tu servidor (Ngrok/Local IP).', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>');
+            inputField.focus();
+            return;
+        }
+
+        // Sanitización básica de la URL
+        urlString = urlString.replace(/\/+$/, ''); // Eliminar slash final
+        if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
+            urlString = 'https://' + urlString;
+        }
+
+        State.serverUrl = urlString;
+        State.isConnecting = true;
+
+        // Persistir URL para conveniencia futura
+        localStorage.setItem('pedus_saved_url', urlString);
+
+        // Cambios de UI para estado "Cargando"
+        const btnConnect = $('ui-btn-connect');
+        btnConnect.disabled = true;
+        btnConnect.classList.add('is-loading');
+        $('ui-btn-connect-text').textContent = 'Negociando Conexión...';
+        updateConnectionBadge('connecting', 'Conectando...');
+        showToast('Contactando con el servidor Cloud...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>');
+
+        try {
+            // ===========================================================================
+            // 🚀 PASO TRUCO: PEDIR PASAPORTE COMPLETO A TWILIO ANTES DE EMPEZAR 
+            // ===========================================================================
+            console.log(`[Twilio Bypass] Solicitando servidores TURN dinámicos a Python...`);
+            const twilioResponse = await fetch(`${State.serverUrl}/twilio-credentials`, {
+                method: 'GET',
+                headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
             
-            if (!urlString) {
-                showToast('Por favor, ingresa la URL de tu servidor (Ngrok/Local IP).', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>');
-                inputField.focus();
-                return;
+            let iceServersConfig = [{ urls: 'stun:stun.l.google.com:19302' }]; // Emergencia
+            
+            if (twilioResponse.ok) {
+                const twilioData = await twilioResponse.json();
+                if (twilioData.ice_servers) {
+                    iceServersConfig = twilioData.ice_servers;
+                    console.log("[Twilio Bypass] ¡Servidores TURN de alta seguridad cargados en el Chromebook!");
+                }
+            } else {
+                console.warn("[Twilio Bypass] No se pudo obtener Twilio, usando STUN por defecto.");
             }
 
-            // Sanitización básica de la URL
-            urlString = urlString.replace(/\/+$/, ''); // Eliminar slash final
-            if (!urlString.startsWith('http://') && !urlString.startsWith('https://')) {
-                // Asumir HTTPS para túneles ngrok, HTTP para IPs locales si es explícito no está claro, 
-                // pero por seguridad web moderna, probamos https.
-                urlString = 'https://' + urlString;
+            // 1. Instanciación del PeerConnection con los túneles camuflados recibidos
+            const configuration = {
+                iceServers: iceServersConfig
+            };
+            
+            State.peerConnection = new RTCPeerConnection(configuration);
+
+            // 2. Apertura del Canal de Control Inmediato (DataChannel)
+            State.dataChannel = State.peerConnection.createDataChannel('pedus-inputs', {
+                ordered: false,
+                maxRetransmits: 0
+            });
+
+            // Callbacks del DataChannel
+            State.dataChannel.onopen = handleDataChannelOpen;
+            State.dataChannel.onmessage = handleDataChannelMessage;
+
+            // 3. Recepción de Pistas Multimedia (Video & Audio)
+            State.peerConnection.ontrack = handleIncomingMediaTrack;
+
+            // 4. Configuración de Transceivers (Exigimos recibir vídeo y audio)
+            State.peerConnection.addTransceiver('video', { direction: 'recvonly' });
+            State.peerConnection.addTransceiver('audio', { direction: 'recvonly' });
+
+            // Callbacks de Estado de Red ICE
+            State.peerConnection.oniceconnectionstatechange = handleIceStateChange;
+            State.peerConnection.onconnectionstatechange = handleConnectionStateChange;
+
+            // 5. Generación de Oferta Local (SDP)
+            let localOffer = await State.peerConnection.createOffer();
+
+            // --- HACK PARA 4K Y ALTA TASA DE BITS ---
+            if (localOffer.sdp.indexOf('b=AS:') === -1) {
+                localOffer.sdp = localOffer.sdp.replace(/a=mid:video\r\n/g, 'a=mid:video\r\nb=AS:50000\r\n');
+            }
+            await State.peerConnection.setLocalDescription(localOffer);
+
+            // 6. Recolección Síncrona de Candidatos ICE
+            await gatherIceCandidates(State.peerConnection, 2000);
+
+            // 7. Envío HTTP POST de la Oferta al Servidor Python (Signaling)
+            console.log(`[Signaling] Enviando oferta SDP a: ${State.serverUrl}/offer`);
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                },
+                body: JSON.stringify({
+                    sdp: State.peerConnection.localDescription.sdp,
+                    type: State.peerConnection.localDescription.type
+                })
+            };
+
+            const response = await fetch(`${State.serverUrl}/offer`, fetchOptions);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status: ${response.status}`);
             }
 
-            State.serverUrl = urlString;
-            State.isConnecting = true;
+            const remoteAnswer = await response.json();
+            console.log('[Signaling] Respuesta remota SDP recibida. Acoplando...');
             
-            // Persistir URL para conveniencia futura
-            localStorage.setItem('pedus_saved_url', urlString);
+            // 8. Establecimiento Final del Enlace Remoto
+            await State.peerConnection.setRemoteDescription(
+                new RTCSessionDescription({
+                    sdp: remoteAnswer.sdp,
+                    type: remoteAnswer.type
+                })
+            );
 
-            // Cambios de UI para estado "Cargando"
-            const btnConnect = $('ui-btn-connect');
-            btnConnect.disabled = true;
-            btnConnect.classList.add('is-loading');
-            $('ui-btn-connect-text').textContent = 'Negociando Conexión...';
-            
-            updateConnectionBadge('connecting', 'Conectando...');
-            showToast('Contactando con el servidor Cloud...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>', 4000);
-
-            try {
+        } catch (error) {
+            console.error('[Core Connection] Error catastrófico en la negociación:', error);
+            showToast(`Fallo en Handshake: ${error.message}`, '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>', 5000);
+            cleanupConnectionState();
+        }
+    }
+                
  // 1. Instanciación del PeerConnection con Servidores Dinámicos (Twilio Bypass)
 // Dejamos la configuración vacía al principio, porque le meteremos los servidores de Twilio
 // que nos envíe el servidor de Python en tiempo real.
