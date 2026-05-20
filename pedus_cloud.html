@@ -2,354 +2,265 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CloudPlay</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CloudPlay — WebRTC Gaming</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 
   <style>
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-    :root {
-      --bg:      #050508;
-      --card:    #0f0f1a;
-      --card2:   #141422;
-      --input:   #1a1a2e;
-      --border:  #ffffff0f;
-      --borderg: #6c63ff40;
-      --accent:  #6c63ff;
-      --accentb: #8b7fff;
-      --accent2: #ff6b9d;
-      --accent3: #00d4aa;
-      --accent4: #ffd93d;
-      --t1:      #f0f0ff;
-      --t2:      #9898b8;
-      --t3:      #55556a;
-      --ok:      #00d4aa;
-      --warn:    #ffd93d;
-      --err:     #ff4d6d;
-      --info:    #4dc8ff;
-      --r1:8px; --r2:14px; --r3:20px; --r4:28px;
-      --shadow:  0 8px 32px #00000060;
-      --glow:    0 0 40px #6c63ff20;
-      --tr:      all 0.25s cubic-bezier(.4,0,.2,1);
-      --f1:      'Outfit', sans-serif;
-      --f2:      'JetBrains Mono', monospace;
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#050508;--card:#0f0f1a;--card2:#141422;--input:#1a1a2e;
+      --brd:#ffffff0f;--brdg:#6c63ff40;
+      --a:#6c63ff;--ab:#8b7fff;--a2:#ff6b9d;--a3:#00d4aa;--a4:#ffd93d;
+      --t1:#f0f0ff;--t2:#9898b8;--t3:#55556a;
+      --ok:#00d4aa;--wrn:#ffd93d;--err:#ff4d6d;--inf:#4dc8ff;
+      --r1:8px;--r2:14px;--r3:20px;--r4:28px;
+      --sh:0 8px 32px #00000060;--gl:0 0 40px #6c63ff20;
+      --tr:all .25s cubic-bezier(.4,0,.2,1);
+      --f1:'Outfit',sans-serif;--f2:'JetBrains Mono',monospace;
     }
+    html,body{width:100%;height:100%;background:var(--bg);color:var(--t1);
+              font-family:var(--f1);overflow:hidden}
 
-    html,body { width:100%; height:100%; background:var(--bg); color:var(--t1);
-                font-family:var(--f1); overflow:hidden; }
-
-    /* ── Fondo ── */
-    .bg-orbs { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:.12;
-           animation:orbF 20s ease-in-out infinite; }
-    .o1 { width:600px;height:600px;background:var(--accent);top:-200px;left:-200px;animation-duration:25s; }
-    .o2 { width:400px;height:400px;background:var(--accent2);bottom:-100px;right:-100px;animation-duration:18s;animation-delay:-8s; }
-    .o3 { width:300px;height:300px;background:var(--accent3);top:50%;left:50%;animation-duration:22s;animation-delay:-5s; }
-    @keyframes orbF {
-      0%,100%{transform:translate(0,0) scale(1)}
-      33%{transform:translate(40px,-30px) scale(1.05)}
-      66%{transform:translate(-20px,20px) scale(.95)}
-    }
-    .bg-grid { position:fixed;inset:0;pointer-events:none;z-index:0;
+    /* ── Background ── */
+    .bgo{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+    .ob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;animation:of 20s ease-in-out infinite}
+    .o1{width:600px;height:600px;background:var(--a);top:-200px;left:-200px;animation-duration:25s}
+    .o2{width:400px;height:400px;background:var(--a2);bottom:-100px;right:-100px;animation-duration:18s;animation-delay:-8s}
+    .o3{width:300px;height:300px;background:var(--a3);top:50%;left:50%;animation-duration:22s;animation-delay:-5s}
+    @keyframes of{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.05)}66%{transform:translate(-20px,20px) scale(.95)}}
+    .bgr{position:fixed;inset:0;pointer-events:none;z-index:0;
       background-image:linear-gradient(rgba(108,99,255,.03) 1px,transparent 1px),
                        linear-gradient(90deg,rgba(108,99,255,.03) 1px,transparent 1px);
-      background-size:50px 50px; }
+      background-size:50px 50px}
 
-    /* ── Layout ── */
-    #app { position:relative;z-index:1;width:100vw;height:100vh;
-           display:flex;flex-direction:column; }
+    #app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column}
 
     /* ── Connect Screen ── */
-    #connectScreen { flex:1;display:flex;align-items:center;
-                     justify-content:center;padding:20px; }
-    .cw { width:100%;max-width:460px;display:flex;flex-direction:column;gap:20px; }
+    #cs{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+    .cw{width:100%;max-width:460px;display:flex;flex-direction:column;gap:20px}
+    .brand{text-align:center;margin-bottom:4px}
+    .blogo{display:inline-flex;align-items:center;justify-content:center;
+      width:72px;height:72px;border-radius:20px;margin-bottom:16px;
+      background:linear-gradient(135deg,var(--a),var(--a2));
+      box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060;animation:lp 3s ease-in-out infinite}
+    @keyframes lp{0%,100%{box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060}50%{box-shadow:0 0 50px #6c63ff60,0 8px 24px #00000060}}
+    .blogo svg{width:34px;height:34px;fill:#fff}
+    .brand h1{font-size:2.4rem;font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:6px}
+    .gr{background:linear-gradient(135deg,var(--ab),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .brand p{font-size:.92rem;color:var(--t2)}
+    .brand .tech{display:inline-flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+    .brand .chip{padding:3px 10px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.2);
+      border-radius:999px;font-size:.68rem;font-weight:600;color:var(--ab);letter-spacing:.04em}
 
-    /* Brand */
-    .brand { text-align:center;margin-bottom:4px; }
-    .brand-logo { display:inline-flex;align-items:center;justify-content:center;
-      width:68px;height:68px;border-radius:18px;margin-bottom:14px;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060;
-      animation:lp 3s ease-in-out infinite; }
-    @keyframes lp {
-      0%,100%{box-shadow:0 0 30px #6c63ff40,0 8px 24px #00000060}
-      50%{box-shadow:0 0 50px #6c63ff60,0 8px 24px #00000060}
-    }
-    .brand-logo svg { width:32px;height:32px;fill:white; }
-    .brand h1 { font-size:2.2rem;font-weight:800;letter-spacing:-.03em;
-                line-height:1;margin-bottom:5px; }
-    .grad { background:linear-gradient(135deg,var(--accentb),var(--accent2));
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .brand p { font-size:.9rem;color:var(--t2); }
+    .card{background:var(--card);border:1px solid var(--brd);border-radius:var(--r4);
+      padding:24px;backdrop-filter:blur(20px);box-shadow:var(--sh);transition:var(--tr)}
+    .card:hover{border-color:var(--brdg);box-shadow:0 16px 48px #00000080,var(--gl)}
+    .ct{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--t3);margin-bottom:14px}
 
-    /* Card */
-    .card { background:var(--card);border:1px solid var(--border);
-            border-radius:var(--r4);padding:24px;backdrop-filter:blur(20px);
-            box-shadow:var(--shadow);transition:var(--tr); }
-    .card:hover { border-color:var(--borderg);box-shadow:0 16px 48px #00000080,var(--glow); }
-    .card-title { font-size:.72rem;font-weight:600;text-transform:uppercase;
-                  letter-spacing:.12em;color:var(--t3);margin-bottom:14px; }
+    .fld{margin-bottom:12px}
+    .fld label{display:block;font-size:.8rem;font-weight:500;color:var(--t2);margin-bottom:5px;padding-left:2px}
+    .fld input{width:100%;background:var(--input);border:1px solid var(--brd);border-radius:var(--r1);
+      padding:10px 13px;font-family:var(--f2);font-size:.86rem;color:var(--t1);outline:none;transition:var(--tr)}
+    .fld input:focus{border-color:var(--a);background:#1a1a35;box-shadow:0 0 0 3px #6c63ff40}
+    .fld input::placeholder{color:var(--t3)}
 
-    /* Fields */
-    .field { margin-bottom:12px; }
-    .field label { display:block;font-size:.8rem;font-weight:500;color:var(--t2);
-                   margin-bottom:5px;padding-left:2px; }
-    .field input { width:100%;background:var(--input);border:1px solid var(--border);
-                   border-radius:var(--r1);padding:10px 13px;font-family:var(--f2);
-                   font-size:.86rem;color:var(--t1);outline:none;transition:var(--tr); }
-    .field input:focus { border-color:var(--accent);background:#1a1a35;
-                         box-shadow:0 0 0 3px #6c63ff40; }
-    .field input::placeholder { color:var(--t3); }
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      padding:11px 20px;border:none;border-radius:var(--r1);font-family:var(--f1);
+      font-size:.88rem;font-weight:600;cursor:pointer;transition:var(--tr)}
+    .bp{width:100%;background:linear-gradient(135deg,var(--a),#5a52dd);color:#fff;
+      box-shadow:0 4px 20px #6c63ff40;padding:14px;font-size:.96rem;border-radius:var(--r2);margin-top:4px}
+    .bp:hover{transform:translateY(-2px);box-shadow:0 8px 30px #6c63ff50}
+    .bp:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
-    /* Buttons */
-    .btn { display:inline-flex;align-items:center;justify-content:center;gap:7px;
-           padding:11px 20px;border:none;border-radius:var(--r1);font-family:var(--f1);
-           font-size:.88rem;font-weight:600;cursor:pointer;transition:var(--tr); }
-    .btn-primary { width:100%;background:linear-gradient(135deg,var(--accent),#5a52dd);
-                   color:white;box-shadow:0 4px 20px #6c63ff40;padding:13px;
-                   font-size:.95rem;border-radius:var(--r2);margin-top:2px; }
-    .btn-primary:hover { transform:translateY(-2px);box-shadow:0 8px 30px #6c63ff50; }
-    .btn-primary:disabled { opacity:.45;cursor:not-allowed;transform:none; }
+    .div{display:flex;align-items:center;gap:9px;margin:3px 0}
+    .div::before,.div::after{content:'';flex:1;height:1px;background:var(--brd)}
+    .div span{font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+
+    /* Presets */
+    .prs{display:flex;gap:5px;margin:10px 0 4px}
+    .pr{flex:1;padding:7px 4px;background:var(--input);border:1px solid var(--brd);border-radius:6px;
+      font-size:.73rem;font-weight:600;color:var(--t2);cursor:pointer;text-align:center;transition:var(--tr)}
+    .pr:hover{border-color:#6c63ff60;color:var(--ab)}
+    .pr.on{background:#6c63ff25;border-color:var(--a);color:var(--ab)}
 
     /* Status */
-    .sb { display:inline-flex;align-items:center;gap:5px;padding:4px 11px;
-          border-radius:999px;font-size:.75rem;font-weight:600;letter-spacing:.04em; }
-    .sb .dot { width:6px;height:6px;border-radius:50%;flex-shrink:0; }
-    .s-dc  { background:rgba(255,77,109,.12);color:var(--err); border:1px solid rgba(255,77,109,.2); }
-    .s-cn  { background:rgba(255,217,61,.12);color:var(--warn);border:1px solid rgba(255,217,61,.2); }
-    .s-ok  { background:rgba(0,212,170,.12); color:var(--ok); border:1px solid rgba(0,212,170,.2); }
-    .s-dc .dot { background:var(--err); }
-    .s-cn .dot { background:var(--warn);animation:pu 1s infinite; }
-    .s-ok .dot { background:var(--ok); animation:pu 2s infinite; }
-    @keyframes pu { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)} }
+    .sb{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;
+      font-size:.75rem;font-weight:600;letter-spacing:.04em}
+    .sb .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .sd{background:rgba(255,77,109,.12);color:var(--err);border:1px solid rgba(255,77,109,.2)}
+    .sc{background:rgba(255,217,61,.12);color:var(--wrn);border:1px solid rgba(255,217,61,.2)}
+    .so{background:rgba(0,212,170,.12);color:var(--ok);border:1px solid rgba(0,212,170,.2)}
+    .sd .dot{background:var(--err)}.sc .dot{background:var(--wrn);animation:pu 1s infinite}
+    .so .dot{background:var(--ok);animation:pu 2s infinite}
+    @keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
 
-    /* Log */
-    .logbox { background:var(--bg);border:1px solid var(--border);border-radius:var(--r1);
-              padding:10px 13px;max-height:75px;overflow-y:auto;
-              font-family:var(--f2);font-size:.73rem;line-height:1.6; }
-    .logbox::-webkit-scrollbar{width:3px}
-    .logbox::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-    .le { display:flex;gap:7px; }
-    .lt { color:var(--t3); }
-    .lo .lm{color:var(--ok)}.le-e .lm{color:var(--err)}
-    .lw .lm{color:var(--warn)}.li .lm{color:var(--info)}
+    .lb{background:var(--bg);border:1px solid var(--brd);border-radius:var(--r1);
+      padding:10px 13px;max-height:80px;overflow-y:auto;font-family:var(--f2);font-size:.73rem;line-height:1.6}
+    .lb::-webkit-scrollbar{width:3px}.lb::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
+    .le{display:flex;gap:7px}.lt{color:var(--t3)}
+    .lo .lm{color:var(--ok)}.lee .lm{color:var(--err)}.lw .lm{color:var(--wrn)}.li .lm{color:var(--inf)}
 
-    /* Quality tabs */
-    .qtabs { display:flex;gap:5px;margin:10px 0; }
-    .qt { flex:1;padding:7px;background:var(--input);border:1px solid var(--border);
-          border-radius:var(--r1);font-size:.76rem;font-weight:600;color:var(--t2);
-          cursor:pointer;text-align:center;transition:var(--tr); }
-    .qt:hover { border-color:#6c63ff60;color:var(--accentb); }
-    .qt.active { background:#6c63ff25;border-color:var(--accent);color:var(--accentb); }
-
-    /* Divider */
-    .div { display:flex;align-items:center;gap:9px;margin:3px 0; }
-    .div::before,.div::after { content:'';flex:1;height:1px;background:var(--border); }
-    .div span { font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em; }
-
-    /* Preset row */
-    .presets { display:flex;gap:5px; }
-    .preset-btn { flex:1;padding:6px 4px;background:var(--input);border:1px solid var(--border);
-                  border-radius:6px;font-size:.72rem;font-weight:600;color:var(--t2);
-                  cursor:pointer;text-align:center;transition:var(--tr); }
-    .preset-btn:hover { border-color:var(--accent);color:var(--accentb); }
-    .preset-btn.active { background:#6c63ff20;border-color:var(--accent);color:var(--accentb); }
-
-    /* Key hints */
-    .hints { display:flex;gap:8px;flex-wrap:wrap;justify-content:center; }
-    .hint { display:inline-flex;align-items:center;gap:3px;font-size:.72rem;color:var(--t3); }
-    .key { display:inline-flex;align-items:center;justify-content:center;
-           min-width:21px;height:19px;padding:0 5px;background:var(--input);
-           border:1px solid var(--border);border-bottom:2px solid var(--border);
-           border-radius:4px;font-family:var(--f2);font-size:.65rem;color:var(--t2); }
+    .hints{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .hint{display:inline-flex;align-items:center;gap:3px;font-size:.72rem;color:var(--t3)}
+    .key{display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:19px;
+      padding:0 5px;background:var(--input);border:1px solid var(--brd);border-bottom:2px solid var(--brd);
+      border-radius:4px;font-family:var(--f2);font-size:.65rem;color:var(--t2)}
 
     /* ── Game Screen ── */
-    #gameScreen { display:none;flex-direction:column;width:100vw;height:100vh; }
+    #gs{display:none;flex-direction:column;width:100vw;height:100vh;background:#000}
+    #gv{width:100vw;height:100vh;object-fit:contain;background:#000;cursor:none;display:block}
 
-    .hud { position:fixed;top:0;left:0;right:0;z-index:100;height:42px;
-           display:flex;align-items:center;justify-content:space-between;
-           padding:0 14px;background:linear-gradient(180deg,rgba(5,5,8,.95),transparent);
-           backdrop-filter:blur(10px);transition:opacity .5s; }
-    .hud.hidden { opacity:0;pointer-events:none; }
-    .hud-brand { font-size:.88rem;font-weight:700;letter-spacing:-.02em; }
-    .hud-stats { display:flex;align-items:center;gap:6px; }
-    .hs { display:flex;align-items:center;gap:3px;padding:3px 9px;
-          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
-          border-radius:6px;font-family:var(--f2);font-size:.7rem; }
-    .hs .sl { color:var(--t3); }
-    .hs .sv { color:var(--t1);font-weight:600; }
-    .hud-btns { display:flex;align-items:center;gap:5px; }
-    .bicon { width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
-             border:1px solid var(--border);background:rgba(255,255,255,.05);border-radius:7px;
-             cursor:pointer;transition:var(--tr);color:var(--t2); }
-    .bicon:hover { border-color:var(--accent);color:var(--accentb);background:#6c63ff25; }
-    .bicon svg { width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
-                 stroke-linecap:round;stroke-linejoin:round; }
-    .btn-exit { padding:0 11px;font-size:.76rem;font-family:var(--f1);font-weight:600;
-                background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
-                color:var(--err);cursor:pointer;border-radius:7px;height:32px;
-                transition:var(--tr); }
-    .btn-exit:hover { background:rgba(255,77,109,.25); }
+    .hud{position:fixed;top:0;left:0;right:0;z-index:100;height:42px;display:flex;
+      align-items:center;justify-content:space-between;padding:0 14px;
+      background:linear-gradient(180deg,rgba(5,5,8,.95),transparent);
+      backdrop-filter:blur(10px);transition:opacity .5s}
+    .hud.hid{opacity:0;pointer-events:none}
+    .hb{font-size:.88rem;font-weight:700;letter-spacing:-.02em}
+    .hs-c{display:flex;align-items:center;gap:6px}
+    .hs{display:flex;align-items:center;gap:3px;padding:3px 9px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+      border-radius:6px;font-family:var(--f2);font-size:.7rem}
+    .hs .sl{color:var(--t3)}.hs .sv{color:var(--t1);font-weight:600}
+    .hbtns{display:flex;align-items:center;gap:5px}
+    .bi{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;
+      border:1px solid var(--brd);background:rgba(255,255,255,.05);border-radius:7px;
+      cursor:pointer;transition:var(--tr);color:var(--t2)}
+    .bi:hover{border-color:var(--a);color:var(--ab);background:#6c63ff25}
+    .bi svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;
+      stroke-linecap:round;stroke-linejoin:round}
+    .bex{padding:0 11px;font-size:.76rem;font-family:var(--f1);font-weight:600;
+      background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:var(--err);
+      cursor:pointer;border-radius:7px;height:32px;transition:var(--tr)}
+    .bex:hover{background:rgba(255,77,109,.25)}
 
-    #gameCanvas { display:block;width:100vw;height:100vh;background:#000;cursor:none; }
+    #loadOv{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;
+      align-items:center;justify-content:center;z-index:200;gap:20px}
+    .ring{width:52px;height:52px;border:3px solid var(--brd);border-top-color:var(--a);
+      border-radius:50%;animation:sp .8s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .lt2{font-size:.88rem;color:var(--t2);font-weight:500}
+    #loadTxt{margin-top:4px;font-size:.78rem;color:var(--t3);font-family:var(--f2)}
 
-    /* Loading */
-    #loadingOv { position:fixed;inset:0;background:var(--bg);display:flex;
-                 flex-direction:column;align-items:center;justify-content:center;
-                 z-index:200;gap:20px; }
-    .ring { width:52px;height:52px;border:3px solid var(--border);
-            border-top-color:var(--accent);border-radius:50%;
-            animation:spin .8s linear infinite; }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .lt2 { font-size:.88rem;color:var(--t2);font-weight:500; }
+    #cur{position:fixed;width:14px;height:14px;background:#fff;border-radius:50%;
+      pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
+      mix-blend-mode:difference;display:none}
 
-    /* Cursor */
-    #cur { position:fixed;width:14px;height:14px;background:#fff;border-radius:50%;
-           pointer-events:none;z-index:9999;transform:translate(-50%,-50%);
-           mix-blend-mode:difference;display:none;transition:transform .04s; }
-
-    /* Toast */
-    #toast-ct { position:fixed;bottom:22px;right:22px;z-index:9999;
-                display:flex;flex-direction:column;gap:7px;pointer-events:none; }
-    .toast { display:flex;align-items:center;gap:9px;padding:11px 16px;
-             background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);
-             font-size:.83rem;font-weight:500;box-shadow:var(--shadow);
-             animation:tIn .3s cubic-bezier(.4,0,.2,1);max-width:300px; }
-    .toast.tok { border-color:rgba(0,212,170,.3);color:var(--ok); }
-    .toast.terr{ border-color:rgba(255,77,109,.3);color:var(--err); }
-    .toast.tinf{ border-color:rgba(77,200,255,.3);color:var(--info); }
-    .toast.twrn{ border-color:rgba(255,217,61,.3);color:var(--warn); }
-    @keyframes tIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-    .toast.out{animation:tOut .3s cubic-bezier(.4,0,.2,1) forwards}
-    @keyframes tOut{to{transform:translateX(120%);opacity:0}}
-
-    /* Quality panel en juego */
-    #qPanel { position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-              z-index:150;display:flex;gap:6px;align-items:center;
-              background:rgba(5,5,8,.85);border:1px solid var(--border);
-              border-radius:999px;padding:6px 14px;backdrop-filter:blur(10px);
-              transition:opacity .5s; }
-    #qPanel.hidden { opacity:0;pointer-events:none; }
-    .qp-btn { padding:4px 12px;border-radius:999px;font-size:.74rem;font-weight:600;
-              border:1px solid transparent;color:var(--t2);cursor:pointer;
-              background:transparent;transition:var(--tr);font-family:var(--f1); }
-    .qp-btn:hover { color:var(--accentb); }
-    .qp-btn.active { background:var(--accent);color:white;
-                     box-shadow:0 0 12px #6c63ff50; }
+    #toasts{position:fixed;bottom:22px;right:22px;z-index:9999;
+      display:flex;flex-direction:column;gap:7px;pointer-events:none}
+    .toast{display:flex;align-items:center;gap:9px;padding:11px 16px;
+      background:var(--card2);border:1px solid var(--brd);border-radius:var(--r2);
+      font-size:.83rem;font-weight:500;box-shadow:var(--sh);
+      animation:tI .3s cubic-bezier(.4,0,.2,1);max-width:300px}
+    .tok{border-color:rgba(0,212,170,.3);color:var(--ok)}
+    .ter{border-color:rgba(255,77,109,.3);color:var(--err)}
+    .tin{border-color:rgba(77,200,255,.3);color:var(--inf)}
+    .twr{border-color:rgba(255,217,61,.3);color:var(--wrn)}
+    @keyframes tI{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    .toast.out{animation:tO .3s cubic-bezier(.4,0,.2,1) forwards}
+    @keyframes tO{to{transform:translateX(120%);opacity:0}}
 
     ::-webkit-scrollbar{width:5px;height:5px}
-    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+    ::-webkit-scrollbar-thumb{background:var(--brd);border-radius:3px}
   </style>
 </head>
 
 <body>
-<div class="bg-orbs">
-  <div class="orb o1"></div>
-  <div class="orb o2"></div>
-  <div class="orb o3"></div>
-</div>
-<div class="bg-grid"></div>
-<div id="toast-ct"></div>
+<div class="bgo"><div class="ob o1"></div><div class="ob o2"></div><div class="ob o3"></div></div>
+<div class="bgr"></div>
+<div id="toasts"></div>
 <div id="cur"></div>
 
 <div id="app">
 
   <!-- ══ CONNECT ══ -->
-  <div id="connectScreen">
+  <div id="cs">
     <div class="cw">
-
       <div class="brand">
-        <div class="brand-logo">
+        <div class="blogo">
           <svg viewBox="0 0 24 24"><path d="M21 6H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
         </div>
-        <h1>Cloud<span class="grad">Play</span></h1>
-        <p>Gaming remoto desde tu PC · 1080p 60fps</p>
+        <h1>Cloud<span class="gr">Play</span></h1>
+        <p>Gaming remoto — WebRTC streaming en tiempo real</p>
+        <div class="tech">
+          <span class="chip">WebRTC</span>
+          <span class="chip">H.264</span>
+          <span class="chip">Metered TURN</span>
+          <span class="chip">Ngrok</span>
+        </div>
       </div>
 
       <div class="card">
-        <div class="card-title">🔌 Servidor</div>
-        <div class="field">
-          <label>URL WebSocket (ngrok)</label>
-          <input id="urlInput" type="text" placeholder="wss://xxxx.ngrok-free.app" spellcheck="false" autocomplete="off"/>
+        <div class="ct">🔌 Servidor</div>
+        <div class="fld">
+          <label>URL del servidor (ngrok)</label>
+          <input id="urlI" type="text" placeholder="https://xxxx.ngrok-free.app" spellcheck="false" autocomplete="off"/>
         </div>
-        <div class="field">
+        <div class="fld">
           <label>Contraseña</label>
-          <input id="passInput" type="password" placeholder="••••••••"/>
+          <input id="pwI" type="password" placeholder="••••••••"/>
         </div>
 
         <div class="div"><span>Preset de conexión</span></div>
-        <div class="presets" style="margin:10px 0 4px;">
-          <div class="preset-btn" data-w="1280" data-h="720"  data-q="60" data-fps="30">🔋 720p·30</div>
-          <div class="preset-btn active" data-w="1280" data-h="720"  data-q="75" data-fps="60">⚡ 720p·60</div>
-          <div class="preset-btn" data-w="1920" data-h="1080" data-q="70" data-fps="30">🎯 1080p·30</div>
-          <div class="preset-btn" data-w="1920" data-h="1080" data-q="80" data-fps="60">💎 1080p·60</div>
+        <div class="prs">
+          <div class="pr on" data-w="1280" data-h="720" data-f="30">🔋 720p·30</div>
+          <div class="pr"    data-w="1280" data-h="720" data-f="60">⚡ 720p·60</div>
+          <div class="pr"    data-w="1920" data-h="1080" data-f="30">🎯 1080·30</div>
+          <div class="pr"    data-w="1920" data-h="1080" data-f="60">💎 1080·60</div>
         </div>
 
-        <button class="btn btn-primary" id="connectBtn" onclick="connect()">
+        <button class="btn bp" id="cbtn" onclick="doConnect()">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="5 12 12 5 19 12"/><polyline points="5 20 12 13 19 20"/>
+            <polygon points="5 3 19 12 5 21 5 3"/>
           </svg>
           Conectar
         </button>
       </div>
 
-      <div class="card" style="padding:14px 18px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div class="card-title" style="margin:0">Estado</div>
-          <div id="statusBadge" class="sb s-dc">
-            <div class="dot"></div>
-            <span id="statusTxt">Desconectado</span>
-          </div>
+      <div class="card" style="padding:14px 18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="ct" style="margin:0">Estado</div>
+          <div id="badge" class="sb sd"><div class="dot"></div><span id="stxt">Desconectado</span></div>
         </div>
-        <div class="logbox" id="logBox">
-          <div class="le li"><span class="lt">--:--:--</span><span class="lm">Sistema listo. Introduce la URL de ngrok.</span></div>
+        <div class="lb" id="logBox">
+          <div class="le li"><span class="lt">--:--:--</span><span class="lm">Sistema WebRTC listo.</span></div>
         </div>
       </div>
 
       <div class="hints">
-        <div class="hint"><span class="key">Esc×2</span>Salir del juego</div>
-        <div class="hint"><span class="key">F11</span>Pantalla completa</div>
-        <div class="hint"><span class="key">~</span>Mostrar HUD</div>
+        <div class="hint"><span class="key">Esc×2</span>Salir</div>
+        <div class="hint"><span class="key">F11</span>Fullscreen</div>
+        <div class="hint"><span class="key">~</span>HUD</div>
       </div>
-
     </div>
   </div>
 
   <!-- ══ GAME ══ -->
-  <div id="gameScreen">
+  <div id="gs">
     <div class="hud" id="hud">
-      <div class="hud-brand">Cloud<span class="grad">Play</span></div>
-      <div class="hud-stats">
+      <div class="hb">Cloud<span class="gr">Play</span></div>
+      <div class="hs-c">
         <div class="hs"><span class="sl">FPS</span><span class="sv" id="hFps">--</span></div>
-        <div class="hs"><span class="sl">PING</span><span class="sv" id="hPing">--</span><span class="sl">ms</span></div>
+        <div class="hs"><span class="sl">RTT</span><span class="sv" id="hRtt">--</span><span class="sl">ms</span></div>
         <div class="hs"><span class="sl">KB/s</span><span class="sv" id="hBw">--</span></div>
-        <div class="hs"><span class="sl">RES</span><span class="sv" id="hRes">--</span></div>
+        <div class="hs"><span class="sl">ICE</span><span class="sv" id="hIce">--</span></div>
       </div>
-      <div class="hud-btns">
-        <button class="bicon" onclick="toggleFullscreen()" title="Pantalla completa">
+      <div class="hbtns">
+        <button class="bi" onclick="togFS()" title="Fullscreen">
           <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
         </button>
-        <button class="btn-exit" onclick="disconnect()">⏹ Salir</button>
+        <button class="bex" onclick="doDisconnect()">⏹ Salir</button>
       </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <video id="gv" autoplay playsinline muted></video>
 
-    <!-- Quality panel in-game -->
-    <div id="qPanel">
-      <span style="font-size:.72rem;color:var(--t3);margin-right:4px">CALIDAD</span>
-      <button class="qp-btn" data-q="50">Bajo</button>
-      <button class="qp-btn active" data-q="75">Medio</button>
-      <button class="qp-btn" data-q="85">Alto</button>
-      <button class="qp-btn" data-q="95">Ultra</button>
-    </div>
-
-    <div id="loadingOv">
+    <div id="loadOv">
       <div class="ring"></div>
-      <div class="lt2">Esperando primer frame...</div>
+      <div class="lt2">Conectando WebRTC...</div>
+      <div id="loadTxt">Negociando SDP...</div>
     </div>
   </div>
 
@@ -358,383 +269,306 @@
 <script>
 'use strict';
 
-// ══ CONFIG ══
-const PRESETS = {
-  "720p30":  { w:1280, h:720,  q:60, fps:30 },
-  "720p60":  { w:1280, h:720,  q:75, fps:60 },
-  "1080p30": { w:1920, h:1080, q:70, fps:30 },
-  "1080p60": { w:1920, h:1080, q:80, fps:60 },
-};
-
+// ══ STATE ══
 const S = {
-  ws: null, connected: false, auth: false, streaming: false,
-  quality: 75, width: 1280, height: 720, fps: 60,
-  pingStart: 0, lastPing: 0,
-  bytesRx: 0, lastBwT: Date.now(), displayBw: 0,
-  hudVisible: true, hudTimer: null,
-  escCount: 0, escTimer: null,
-  renderScale: 1, renderOX: 0, renderOY: 0,
-  renderSW: 1280, renderSH: 720,
+  pc: null, dc: null, serverUrl: '',
+  connected: false, width: 1280, height: 720, fps: 30,
+  escN: 0, escT: null, hudT: null,
 };
 
 // ══ DOM ══
-const $  = id => document.getElementById(id);
-const CS = $('connectScreen'), GS = $('gameScreen');
-const urlI = $('urlInput'), passI = $('passInput'), cbtn = $('connectBtn');
-const sBadge = $('statusBadge'), sTxt = $('statusTxt'), logBox = $('logBox');
-const canvas = $('gameCanvas'), ctx = canvas.getContext('2d',{alpha:false});
-const loadOv = $('loadingOv'), hud = $('hud'), qPanel = $('qPanel');
-const hFps = $('hFps'), hPing = $('hPing'), hBw = $('hBw'), hRes = $('hRes');
-const cur  = $('cur');
+const $ = id => document.getElementById(id);
+const cs=$('cs'),gs=$('gs'),urlI=$('urlI'),pwI=$('pwI'),cbtn=$('cbtn'),
+      badge=$('badge'),stxt=$('stxt'),logBox=$('logBox'),
+      video=$('gv'),loadOv=$('loadOv'),loadTxt=$('loadTxt'),
+      hud=$('hud'),hFps=$('hFps'),hRtt=$('hRtt'),hBw=$('hBw'),hIce=$('hIce'),
+      cur=$('cur');
 
 // ══ UTILS ══
-function ts() {
-  const d = new Date();
-  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+function ts(){const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':')}
+
+function log(m,t='i'){
+  const c={i:'li',o:'lo',e:'lee',w:'lw'}[t]||'li';
+  const d=document.createElement('div');d.className=`le ${c}`;
+  d.innerHTML=`<span class="lt">${ts()}</span><span class="lm">${m}</span>`;
+  logBox.appendChild(d);logBox.scrollTop=logBox.scrollHeight;
+  while(logBox.children.length>60)logBox.removeChild(logBox.firstChild);
 }
 
-function log(msg, type='i') {
-  const cls = {i:'li',o:'lo',e:'le-e',w:'lw'}[type]||'li';
-  const div = document.createElement('div');
-  div.className = `le ${cls}`;
-  div.innerHTML = `<span class="lt">${ts()}</span><span class="lm">${msg}</span>`;
-  logBox.appendChild(div);
-  logBox.scrollTop = logBox.scrollHeight;
-  while(logBox.children.length > 60) logBox.removeChild(logBox.firstChild);
+function toast(m,t='i',dur=3000){
+  const c={o:'tok',e:'ter',i:'tin',w:'twr'}[t]||'tin';
+  const ic={o:'✓',e:'✕',w:'⚠',i:'ℹ'};
+  const el=document.createElement('div');el.className=`toast ${c}`;
+  el.innerHTML=`<span>${ic[t]||'●'}</span><span>${m}</span>`;
+  $('toasts').appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)},dur);
 }
 
-function toast(msg, type='i', dur=3000) {
-  const cls = {o:'tok',e:'terr',i:'tinf',w:'twrn'}[type]||'tinf';
-  const icons = {o:'✓',e:'✕',w:'⚠',i:'ℹ'};
-  const t = document.createElement('div');
-  t.className = `toast ${cls}`;
-  t.innerHTML = `<span>${icons[type]||'●'}</span><span>${msg}</span>`;
-  $('toast-ct').appendChild(t);
-  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),300); }, dur);
-}
-
-function setStatus(cls, txt) {
-  sBadge.className = `sb ${cls}`;
-  sTxt.textContent = txt;
-}
+function setSt(c,t){badge.className=`sb ${c}`;stxt.textContent=t}
 
 // ══ PRESETS ══
-document.querySelectorAll('.preset-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    S.width   = parseInt(btn.dataset.w);
-    S.height  = parseInt(btn.dataset.h);
-    S.quality = parseInt(btn.dataset.q);
-    S.fps     = parseInt(btn.dataset.fps);
-    log(`Preset: ${btn.textContent.trim()} (${S.width}x${S.height} ${S.fps}fps Q${S.quality})`,'i');
+document.querySelectorAll('.pr').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.pr').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    S.width=parseInt(b.dataset.w);S.height=parseInt(b.dataset.h);S.fps=parseInt(b.dataset.f);
+    log(`Preset: ${b.textContent.trim()} (${S.width}x${S.height}@${S.fps}fps)`);
   });
 });
 
-// ══ IN-GAME QUALITY ══
-document.querySelectorAll('.qp-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.qp-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const q = parseInt(btn.dataset.q);
-    S.quality = q;
-    send({type:'set_quality', quality: q});
-    toast(`Calidad → ${btn.textContent.trim()}`,'i',1500);
-  });
-});
+// ══ CONNECT ══
+async function doConnect(){
+  let url=urlI.value.trim();
+  const pw=pwI.value.trim();
+  if(!url){toast('Introduce la URL','e');return}
+  if(!pw){toast('Introduce la contraseña','e');return}
+  if(!url.startsWith('http'))url='https://'+url;
+  url=url.replace(/\/$/,''); // quitar trailing slash
 
-// ══ WEBSOCKET ══
-async function connect() {
-  let url  = urlI.value.trim();
-  const pw = passI.value.trim();
-  if(!url){ toast('Introduce la URL de ngrok','e'); return; }
-  if(!pw)  { toast('Introduce la contraseña','e'); return; }
-  if(!url.startsWith('ws')) url = 'wss://' + url.replace(/^https?:\/\//,'');
+  S.serverUrl=url;
+  cbtn.disabled=true;
+  setSt('sc','Conectando...');
+  log('Obteniendo configuración ICE...','i');
 
-  cbtn.disabled = true;
-  setStatus('s-cn','Conectando...');
-  log(`Conectando → ${url}`,'i');
+  try{
+    // 1. Obtener ICE config del servidor
+    loadTxt.textContent='Obteniendo ICE servers...';
+    const cfgRes=await fetch(url+'/config');
+    const cfg=await cfgRes.json();
+    log(`ICE servers: ${cfg.iceServers.length} configurados`,'o');
 
-  try {
-    S.ws = new WebSocket(url);
-    S.ws.binaryType = 'arraybuffer'; // ← Recibir binario
+    // 2. Crear PeerConnection
+    loadTxt.textContent='Creando PeerConnection...';
+    S.pc=new RTCPeerConnection({iceServers:cfg.iceServers});
 
-    S.ws.onopen = () => {
-      log('Conexión abierta — autenticando...','o');
-      setStatus('s-cn','Autenticando...');
-      send({type:'auth', password: pw});
-    };
-
-    S.ws.onmessage = (e) => {
-      // ¿Binario (frame) o texto (JSON)?
-      if(e.data instanceof ArrayBuffer) {
-        handleBinaryFrame(e.data);
-      } else {
-        handleJSON(JSON.parse(e.data));
+    S.pc.oniceconnectionstatechange=()=>{
+      const st=S.pc.iceConnectionState;
+      log(`ICE: ${st}`,st==='connected'||st==='completed'?'o':st==='failed'?'e':'i');
+      hIce.textContent=st;
+      if(st==='connected'||st==='completed'){
+        loadOv.style.display='none';
+        setSt('so','Conectado');
+        toast('Stream WebRTC activo ✓','o');
+        startStats();
+      }
+      if(st==='failed'||st==='disconnected'||st==='closed'){
+        toast('Conexión WebRTC perdida','e');
+        doDisconnect();
       }
     };
 
-    S.ws.onerror = () => {
-      log('Error de WebSocket','e');
-      toast('Error de conexión','e',5000);
-      resetConn();
+    S.pc.ontrack=(ev)=>{
+      log('📺 Video track recibido','o');
+      video.srcObject=ev.streams[0];
+      video.play().catch(()=>{});
     };
 
-    S.ws.onclose = (e) => {
-      log(`Conexión cerrada (${e.code})`,'w');
-      if(S.connected) toast('Conexión perdida','w');
-      resetConn();
-    };
-  } catch(err) {
+    // 3. DataChannel para inputs
+    S.dc=S.pc.createDataChannel('input',{ordered:false,maxRetransmits:0});
+    S.dc.onopen=()=>log('📡 DataChannel abierto','o');
+    S.dc.onclose=()=>log('📡 DataChannel cerrado','w');
+
+    // 4. Crear offer
+    loadTxt.textContent='Creando SDP offer...';
+
+    // Forzar que quiera recibir video
+    S.pc.addTransceiver('video',{direction:'recvonly'});
+
+    const offer=await S.pc.createOffer();
+    await S.pc.setLocalDescription(offer);
+
+    // 5. Esperar a que se recopilen ICE candidates
+    loadTxt.textContent='Recopilando ICE candidates...';
+    await new Promise((resolve)=>{
+      if(S.pc.iceGatheringState==='complete') resolve();
+      else S.pc.onicegatheringstatechange=()=>{
+        if(S.pc.iceGatheringState==='complete') resolve();
+      };
+      // Timeout de seguridad
+      setTimeout(resolve, 5000);
+    });
+
+    // 6. Enviar offer al servidor
+    loadTxt.textContent='Enviando offer al servidor...';
+    log('Enviando SDP offer...','i');
+
+    const ansRes=await fetch(url+'/offer',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        sdp:S.pc.localDescription.sdp,
+        type:S.pc.localDescription.type,
+        password:pw,
+        width:S.width,
+        height:S.height,
+        fps:S.fps,
+      })
+    });
+
+    if(!ansRes.ok){
+      const err=await ansRes.json().catch(()=>({error:'Error desconocido'}));
+      throw new Error(err.error||`HTTP ${ansRes.status}`);
+    }
+
+    const answer=await ansRes.json();
+    log('SDP answer recibida ✓','o');
+
+    // 7. Aplicar answer
+    loadTxt.textContent='Estableciendo conexión...';
+    await S.pc.setRemoteDescription(new RTCSessionDescription(answer));
+
+    setSt('sc','Conectando ICE...');
+    showGame();
+
+  }catch(err){
     log(`Error: ${err.message}`,'e');
-    toast('No se pudo conectar','e');
+    toast(`Error: ${err.message}`,'e',5000);
     resetConn();
   }
 }
 
-function send(data) {
-  if(S.ws && S.ws.readyState === WebSocket.OPEN)
-    S.ws.send(JSON.stringify(data));
+function doDisconnect(){
+  if(S.dc){try{S.dc.close()}catch(e){}}
+  if(S.pc){try{S.pc.close()}catch(e){}}
+  S.pc=null;S.dc=null;
+  video.srcObject=null;
+  resetConn();
+  gs.style.display='none';
+  cs.style.display='flex';
+  cur.style.display='none';
+  if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+  toast('Desconectado','i');
+  stopStats();
 }
 
-function handleJSON(data) {
-  switch(data.type) {
-    case 'auth_ok':
-      S.connected = true; S.auth = true;
-      setStatus('s-ok','Conectado');
-      log('Autenticado ✓ — iniciando stream','o');
-      toast('Conectado ✓','o');
-      // Aplicar preset al servidor
-      send({type:'set_resolution', width: S.width, height: S.height});
-      send({type:'set_quality',    quality: S.quality});
-      send({type:'start_stream'});
-      S.streaming = true;
-      showGame();
-      startPing();
-      startStats();
-      break;
-    case 'auth_fail':
-      log('Contraseña incorrecta','e');
-      toast('Contraseña incorrecta','e');
-      resetConn();
-      break;
-    case 'pong':
-      S.lastPing = Date.now() - S.pingStart;
-      hPing.textContent = S.lastPing;
-      // Color del ping
-      hPing.style.color =
-        S.lastPing < 80  ? 'var(--ok)' :
-        S.lastPing < 150 ? 'var(--warn)' : 'var(--err)';
-      break;
-    case 'error':
-      log(`Server: ${data.message}`,'e');
-      break;
-  }
+function resetConn(){
+  S.connected=false;cbtn.disabled=false;
+  setSt('sd','Desconectado');
 }
-
-// ══ FRAME BINARIO ══
-// Protocolo: [4 bytes FPS uint32 big-endian] [JPEG bytes...]
-function handleBinaryFrame(buffer) {
-  if(firstFrame) {
-    loadOv.style.display = 'none';
-    firstFrame = false;
-  }
-
-  const view = new DataView(buffer);
-  const fps  = view.getUint32(0, false); // big-endian
-  const jpeg = buffer.slice(4);          // JPEG raw
-
-  S.bytesRx += jpeg.byteLength;
-  hFps.textContent = fps > 0 ? fps : hFps.textContent;
-
-  // Dibujar
-  const blob = new Blob([jpeg], {type:'image/jpeg'});
-  const url  = URL.createObjectURL(blob);
-  const img  = new Image();
-  img.onload = () => {
-    const cw = canvas.width, ch = canvas.height;
-    const iw = img.width,    ih = img.height;
-    const scale = Math.min(cw/iw, ch/ih);
-    const dx = (cw - iw*scale)/2;
-    const dy = (ch - ih*scale)/2;
-
-    ctx.fillStyle = '#000';
-    ctx.fillRect(0,0,cw,ch);
-    ctx.drawImage(img, dx, dy, iw*scale, ih*scale);
-
-    // Guardar para transformar input
-    S.renderScale = scale;
-    S.renderOX = dx; S.renderOY = dy;
-    S.renderSW = iw; S.renderSH = ih;
-
-    URL.revokeObjectURL(url); // Liberar memoria
-  };
-  img.src = url;
-}
-
-let firstFrame = true;
-
-// ══ PING & STATS ══
-let pingInt = null, statsInt = null;
-
-function startPing() {
-  pingInt = setInterval(() => {
-    if(S.connected) { S.pingStart = Date.now(); send({type:'ping', t: S.pingStart}); }
-  }, 1500);
-}
-
-function startStats() {
-  statsInt = setInterval(() => {
-    const now = Date.now();
-    const elapsed = (now - S.lastBwT) / 1000;
-    S.displayBw = Math.round(S.bytesRx / 1024 / elapsed);
-    S.bytesRx   = 0; S.lastBwT = now;
-    hBw.textContent = S.displayBw;
-    hRes.textContent = `${S.width}x${S.height}`;
-  }, 1000);
-}
-
-function stopPing()  { clearInterval(pingInt);  pingInt  = null; }
-function stopStats() { clearInterval(statsInt); statsInt = null; }
 
 // ══ SCREENS ══
-function showGame() {
-  firstFrame = true;
-  loadOv.style.display = 'flex';
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  CS.style.display = 'none';
-  GS.style.display = 'flex';
-  GS.style.flexDirection = 'column';
-  cur.style.display = 'block';
-  reqFS();
-  showHud();
-}
-
-function disconnect() {
-  if(S.ws) { send({type:'stop_stream'}); S.ws.close(); }
-  resetConn();
-  GS.style.display = 'none';
-  CS.style.display = 'flex';
-  cur.style.display = 'none';
-  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-  toast('Desconectado','i');
-}
-
-function resetConn() {
-  S.connected = false; S.auth = false; S.streaming = false; S.ws = null;
-  cbtn.disabled = false;
-  setStatus('s-dc','Desconectado');
-  stopPing(); stopStats();
+function showGame(){
+  cs.style.display='none';
+  gs.style.display='flex';gs.style.flexDirection='column';
+  cur.style.display='block';
+  loadOv.style.display='flex';
+  reqFS();showHud();
 }
 
 // ══ HUD ══
-let hudTimer = null;
-function showHud() {
-  hud.classList.remove('hidden');
-  qPanel.classList.remove('hidden');
-  clearTimeout(hudTimer);
-  hudTimer = setTimeout(()=>{
-    hud.classList.add('hidden');
-    qPanel.classList.add('hidden');
-  }, 3500);
-}
-
-canvas.addEventListener('mousemove', showHud);
+function showHud(){hud.classList.remove('hid');clearTimeout(S.hudT);S.hudT=setTimeout(()=>hud.classList.add('hid'),3500)}
+video.addEventListener('mousemove',showHud);
 
 // ══ FULLSCREEN ══
-function reqFS() {
-  const el = document.documentElement;
-  (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(()=>{});
-}
-function toggleFullscreen() {
-  if(!document.fullscreenElement && !document.webkitFullscreenElement) reqFS();
-  else (document.exitFullscreen || document.webkitExitFullscreen).call(document).catch(()=>{});
+function reqFS(){(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement).catch(()=>{})}
+function togFS(){
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement)reqFS();
+  else(document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{});
 }
 
-// ══ INPUT — TECLADO ══
-const pressedKeys = new Set();
+// ══ STATS (WebRTC nativo) ══
+let statsInt=null;
+function startStats(){
+  statsInt=setInterval(async()=>{
+    if(!S.pc)return;
+    try{
+      const stats=await S.pc.getStats();
+      stats.forEach(r=>{
+        if(r.type==='inbound-rtp'&&r.kind==='video'){
+          hFps.textContent=r.framesPerSecond||'--';
+          const kb=Math.round((r.bytesReceived||0)/1024);
+          hBw.textContent=r.bytesReceived?Math.round(r.bytesReceived/1024/((Date.now()-r.timestamp)/1000+1)):'--';
+        }
+        if(r.type==='candidate-pair'&&r.state==='succeeded'){
+          hRtt.textContent=Math.round(r.currentRoundTripTime*1000)||'--';
+          const rtt=r.currentRoundTripTime*1000;
+          hRtt.style.color=rtt<80?'var(--ok)':rtt<150?'var(--wrn)':'var(--err)';
+        }
+      });
+    }catch(e){}
+  },1000);
+}
+function stopStats(){clearInterval(statsInt);statsInt=null}
 
-document.addEventListener('keydown', e => {
-  // Doble Esc = salir
-  if(e.key === 'Escape') {
-    S.escCount++;
-    clearTimeout(S.escTimer);
-    if(S.escCount >= 2 && S.connected) { S.escCount=0; disconnect(); return; }
-    S.escTimer = setTimeout(()=>S.escCount=0, 600);
+// ══ INPUT — Enviar por DataChannel ══
+function sendInput(data){
+  if(S.dc&&S.dc.readyState==='open')
+    S.dc.send(JSON.stringify(data));
+}
+
+// ── Teclado ──
+const pressedKeys=new Set();
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    S.escN++;clearTimeout(S.escT);
+    if(S.escN>=2&&S.pc){S.escN=0;doDisconnect();return}
+    S.escT=setTimeout(()=>S.escN=0,600);
   }
-  if(e.key==='`'||e.key==='~') { showHud(); return; }
-  if(e.key==='F11') { e.preventDefault(); toggleFullscreen(); return; }
-
-  if(!S.connected) return;
-
-  const noDefault = ['F1','F3','F5','F12','Tab','Backspace'];
-  if(noDefault.includes(e.key)) e.preventDefault();
-
-  if(!pressedKeys.has(e.key)) {
+  if(e.key==='`'||e.key==='~'){showHud();return}
+  if(e.key==='F11'){e.preventDefault();togFS();return}
+  if(!S.dc||S.dc.readyState!=='open')return;
+  const nodef=['F1','F3','F5','F12','Tab','Backspace'];
+  if(nodef.includes(e.key))e.preventDefault();
+  if(!pressedKeys.has(e.key)){
     pressedKeys.add(e.key);
-    send({type:'keydown', key: e.key});
+    sendInput({type:'keydown',key:e.key});
   }
 });
 
-document.addEventListener('keyup', e => {
+document.addEventListener('keyup',e=>{
   pressedKeys.delete(e.key);
-  if(S.connected) send({type:'keyup', key: e.key});
+  sendInput({type:'keyup',key:e.key});
 });
 
-// ══ INPUT — RATÓN ══
-function toGame(cx, cy) {
-  const rx = (cx - S.renderOX) / S.renderScale;
-  const ry = (cy - S.renderOY) / S.renderScale;
-  return { x: Math.round(rx), y: Math.round(ry) };
+// ── Ratón ──
+function toGame(cx,cy){
+  const rect=video.getBoundingClientRect();
+  // Calcular posición dentro del video considerando object-fit:contain
+  const vw=video.videoWidth||S.width, vh=video.videoHeight||S.height;
+  const scale=Math.min(rect.width/vw,rect.height/vh);
+  const ox=(rect.width-vw*scale)/2+rect.left;
+  const oy=(rect.height-vh*scale)/2+rect.top;
+  return{x:Math.round((cx-ox)/scale),y:Math.round((cy-oy)/scale)};
 }
 
-document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px';
-  cur.style.top  = e.clientY + 'px';
-  if(!S.connected) return;
-  const {x,y} = toGame(e.clientX, e.clientY);
-  send({type:'mousemove', x, y});
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  if(!S.dc||S.dc.readyState!=='open')return;
+  const{x,y}=toGame(e.clientX,e.clientY);
+  sendInput({type:'mousemove',x,y});
 });
 
-document.addEventListener('mousedown', e => {
-  if(!S.connected) return;
+document.addEventListener('mousedown',e=>{
+  if(!S.dc||S.dc.readyState!=='open')return;
   e.preventDefault();
-  const {x,y} = toGame(e.clientX, e.clientY);
-  send({type:'mousedown', button: e.button, x, y});
+  const{x,y}=toGame(e.clientX,e.clientY);
+  sendInput({type:'mousedown',button:e.button,x,y});
 });
 
-document.addEventListener('mouseup', e => {
-  if(!S.connected) return;
-  const {x,y} = toGame(e.clientX, e.clientY);
-  send({type:'mouseup', button: e.button, x, y});
+document.addEventListener('mouseup',e=>{
+  if(!S.dc||S.dc.readyState!=='open')return;
+  const{x,y}=toGame(e.clientX,e.clientY);
+  sendInput({type:'mouseup',button:e.button,x,y});
 });
 
-document.addEventListener('contextmenu', e => { if(S.connected) e.preventDefault(); });
+document.addEventListener('contextmenu',e=>{if(S.pc)e.preventDefault()});
 
-document.addEventListener('wheel', e => {
-  if(!S.connected) return;
+document.addEventListener('wheel',e=>{
+  if(!S.dc||S.dc.readyState!=='open')return;
   e.preventDefault();
-  send({type:'wheel', deltaY: e.deltaY});
-}, {passive:false});
+  sendInput({type:'wheel',deltaY:e.deltaY});
+},{passive:false});
 
-// ══ RESIZE ══
-window.addEventListener('resize', () => {
-  if(S.streaming) { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-});
-
-// ══ PERSISTENCIA URL ══
-const savedUrl = localStorage.getItem('cp_url');
-if(savedUrl) urlI.value = savedUrl;
-urlI.addEventListener('input', ()=>localStorage.setItem('cp_url', urlI.value.trim()));
-
-// ══ ENTER shortcuts ══
-passI.addEventListener('keydown', e=>{ if(e.key==='Enter') connect(); });
-urlI.addEventListener('keydown',  e=>{ if(e.key==='Enter') passI.focus(); });
+// ══ PERSISTENCE ══
+const sv=localStorage.getItem('cp3_url');if(sv)urlI.value=sv;
+urlI.addEventListener('input',()=>localStorage.setItem('cp3_url',urlI.value.trim()));
+pwI.addEventListener('keydown',e=>{if(e.key==='Enter')doConnect()});
+urlI.addEventListener('keydown',e=>{if(e.key==='Enter')pwI.focus()});
 
 // ══ INIT ══
-log('CloudPlay listo. Introduce la URL de ngrok y conecta.','i');
-log('💡 Usa datos móviles para evitar el firewall escolar.','w');
+log('CloudPlay v3 WebRTC listo.','i');
+log('💡 Tip: Empieza en 720p·30fps','w');
 </script>
 </body>
 </html>
