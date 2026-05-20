@@ -1430,17 +1430,24 @@
             showToast('Contactando con el servidor Cloud...', '<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>', 4000);
 
             try {
-                // 1. Instanciación del PeerConnection
-                // Utilizamos servidores STUN públicos de Google para descubrir nuestra IP pública
-                // y atravesar Firewalls/NATs escolares.
-                const configuration = {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                };
-                
-                State.peerConnection = new RTCPeerConnection(configuration);
+ // 1. Instanciación del PeerConnection con Servidores Dinámicos (Twilio Bypass)
+// Dejamos la configuración vacía al principio, porque le meteremos los servidores de Twilio
+// que nos envíe el servidor de Python en tiempo real.
+const configuration = {
+    iceServers: []
+};
+
+// Si tu código recibe la lista de servidores del backend (por ejemplo en la respuesta del fetch/socket),
+// se la inyectamos antes de crear el objeto. 
+// Ojo: Si tu variable de servidores que viene de Python se llama diferente (ej. data.ice_servers), cambia el nombre aquí abajo:
+if (typeof servidoresTwilio !== 'undefined' && servidoresTwilio) {
+    configuration.iceServers = servidoresTwilio;
+} else {
+    // Servidor de emergencia por si Twilio falla un día
+    configuration.iceServers = [{ urls: 'stun:stun.l.google.com:19302' }];
+}
+
+State.peerConnection = new RTCPeerConnection(configuration);
 
                 // 2. Creación del DataChannel (El cable USB invisible)
                 // Esto es vital: No garantizamos el orden ni retransmitimos paquetes perdidos.
