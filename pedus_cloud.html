@@ -333,7 +333,9 @@ async function doConnect(){
   try{
     // 1. Obtener ICE config del servidor
     loadTxt.textContent='Obteniendo ICE servers...';
-    const cfgRes=await fetch(url+'/config');
+    const cfgRes=await fetch(url+'/config',{
+  headers:{'ngrok-skip-browser-warning':'true'}
+});
     const cfg=await cfgRes.json();
     log(`ICE servers: ${cfg.iceServers.length} configurados`,'o');
 
@@ -392,10 +394,13 @@ async function doConnect(){
     loadTxt.textContent='Enviando offer al servidor...';
     log('Enviando SDP offer...','i');
 
-    const ansRes=await fetch(url+'/offer',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
+const ansRes=await fetch(url+'/offer',{
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json',
+    'ngrok-skip-browser-warning':'true'
+  },
+  body:JSON.stringify({
         sdp:S.pc.localDescription.sdp,
         type:S.pc.localDescription.type,
         password:pw,
