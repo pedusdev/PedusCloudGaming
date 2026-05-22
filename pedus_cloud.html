@@ -370,16 +370,32 @@ async function doConnect(){
       }
     };
 
-    S.pc.ontrack=(ev)=>{
-      log(`📺 Track recibido: ${ev.track.kind}`,'o');
-      if(ev.track.kind==='video'){
-        video.srcObject=ev.streams[0];
-        video.play().catch(()=>{});
-      }else if(ev.track.kind==='audio'){
-        // El audio se reproduce automáticamente con el video
-        log('🔊 Audio del sistema recibido','o');
-      }
-    };
+   S.pc.ontrack=(ev)=>{
+  log(`📺 Track recibido: ${ev.track.kind}`,'o');
+  
+  // Asignar stream al video (sirve para video Y audio)
+  if(!video.srcObject){
+    video.srcObject = ev.streams[0];
+    log('📺 srcObject asignado','o');
+  }
+  
+  // Forzar play con manejo de errores
+  video.play()
+    .then(()=>{
+      log('▶️ Video reproduciendo','o');
+      loadOv.style.display='none';
+    })
+    .catch(err=>{
+      log(`⚠️ Play error: ${err.message}`,'w');
+      // Si falla por autoplay, mostrar botón
+      showPlayButton();
+    });
+  
+  // Eventos del track
+  ev.track.onended = () => log('❌ Track terminado','w');
+  ev.track.onmute  = () => log('🔇 Track mute','w');
+  ev.track.onunmute = () => log('🔊 Track unmute','o');
+};
 
     // 3. DataChannel para inputs
     S.dc=S.pc.createDataChannel('input',{
@@ -488,6 +504,23 @@ video.addEventListener('mousemove',showHud);
 // ══ FULLSCREEN ══
 function reqFS(){(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement).catch(()=>{})}
 function togFS(){
+  function showPlayButton(){
+  const btn = document.createElement('button');
+  btn.textContent = '▶️ Pulsa para empezar';
+  btn.style.cssText = `
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    z-index:9999;padding:20px 40px;font-size:1.2rem;
+    background:var(--a);color:white;border:none;border-radius:12px;
+    cursor:pointer;font-weight:600;box-shadow:0 0 30px var(--a);
+  `;
+  btn.onclick = () => {
+    video.play().then(()=>{
+      btn.remove();
+      loadOv.style.display='none';
+    });
+  };
+  document.body.appendChild(btn);
+}
   if(!document.fullscreenElement&&!document.webkitFullscreenElement)reqFS();
   else(document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{});
 }
