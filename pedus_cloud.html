@@ -348,7 +348,6 @@ async function doConnect(){
     loadTxt.textContent='Creando PeerConnection...';
     S.pc=new RTCPeerConnection({
       iceServers:cfg.iceServers,
-      iceTransportPolicy:'relay',
       bundlePolicy:'max-bundle',
       rtcpMuxPolicy:'require',
       sdpSemantics:'unified-plan',
