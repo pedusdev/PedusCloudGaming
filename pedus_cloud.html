@@ -204,12 +204,14 @@
         </div>
 
         <div class="div"><span>Preset de conexión</span></div>
-        <div class="prs">
-          <div class="pr on" data-w="1280" data-h="720" data-f="30">🔋 720p·30</div>
-          <div class="pr"    data-w="1280" data-h="720" data-f="60">⚡ 720p·60</div>
-          <div class="pr"    data-w="1920" data-h="1080" data-f="30">🎯 1080·30</div>
-          <div class="pr"    data-w="1920" data-h="1080" data-f="60">💎 1080·60</div>
-        </div>
+        <div class="prs" style="flex-wrap:wrap">
+  <div class="pr"    data-mode="bajo">🔋 720·30</div>
+  <div class="pr on" data-mode="medio">⚡ 720·60</div>
+  <div class="pr"    data-mode="alto">🎯 1080·60</div>
+  <div class="pr"    data-mode="ultra">💎 1440·120</div>
+  <div class="pr"    data-mode="4k">🚀 4K·60</div>
+  <div class="pr"    data-mode="4k120">👑 4K·120</div>
+      </div>
 
         <button class="btn bp" id="cbtn" onclick="doConnect()">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -311,11 +313,11 @@ document.querySelectorAll('.pr').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.pr').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
-    S.width=parseInt(b.dataset.w);S.height=parseInt(b.dataset.h);S.fps=parseInt(b.dataset.f);
-    log(`Preset: ${b.textContent.trim()} (${S.width}x${S.height}@${S.fps}fps)`);
+    S.qualityMode = b.dataset.mode;
+    log(`Modo: ${b.textContent.trim()}`);
   });
 });
-
+  
 // ══ CONNECT ══
 async function doConnect(){
   let url=urlI.value.trim();
@@ -334,14 +336,22 @@ async function doConnect(){
     // 1. Obtener ICE config del servidor
     loadTxt.textContent='Obteniendo ICE servers...';
     const cfgRes=await fetch(url+'/config',{
-  headers:{'ngrok-skip-browser-warning':'true'}
-});
+      headers:{'ngrok-skip-browser-warning':'true'}
+    });
     const cfg=await cfgRes.json();
     log(`ICE servers: ${cfg.iceServers.length} configurados`,'o');
+    log(`Servidor: ${cfg.width}x${cfg.height}@${cfg.fps}fps ${cfg.codec||''}`,'i');
 
     // 2. Crear PeerConnection
     loadTxt.textContent='Creando PeerConnection...';
-    S.pc=new RTCPeerConnection({iceServers:cfg.iceServers});
+    S.pc=new RTCPeerConnection({
+      iceServers:cfg.iceServers,
+      iceTransportPolicy:'relay',
+      bundlePolicy:'max-bundle',
+      rtcpMuxPolicy:'require',
+      sdpSemantics:'unified-plan',
+    });
+    log('🔐 Modo: TURN relay + H.264 + bitrate alto','i');
 
     S.pc.oniceconnectionstatechange=()=>{
       const st=S.pc.iceConnectionState;
@@ -360,53 +370,58 @@ async function doConnect(){
     };
 
     S.pc.ontrack=(ev)=>{
-      log('📺 Video track recibido','o');
-      video.srcObject=ev.streams[0];
-      video.play().catch(()=>{});
+      log(`📺 Track recibido: ${ev.track.kind}`,'o');
+      if(ev.track.kind==='video'){
+        video.srcObject=ev.streams[0];
+        video.play().catch(()=>{});
+      }else if(ev.track.kind==='audio'){
+        // El audio se reproduce automáticamente con el video
+        log('🔊 Audio del sistema recibido','o');
+      }
     };
 
     // 3. DataChannel para inputs
-    S.dc=S.pc.createDataChannel('input',{ordered:false,maxRetransmits:0});
+    S.dc=S.pc.createDataChannel('input',{
+      ordered:false,
+      maxRetransmits:0,
+    });
     S.dc.onopen=()=>log('📡 DataChannel abierto','o');
     S.dc.onclose=()=>log('📡 DataChannel cerrado','w');
 
-    // 4. Crear offer
+    // 4. Pedir vídeo Y audio
     loadTxt.textContent='Creando SDP offer...';
-
-    // Forzar que quiera recibir video
     S.pc.addTransceiver('video',{direction:'recvonly'});
+    S.pc.addTransceiver('audio',{direction:'recvonly'});
 
     const offer=await S.pc.createOffer();
     await S.pc.setLocalDescription(offer);
 
-    // 5. Esperar a que se recopilen ICE candidates
+    // 5. Esperar ICE candidates
     loadTxt.textContent='Recopilando ICE candidates...';
     await new Promise((resolve)=>{
       if(S.pc.iceGatheringState==='complete') resolve();
       else S.pc.onicegatheringstatechange=()=>{
         if(S.pc.iceGatheringState==='complete') resolve();
       };
-      // Timeout de seguridad
-      setTimeout(resolve, 5000);
+      setTimeout(resolve, 5000); // timeout seguridad
     });
 
-    // 6. Enviar offer al servidor
+    // 6. Enviar offer al servidor (CON quality_mode + codec)
     loadTxt.textContent='Enviando offer al servidor...';
-    log('Enviando SDP offer...','i');
+    log(`Enviando offer con modo: ${S.qualityMode||'medio'}`,'i');
 
-const ansRes=await fetch(url+'/offer',{
-  method:'POST',
-  headers:{
-    'Content-Type':'application/json',
-    'ngrok-skip-browser-warning':'true'
-  },
-  body:JSON.stringify({
+    const ansRes=await fetch(url+'/offer',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'ngrok-skip-browser-warning':'true'
+      },
+      body:JSON.stringify({
         sdp:S.pc.localDescription.sdp,
         type:S.pc.localDescription.type,
         password:pw,
-        width:S.width,
-        height:S.height,
-        fps:S.fps,
+        quality_mode:S.qualityMode||'medio',   // ← Preset elegido
+        codec:'H264',                          // ← Codec preferido
       })
     });
 
@@ -417,6 +432,11 @@ const ansRes=await fetch(url+'/offer',{
 
     const answer=await ansRes.json();
     log('SDP answer recibida ✓','o');
+
+    // Mostrar config del servidor
+    if(answer.config){
+      log(`Servidor: ${answer.config.width}x${answer.config.height} @ ${answer.config.fps}fps ${(answer.config.bitrate/1000000).toFixed(1)}Mbps`,'i');
+    }
 
     // 7. Aplicar answer
     loadTxt.textContent='Estableciendo conexión...';
@@ -431,7 +451,7 @@ const ansRes=await fetch(url+'/offer',{
     resetConn();
   }
 }
-
+  
 function doDisconnect(){
   if(S.dc){try{S.dc.close()}catch(e){}}
   if(S.pc){try{S.pc.close()}catch(e){}}
