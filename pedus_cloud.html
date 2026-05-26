@@ -1,1635 +1,668 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Pedus Cloud Gaming</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PedusCloud Gaming | Ultra Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0a0c;
+            --accent-main: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.4);
+            --accent-secondary: #00b8ff;
+            --glass-bg: rgba(15, 15, 20, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f0f0f0;
+            --text-muted: #888899;
+            --panel-width: 320px;
+        }
 
-<style>
-/* ═══════════════════════════════════════════════
-   RESET & VARIABLES
-═══════════════════════════════════════════════ */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
 
-:root{
-  /* Colors */
-  --bg:        #04040a;
-  --bg2:       #080812;
-  --card:      #0c0c1a;
-  --card2:     #10101f;
-  --card3:     #141428;
-  --input:     #0a0a18;
-  --brd:       rgba(255,255,255,0.06);
-  --brd2:      rgba(255,255,255,0.1);
+        /* --- BACKGROUND Y ESTÉTICA GENERAL --- */
+        .background-fx {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(10, 15, 25, 1) 0%, rgba(5, 5, 8, 1) 100%);
+            z-index: -1;
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(var(--glass-border) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.2;
+            z-index: -1;
+        }
 
-  /* Accent */
-  --p:         #7c6fff;
-  --p2:        #9d8fff;
-  --p3:        #5a52dd;
-  --p-dim:     rgba(124,111,255,0.15);
-  --p-glow:    rgba(124,111,255,0.3);
-  --pink:      #ff6b9d;
-  --cyan:      #00e5ff;
-  --green:     #00e5a0;
-  --yellow:    #ffd93d;
-  --red:       #ff4d6d;
-  --orange:    #ff8c42;
+        /* --- GAME CANVAS --- */
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
 
-  /* Text */
-  --t1:#f0f0ff;--t2:#8888aa;--t3:#44445a;--t4:#22223a;
+        #game-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: crosshair;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            transition: filter 0.3s ease;
+        }
 
-  /* Gradients */
-  --grad-main: linear-gradient(135deg,#7c6fff,#ff6b9d);
-  --grad-card: linear-gradient(135deg,rgba(124,111,255,0.08),rgba(255,107,157,0.05));
-  --grad-glow: radial-gradient(ellipse at 50% 0%,rgba(124,111,255,0.15),transparent 70%);
+        #game-canvas.blurred {
+            filter: blur(8px) brightness(0.6);
+        }
 
-  /* Radius */
-  --r1:6px;--r2:10px;--r3:16px;--r4:22px;--r5:32px;
+        /* --- MAIN CONNECTION PANEL --- */
+        #connection-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            width: 350px;
+            z-index: 100;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-  /* Fonts */
-  --f1:'Space Grotesk',sans-serif;
-  --f2:'Outfit',sans-serif;
-  --f3:'JetBrains Mono',monospace;
+        #connection-panel.hidden {
+            opacity: 0;
+            transform: translate(-50%, -60%) scale(0.95);
+            pointer-events: none;
+        }
 
-  /* Transitions */
-  --tr:.2s cubic-bezier(.4,0,.2,1);
-  --tr-slow:.4s cubic-bezier(.4,0,.2,1);
-}
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .brand h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-main), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .brand p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
 
-html,body{
-  width:100%;height:100%;
-  background:var(--bg);
-  color:var(--t1);
-  font-family:var(--f1);
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-}
+        /* --- TOP HUD MENU (El menú flotante superior) --- */
+        #top-hud {
+            position: absolute;
+            top: -100px; /* Hidden by default */
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 0 0 15px 15px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 200;
+            transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
 
-/* ═══════════════════════════════════════════════
-   BACKGROUND
-═══════════════════════════════════════════════ */
-.bg-wrap{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+        #top-hud.visible {
+            top: 0;
+        }
 
-.bg-noise{
-  position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity:.4;
-}
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+        .hud-item:hover {
+            color: var(--accent-main);
+            background: rgba(255,255,255,0.05);
+        }
+        .hud-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        .hud-item span {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .hud-item.active {
+            color: #ff3366;
+            animation: pulse-red 2s infinite;
+        }
 
-.bg-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(124,111,255,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(124,111,255,.04) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse at 50% 50%,black 30%,transparent 80%);
-}
+        @keyframes pulse-red {
+            0% { text-shadow: 0 0 0 rgba(255,51,102,0); }
+            50% { text-shadow: 0 0 10px rgba(255,51,102,0.8); }
+            100% { text-shadow: 0 0 0 rgba(255,51,102,0); }
+        }
 
-.bg-glow{
-  position:absolute;inset:0;
-  background:var(--grad-glow);
-}
+        /* --- CONTROLES Y FORMULARIOS --- */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent-main);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
 
-.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.08;animation:orbF 25s ease-in-out infinite}
-.orb1{width:700px;height:700px;background:var(--p);top:-200px;left:-200px;animation-duration:28s}
-.orb2{width:500px;height:500px;background:var(--pink);bottom:-150px;right:-150px;animation-duration:22s;animation-delay:-10s}
-.orb3{width:400px;height:400px;background:var(--cyan);top:40%;left:60%;animation-duration:18s;animation-delay:-6s}
-@keyframes orbF{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(50px,-40px) scale(1.08)}
-  66%{transform:translate(-30px,30px) scale(0.92)}
-}
+        /* Custom Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px; width: 16px;
+            border-radius: 50%;
+            background: var(--accent-main);
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+        }
 
-/* ═══════════════════════════════════════════════
-   APP
-═══════════════════════════════════════════════ */
-#app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column}
+        /* Botones */
+        .btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: var(--accent-main);
+            color: #000;
+            border: none;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            background: #00e67a;
+            box-shadow: 0 0 25px var(--accent-glow);
+        }
+        .btn-play {
+            background: linear-gradient(45deg, var(--accent-main), var(--accent-secondary));
+            border: none;
+            color: #000;
+            font-weight: 700;
+            margin-top: 15px;
+            display: none;
+        }
 
-/* ═══════════════════════════════════════════════
-   CONNECT SCREEN
-═══════════════════════════════════════════════ */
-#cs{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:20px;overflow-y:auto;
-}
+        /* Stream Link Copier */
+        #stream-modal {
+            display: none;
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            z-index: 300;
+            text-align: center;
+            width: 300px;
+        }
+        #stream-modal h3 { margin-top: 0; font-family: 'Rajdhani'; }
+        .stream-link-box {
+            background: #000; padding: 10px; border-radius: 6px;
+            font-size: 0.8rem; word-break: break-all; margin: 15px 0;
+            color: var(--accent-secondary); border: 1px dashed #333;
+        }
 
-.cw{
-  width:100%;max-width:520px;
-  display:flex;flex-direction:column;gap:16px;
-  padding:20px 0;
-}
-
-/* Brand */
-.brand{text-align:center;margin-bottom:8px}
-.brand-icon{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:80px;height:80px;border-radius:24px;margin-bottom:18px;
-  background:var(--grad-main);
-  box-shadow:0 0 40px var(--p-glow),0 16px 32px rgba(0,0,0,.5);
-  animation:iconPulse 3s ease-in-out infinite;
-  position:relative;overflow:hidden;
-}
-.brand-icon::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
-}
-.brand-icon svg{width:40px;height:40px;fill:white;position:relative;z-index:1}
-@keyframes iconPulse{
-  0%,100%{box-shadow:0 0 40px var(--p-glow),0 16px 32px rgba(0,0,0,.5)}
-  50%{box-shadow:0 0 70px rgba(124,111,255,.5),0 16px 32px rgba(0,0,0,.5)}
-}
-.brand h1{
-  font-size:2rem;font-weight:800;letter-spacing:-.04em;
-  line-height:1;margin-bottom:4px;
-  font-family:var(--f1);
-}
-.brand h1 .g{
-  background:var(--grad-main);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.brand h1 .w{color:var(--t1)}
-.brand p{font-size:.88rem;color:var(--t2);font-weight:400;margin-top:6px}
-.brand-chips{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-.chip{
-  padding:3px 10px;border-radius:999px;font-size:.68rem;font-weight:600;
-  letter-spacing:.05em;text-transform:uppercase;
-  background:var(--p-dim);border:1px solid rgba(124,111,255,.25);color:var(--p2);
-}
-
-/* Cards */
-.card{
-  background:var(--card);
-  border:1px solid var(--brd);
-  border-radius:var(--r4);
-  padding:22px;
-  position:relative;overflow:hidden;
-  transition:border-color var(--tr),box-shadow var(--tr);
-}
-.card::before{
-  content:'';position:absolute;inset:0;
-  background:var(--grad-card);
-  pointer-events:none;
-}
-.card:hover{
-  border-color:rgba(124,111,255,.2);
-  box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 1px rgba(124,111,255,.05);
-}
-.card-title{
-  font-size:.68rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.14em;color:var(--t3);margin-bottom:14px;
-}
-
-/* Fields */
-.fld{margin-bottom:12px}
-.fld label{
-  display:block;font-size:.78rem;font-weight:500;
-  color:var(--t2);margin-bottom:5px;
-}
-.fld input{
-  width:100%;background:var(--input);
-  border:1px solid var(--brd);border-radius:var(--r2);
-  padding:10px 13px;font-family:var(--f3);
-  font-size:.84rem;color:var(--t1);outline:none;
-  transition:var(--tr);
-}
-.fld input:focus{
-  border-color:var(--p);
-  box-shadow:0 0 0 3px var(--p-dim);
-  background:rgba(10,10,24,0.9);
-}
-.fld input::placeholder{color:var(--t3)}
-
-/* Botones */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  gap:7px;border:none;border-radius:var(--r2);
-  font-family:var(--f1);font-weight:600;cursor:pointer;
-  transition:var(--tr);position:relative;overflow:hidden;
-}
-.btn::after{
-  content:'';position:absolute;inset:0;background:rgba(255,255,255,0);
-  transition:background .15s;
-}
-.btn:active::after{background:rgba(255,255,255,.08)}
-
-.btn-primary{
-  width:100%;padding:13px 20px;font-size:.95rem;
-  background:var(--grad-main);color:white;
-  border-radius:var(--r3);margin-top:4px;
-  box-shadow:0 4px 24px var(--p-glow);
-  letter-spacing:.02em;
-}
-.btn-primary:hover:not(:disabled){
-  transform:translateY(-2px);
-  box-shadow:0 8px 32px rgba(124,111,255,.5);
-}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
-
-.btn-ghost{
-  padding:7px 14px;font-size:.78rem;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--brd2);color:var(--t2);
-  border-radius:var(--r2);
-}
-.btn-ghost:hover{
-  background:var(--p-dim);border-color:rgba(124,111,255,.3);color:var(--p2);
-}
-
-/* Status badge */
-.sb{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 12px;border-radius:999px;
-  font-size:.73rem;font-weight:600;letter-spacing:.04em;
-}
-.sb .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.s-dc{background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.2)}
-.s-cn{background:rgba(255,217,61,.1);color:var(--yellow);border:1px solid rgba(255,217,61,.2)}
-.s-ok{background:rgba(0,229,160,.1);color:var(--green);border:1px solid rgba(0,229,160,.2)}
-.s-dc .dot{background:var(--red)}
-.s-cn .dot{background:var(--yellow);animation:pu .8s infinite}
-.s-ok .dot{background:var(--green);animation:pu 2s infinite}
-@keyframes pu{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
-
-/* Presets grid */
-.presets-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;
-  margin:10px 0;
-}
-.preset{
-  padding:8px 4px;
-  background:var(--input);border:1px solid var(--brd);
-  border-radius:var(--r2);cursor:pointer;
-  text-align:center;transition:var(--tr);
-}
-.preset:hover{border-color:rgba(124,111,255,.3)}
-.preset.on{
-  background:var(--p-dim);
-  border-color:var(--p);
-}
-.preset .pe{font-size:1rem;display:block;margin-bottom:3px}
-.preset .pl{font-size:.64rem;font-weight:600;color:var(--t2);display:block}
-.preset.on .pl{color:var(--p2)}
-
-/* Divider */
-.dv{display:flex;align-items:center;gap:10px;margin:4px 0}
-.dv::before,.dv::after{content:'';flex:1;height:1px;background:var(--brd)}
-.dv span{font-size:.68rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em}
-
-/* Log box */
-.lb{
-  background:rgba(0,0,0,.3);border:1px solid var(--brd);
-  border-radius:var(--r2);padding:10px 12px;
-  max-height:72px;overflow-y:auto;
-  font-family:var(--f3);font-size:.7rem;line-height:1.7;
-}
-.lb::-webkit-scrollbar{width:3px}
-.lb::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
-.le{display:flex;gap:8px}
-.lt{color:var(--t3)}
-.lo .lm{color:var(--green)}.lee .lm{color:var(--red)}
-.lw .lm{color:var(--yellow)}.li .lm{color:var(--cyan)}
-
-/* Hints */
-.hints{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.hint{display:inline-flex;align-items:center;gap:3px;font-size:.7rem;color:var(--t3)}
-.key{
-  display:inline-flex;align-items:center;justify-content:center;
-  min-width:20px;height:18px;padding:0 5px;
-  background:var(--card3);border:1px solid var(--brd2);
-  border-bottom:2px solid var(--brd2);border-radius:4px;
-  font-family:var(--f3);font-size:.62rem;color:var(--t2);
-}
-
-/* Spectator toggle */
-.spec-toggle{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;background:var(--input);
-  border:1px solid var(--brd);border-radius:var(--r2);
-  cursor:pointer;transition:var(--tr);margin-top:6px;
-}
-.spec-toggle:hover{border-color:rgba(124,111,255,.3)}
-.spec-icon{font-size:1.2rem}
-.spec-text{flex:1}
-.spec-text .st{font-size:.82rem;font-weight:600;color:var(--t1)}
-.spec-text .ss{font-size:.72rem;color:var(--t2)}
-.spec-arrow{color:var(--t3);font-size:.8rem}
-
-/* ═══════════════════════════════════════════════
-   GAME SCREEN
-═══════════════════════════════════════════════ */
-#gs{display:none;width:100vw;height:100vh;background:#000;position:relative}
-
-#gv{
-  width:100%;height:100%;object-fit:contain;
-  background:#000;cursor:none;display:block;
-  transform:translateZ(0);will-change:transform;
-}
-
-/* HUD top */
-.hud{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:48px;display:flex;align-items:center;
-  justify-content:space-between;padding:0 16px;
-  background:linear-gradient(180deg,rgba(4,4,10,.97) 0%,rgba(4,4,10,.6) 70%,transparent 100%);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  transition:opacity .5s ease,transform .5s ease;
-  border-bottom:1px solid rgba(255,255,255,.04);
-}
-.hud.hid{opacity:0;transform:translateY(-100%);pointer-events:none}
-
-.hud-brand{
-  display:flex;align-items:center;gap:8px;
-  font-size:.88rem;font-weight:700;letter-spacing:-.02em;
-}
-.hud-brand-icon{
-  width:28px;height:28px;border-radius:8px;
-  background:var(--grad-main);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;
-}
-.hud-brand-text .g{
-  background:var(--grad-main);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.hud-stats{display:flex;align-items:center;gap:6px}
-.hstat{
-  display:flex;align-items:center;gap:4px;
-  padding:4px 10px;border-radius:999px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.07);
-  font-family:var(--f3);font-size:.68rem;
-}
-.hstat .sl{color:var(--t3)}
-.hstat .sv{color:var(--t1);font-weight:600}
-.hstat.fps-ok .sv{color:var(--green)}
-.hstat.fps-warn .sv{color:var(--yellow)}
-.hstat.fps-bad .sv{color:var(--red)}
-.hstat.ping-ok .sv{color:var(--green)}
-.hstat.ping-warn .sv{color:var(--yellow)}
-.hstat.ping-bad .sv{color:var(--red)}
-
-.hud-btns{display:flex;align-items:center;gap:6px}
-.hbtn{
-  height:32px;display:inline-flex;align-items:center;justify-content:center;
-  border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.05);
-  border-radius:var(--r2);cursor:pointer;transition:var(--tr);
-  color:var(--t2);padding:0 10px;font-family:var(--f1);font-size:.76rem;font-weight:600;
-}
-.hbtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
-  stroke-linecap:round;stroke-linejoin:round}
-.hbtn:hover{border-color:rgba(124,111,255,.4);color:var(--p2);background:var(--p-dim)}
-.hbtn.danger{color:var(--red);border-color:rgba(255,77,109,.2);background:rgba(255,77,109,.08)}
-.hbtn.danger:hover{background:rgba(255,77,109,.2)}
-.hbtn-icon{width:32px;padding:0}
-
-/* Quality pill en game */
-#qbar{
-  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-  z-index:150;display:flex;align-items:center;gap:4px;
-  background:rgba(4,4,10,.9);border:1px solid rgba(255,255,255,.08);
-  border-radius:999px;padding:4px 12px;backdrop-filter:blur(12px);
-  transition:opacity .5s;gap:6px;
-}
-#qbar.hid{opacity:0;pointer-events:none}
-.qbar-label{font-size:.66rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-right:4px}
-.qbtn{
-  padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:600;
-  border:none;background:transparent;color:var(--t2);cursor:pointer;
-  transition:var(--tr);font-family:var(--f1);
-}
-.qbtn:hover{color:var(--p2)}
-.qbtn.on{background:var(--p);color:white;box-shadow:0 0 14px var(--p-glow)}
-
-/* AI Advisor panel */
-#ai-panel{
-  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
-  z-index:150;min-width:300px;max-width:500px;
-  background:rgba(4,4,10,.95);border:1px solid rgba(124,111,255,.2);
-  border-radius:var(--r3);padding:12px 16px;
-  backdrop-filter:blur(16px);
-  display:flex;align-items:center;gap:10px;
-  transition:opacity .5s,transform .5s;
-  pointer-events:none;opacity:0;
-}
-#ai-panel.show{opacity:1;pointer-events:auto}
-#ai-panel.level-ok{border-color:rgba(0,229,160,.2)}
-#ai-panel.level-warning{border-color:rgba(255,217,61,.3)}
-#ai-panel.level-critical{border-color:rgba(255,77,109,.4);animation:critPulse 1s infinite}
-@keyframes critPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(255,77,109,0)}
-  50%{box-shadow:0 0 0 4px rgba(255,77,109,.2)}
-}
-.ai-icon{font-size:1.4rem;flex-shrink:0}
-.ai-text{flex:1;font-size:.78rem;color:var(--t1);line-height:1.4}
-.ai-close{
-  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.08);
-  border:none;color:var(--t2);cursor:pointer;font-size:.8rem;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.ai-close:hover{background:rgba(255,255,255,.15)}
-
-/* Spectator overlay */
-#spec-overlay{
-  position:fixed;top:48px;right:16px;z-index:150;
-  background:rgba(4,4,10,.9);border:1px solid rgba(255,107,157,.2);
-  border-radius:var(--r3);padding:12px 16px;
-  backdrop-filter:blur(12px);min-width:220px;
-  display:none;
-}
-#spec-overlay.show{display:block}
-.spec-title{font-size:.72rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;color:var(--pink);margin-bottom:10px}
-.spec-link-box{
-  background:var(--input);border:1px solid var(--brd);
-  border-radius:var(--r2);padding:8px 10px;
-  font-family:var(--f3);font-size:.68rem;color:var(--t2);
-  word-break:break-all;margin-bottom:8px;
-}
-.spec-copy-btn{
-  width:100%;padding:7px;background:rgba(255,107,157,.15);
-  border:1px solid rgba(255,107,157,.3);border-radius:var(--r2);
-  color:var(--pink);font-size:.76rem;font-weight:600;cursor:pointer;
-  font-family:var(--f1);transition:var(--tr);
-}
-.spec-copy-btn:hover{background:rgba(255,107,157,.25)}
-
-/* Data counter */
-#data-counter{
-  position:fixed;top:56px;left:50%;transform:translateX(-50%);
-  z-index:99;
-  background:rgba(4,4,10,.85);border:1px solid var(--brd);
-  border-radius:999px;padding:3px 14px;
-  display:flex;align-items:center;gap:10px;
-  font-family:var(--f3);font-size:.68rem;
-  backdrop-filter:blur(8px);
-  transition:opacity .5s;
-}
-#data-counter.hid{opacity:0}
-.dc-item{display:flex;align-items:center;gap:4px}
-.dc-label{color:var(--t3)}
-.dc-val{color:var(--t1);font-weight:500}
-.dc-val.warn{color:var(--yellow)}
-.dc-val.danger{color:var(--red)}
-
-/* Loading overlay */
-#loadOv{
-  position:fixed;inset:0;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;z-index:200;gap:20px;
-}
-.load-logo{
-  width:64px;height:64px;border-radius:20px;
-  background:var(--grad-main);
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;
-  animation:loadPulse 1.5s ease-in-out infinite;
-  box-shadow:0 0 40px var(--p-glow);
-}
-@keyframes loadPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.load-ring{
-  width:48px;height:48px;
-  border:2px solid rgba(124,111,255,.2);
-  border-top-color:var(--p);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.load-text{font-size:.88rem;color:var(--t2);font-weight:500}
-#loadTxt{font-size:.75rem;color:var(--t3);font-family:var(--f3)}
-
-/* Custom cursor */
-#cur{
-  position:fixed;pointer-events:none;z-index:9999;
-  width:16px;height:16px;background:#fff;border-radius:50%;
-  transform:translate(-50%,-50%);mix-blend-mode:difference;
-  display:none;transition:transform .05s;
-}
-#cur.clicking{transform:translate(-50%,-50%) scale(.7)}
-
-/* Toast */
-#toasts{
-  position:fixed;bottom:22px;right:22px;z-index:9999;
-  display:flex;flex-direction:column;gap:8px;pointer-events:none;
-}
-.toast{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 16px;background:var(--card2);
-  border:1px solid var(--brd2);border-radius:var(--r3);
-  font-size:.82rem;font-weight:500;
-  box-shadow:0 8px 32px rgba(0,0,0,.5);
-  animation:tIn .3s cubic-bezier(.4,0,.2,1);
-  max-width:320px;backdrop-filter:blur(12px);
-}
-.toast .tico{font-size:1rem}
-.tok{border-color:rgba(0,229,160,.3);color:var(--green)}
-.ter{border-color:rgba(255,77,109,.3);color:var(--red)}
-.tin{border-color:rgba(0,229,255,.3);color:var(--cyan)}
-.twr{border-color:rgba(255,217,61,.3);color:var(--yellow)}
-@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-.toast.out{animation:tOut .3s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes tOut{to{transform:translateX(110%);opacity:0}}
-
-/* Gamepad indicator */
-#gp-ind{
-  position:fixed;bottom:20px;right:20px;z-index:150;
-  width:36px;height:36px;border-radius:10px;
-  background:rgba(4,4,10,.9);border:1px solid var(--brd);
-  display:none;align-items:center;justify-content:center;
-  font-size:18px;backdrop-filter:blur(8px);
-}
-#gp-ind.connected{
-  display:flex;
-  border-color:rgba(0,229,160,.4);
-  box-shadow:0 0 12px rgba(0,229,160,.2);
-}
-
-/* Monitor selector */
-.monitor-sel{
-  display:flex;gap:6px;margin-top:8px;
-}
-.mon-btn{
-  flex:1;padding:7px;background:var(--input);
-  border:1px solid var(--brd);border-radius:var(--r2);
-  font-size:.72rem;font-weight:600;color:var(--t2);
-  cursor:pointer;text-align:center;transition:var(--tr);
-}
-.mon-btn:hover{border-color:rgba(124,111,255,.3);color:var(--p2)}
-.mon-btn.on{background:var(--p-dim);border-color:var(--p);color:var(--p2)}
-
-/* Touch controls */
-#touch-ctrl{
-  position:fixed;bottom:0;left:0;right:0;z-index:120;
-  pointer-events:none;display:none;
-}
-#touch-ctrl.show{display:block}
-.touch-btn{
-  position:absolute;width:56px;height:56px;
-  border-radius:50%;background:rgba(255,255,255,.1);
-  border:2px solid rgba(255,255,255,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.2rem;pointer-events:all;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
-}
-.touch-btn:active{background:rgba(255,255,255,.25)}
-.joystick-zone{
-  position:absolute;width:140px;height:140px;
-  border-radius:50%;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);
-  pointer-events:all;
-}
-
-/* Scrollbar global */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px}
-
-/* Responsive */
-@media(max-width:480px){
-  .presets-grid{grid-template-columns:repeat(2,1fr)}
-  .hud-stats .hstat:nth-child(n+3){display:none}
-  .brand h1{font-size:1.8rem}
-}
-</style>
+        /* Notificaciones Toast */
+        #toast {
+            position: absolute;
+            bottom: 20px; right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white; padding: 12px 20px;
+            border-left: 4px solid var(--accent-main);
+            border-radius: 4px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-size: 0.85rem;
+        }
+        #toast.show { transform: translateX(0); }
+        
+        .shortcut-hint {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+        kbd {
+            background: #222; border: 1px solid #444; border-radius: 3px;
+            padding: 2px 5px; font-family: monospace; color: #ddd;
+        }
+    </style>
 </head>
-
 <body>
-<!-- Background -->
-<div class="bg-wrap">
-  <div class="bg-glow"></div>
-  <div class="bg-grid"></div>
-  <div class="bg-noise"></div>
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
-</div>
 
-<!-- Toasts -->
-<div id="toasts"></div>
+    <div class="background-fx"></div>
+    <div class="grid-overlay"></div>
 
-<!-- Cursor -->
-<div id="cur"></div>
-
-<!-- Gamepad indicator -->
-<div id="gp-ind">🎮</div>
-
-<div id="app">
-
-  <!-- ══ CONNECT SCREEN ══ -->
-  <div id="cs">
-    <div class="cw">
-
-      <!-- Brand -->
-      <div class="brand">
-        <div class="brand-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 6H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2zm-10 7H9v2H7v-2H5v-2h2V9h2v2h2v2zm4.5 1a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+    <!-- MENÚ HUD SUPERIOR -->
+    <div id="top-hud">
+        <div class="hud-item" id="hud-menu" title="Volver al menú principal">
+            <i class="fa-solid fa-bars"></i>
+            <span>Menú</span>
         </div>
-        <h1><span class="w">Pedus</span> <span class="g">Cloud Gaming</span></h1>
-        <p>Tu PC en cualquier lugar · WebRTC · Ultra Low Latency</p>
-        <div class="brand-chips">
-          <span class="chip">WebRTC</span>
-          <span class="chip">H.264</span>
-          <span class="chip">AI Advisor</span>
-          <span class="chip">Gamepad</span>
-          <span class="chip">Audio</span>
+        <div class="hud-item" id="hud-screenshot" title="Capturar pantalla (C)">
+            <i class="fa-solid fa-camera"></i>
+            <span>Captura</span>
         </div>
-      </div>
-
-      <!-- Server card -->
-      <div class="card">
-        <div class="card-title">🔌 Conexión</div>
-        <div class="fld">
-          <label>URL del servidor (ngrok)</label>
-          <input id="urlI" type="text" placeholder="https://xxxx.ngrok-free.app" spellcheck="false" autocomplete="off"/>
+        <div class="hud-item" id="hud-record" title="Grabar video local (R)">
+            <i class="fa-solid fa-circle-dot"></i>
+            <span>Grabar</span>
         </div>
-        <div class="fld">
-          <label>Contraseña</label>
-          <input id="pwI" type="password" placeholder="••••••••"/>
+        <div class="hud-item" id="hud-stream" title="Generar enlace de espectador (S)">
+            <i class="fa-solid fa-broadcast-tower"></i>
+            <span>Transmitir</span>
         </div>
-
-        <div class="dv" style="margin-top:4px"><span>Calidad</span></div>
-
-        <div class="presets-grid" id="presets">
-          <div class="preset" data-mode="potato"><span class="pe">🥔</span><span class="pl">Potato</span></div>
-          <div class="preset" data-mode="bajo"><span class="pe">🔋</span><span class="pl">480p·30</span></div>
-          <div class="preset on" data-mode="medio"><span class="pe">📺</span><span class="pl">720p·30</span></div>
-          <div class="preset" data-mode="alto"><span class="pe">⚡</span><span class="pl">720p·60</span></div>
-          <div class="preset" data-mode="full"><span class="pe">🎯</span><span class="pl">1080p·60</span></div>
-          <div class="preset" data-mode="ultra"><span class="pe">💎</span><span class="pl">1440p·60</span></div>
-          <div class="preset" data-mode="4k"><span class="pe">🚀</span><span class="pl">4K·60</span></div>
-          <div class="preset" data-mode="spec"><span class="pe">👁️</span><span class="pl">Spectate</span></div>
+        <div class="hud-item" id="hud-fullscreen" title="Pantalla Completa (F)">
+            <i class="fa-solid fa-expand"></i>
+            <span>Pantalla</span>
         </div>
-
-        <button class="btn btn-primary" id="cbtn" onclick="doConnect()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Conectar
-        </button>
-      </div>
-
-      <!-- Status card -->
-      <div class="card" style="padding:16px 20px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div class="card-title" style="margin:0">Estado</div>
-          <div id="badge" class="sb s-dc"><div class="dot"></div><span id="stxt">Desconectado</span></div>
-        </div>
-        <div class="lb" id="logBox">
-          <div class="le li"><span class="lt">--:--:--</span><span class="lm">Pedus Cloud Gaming listo.</span></div>
-        </div>
-      </div>
-
-      <!-- Options card -->
-      <div class="card" style="padding:16px 20px">
-        <div class="card-title">⚙️ Opciones</div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="toggleTouchControls()" id="touchBtn">
-            📱 Touch Controls
-          </button>
-          <button class="btn btn-ghost" onclick="toggleAI()" id="aiBtn">
-            🤖 AI Advisor
-          </button>
-          <button class="btn btn-ghost" onclick="toggleDataSaver()" id="dsBtn">
-            📊 Datos: Auto
-          </button>
-        </div>
-
-        <!-- Monitor selector -->
-        <div style="margin-top:10px">
-          <div style="font-size:.72rem;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em">Monitor</div>
-          <div class="monitor-sel" id="monitorSel">
-            <div class="mon-btn on" data-mon="0">Principal</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hints -->
-      <div class="hints">
-        <div class="hint"><span class="key">Esc×2</span>Salir</div>
-        <div class="hint"><span class="key">F11</span>Fullscreen</div>
-        <div class="hint"><span class="key">~</span>HUD</div>
-        <div class="hint"><span class="key">F9</span>Screenshot</div>
-        <div class="hint"><span class="key">F10</span>Grabar</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ══ GAME SCREEN ══ -->
-  <div id="gs">
-
-    <!-- HUD -->
-    <div class="hud" id="hud">
-      <div class="hud-brand">
-        <div class="hud-brand-icon">🎮</div>
-        <div class="hud-brand-text">Pedus <span class="g">Cloud</span></div>
-      </div>
-
-      <div class="hud-stats">
-        <div class="hstat" id="hs-fps"><span class="sl">FPS</span><span class="sv" id="hFps">--</span></div>
-        <div class="hstat" id="hs-ping"><span class="sl">PING</span><span class="sv" id="hPing">--</span><span class="sl">ms</span></div>
-        <div class="hstat"><span class="sl">KB/s</span><span class="sv" id="hBw">--</span></div>
-        <div class="hstat"><span class="sl">DATA</span><span class="sv" id="hData">0MB</span></div>
-        <div class="hstat"><span class="sl">ICE</span><span class="sv" id="hIce">--</span></div>
-      </div>
-
-      <div class="hud-btns">
-        <button class="hbtn" onclick="takeScreenshot()" title="Screenshot (F9)">📸</button>
-        <button class="hbtn" onclick="toggleRecord()" id="recBtn" title="Grabar (F10)">⏺</button>
-        <button class="hbtn hbtn-icon" onclick="togFS()" title="Fullscreen">
-          <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
-        </button>
-        <button class="hbtn" onclick="showSpectatorPanel()" title="Invitar espectadores">👁️</button>
-        <button class="hbtn danger" onclick="doDisconnect()">⏹ Salir</button>
-      </div>
     </div>
 
-    <!-- Video -->
-    <video id="gv" autoplay playsinline muted
-           disablepictureinpicture disableremoteplayback></video>
+    <!-- PANEL PRINCIPAL DE CONEXIÓN -->
+    <div id="connection-panel">
+        <div class="brand">
+            <h1>PedusCloud</h1>
+            <p>Gaming en la Nube</p>
+        </div>
 
-    <!-- Quality bar -->
-    <div id="qbar">
-      <span class="qbar-label">Calidad</span>
-      <button class="qbtn" data-mode="potato">🥔</button>
-      <button class="qbtn" data-mode="bajo">480p</button>
-      <button class="qbtn on" data-mode="medio">720p</button>
-      <button class="qbtn" data-mode="alto">720·60</button>
-      <button class="qbtn" data-mode="full">1080p</button>
-      <button class="qbtn" data-mode="ultra">1440p</button>
-      <button class="qbtn" data-mode="4k">4K</button>
+        <div class="input-group">
+            <label>IP del Host <span id="status-text" style="color:#ff3366">• Desconectado</span></label>
+            <input type="text" id="server-ip" value="192.168.1.XX" placeholder="Tu IP Pública...">
+        </div>
+
+        <div class="input-group">
+            <label>Resolución</label>
+            <select id="res-select">
+                <option value="1080p">1080p (FHD - Máxima Calidad)</option>
+                <option value="720p" selected>720p (HD - Equilibrado)</option>
+                <option value="440p">440p (SD - Fluidez Extrema)</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Tasa de Bits (Calidad JPEG) <span id="quality-val">60%</span></label>
+            <input type="range" id="quality-slider" min="10" max="100" value="60">
+        </div>
+
+        <button id="connect-btn" class="btn btn-primary"><i class="fa-solid fa-link"></i> Conectar al Host</button>
+        <button id="play-btn" class="btn btn-play"><i class="fa-solid fa-gamepad"></i> Jugar Ahora</button>
     </div>
 
-    <!-- Data counter -->
-    <div id="data-counter">
-      <div class="dc-item"><span class="dc-label">Sesión</span><span class="dc-val" id="dc-session">0 MB</span></div>
-      <div class="dc-item"><span class="dc-label">Velocidad</span><span class="dc-val" id="dc-speed">0 KB/s</span></div>
-      <div class="dc-item"><span class="dc-label">Tiempo</span><span class="dc-val" id="dc-time">0:00</span></div>
+    <!-- MODAL STREAMING -->
+    <div id="stream-modal">
+        <h3><i class="fa-solid fa-broadcast-tower"></i> Modo Stream</h3>
+        <p style="font-size:0.8rem; color:#aaa;">Comparte este enlace para que otros vean tu partida (Modo Espectador):</p>
+        <div class="stream-link-box" id="stream-link-text">http://tu-github-pages.io/?spectate=192.168.1.XX</div>
+        <button class="btn btn-primary" id="copy-stream-btn">Copiar Enlace</button>
+        <button class="btn" style="margin-top:10px;" onclick="document.getElementById('stream-modal').style.display='none'">Cerrar</button>
     </div>
 
-    <!-- AI Advisor panel -->
-    <div id="ai-panel">
-      <div class="ai-icon">🤖</div>
-      <div class="ai-text" id="ai-text">Analizando conexión...</div>
-      <button class="ai-close" onclick="hideAIPanel()">✕</button>
+    <div id="game-container">
+        <canvas id="game-canvas" width="1280" height="720" class="blurred"></canvas>
     </div>
 
-    <!-- Spectator panel -->
-    <div id="spec-overlay">
-      <div class="spec-title">👁️ Invitar espectadores</div>
-      <div class="spec-link-box" id="spec-link-box">Generando enlace...</div>
-      <button class="spec-copy-btn" onclick="copySpecLink()">📋 Copiar enlace</button>
-    </div>
+    <div id="toast">Acción realizada</div>
+    
+    <div class="shortcut-hint">Presiona <kbd>SHIFT</kbd> + <kbd>TAB</kbd> para abrir el menú HUD mientras juegas</div>
 
-    <!-- Loading overlay -->
-    <div id="loadOv">
-      <div class="load-logo">🎮</div>
-      <div class="load-ring"></div>
-      <div class="load-text">Conectando WebRTC...</div>
-      <div id="loadTxt">Iniciando...</div>
-    </div>
+    <script>
+        // --- Variables Globales ---
+        let ws = null;
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        
+        // Elementos UI
+        const panel = document.getElementById('connection-panel');
+        const topHud = document.getElementById('top-hud');
+        const connectBtn = document.getElementById('connect-btn');
+        const playBtn = document.getElementById('play-btn');
+        const statusText = document.getElementById('status-text');
+        
+        let isPlaying = false;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isSpectatorMode = false;
 
-    <!-- Touch controls -->
-    <div id="touch-ctrl"></div>
-
-  </div>
-</div>
-
-<script>
-'use strict';
-
-// ══════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════
-const S = {
-  pc: null, dc: null, serverUrl: '',
-  connected: false, qualityMode: 'medio',
-  isSpectator: false, monitorId: 0,
-  // Stats
-  pingStart: 0, lastPing: 0,
-  bytesRx: 0, lastBwT: Date.now(),
-  sessionBytes: 0, sessionStart: 0,
-  // UI
-  hudVisible: true, hudTimer: null,
-  aiEnabled: true, touchEnabled: false, dataSaver: false,
-  // Gamepad
-  gamepadActive: false, gamepadLoop: null, lastGamepadState: {},
-  // Recording
-  recording: false, mediaRecorder: null, recordedChunks: [],
-  // Render
-  renderScale: 1, renderOX: 0, renderOY: 0,
-  // Esc
-  escN: 0, escT: null,
-};
-
-// ══════════════════════════════════════════════
-// DOM REFS
-// ══════════════════════════════════════════════
-const $ = id => document.getElementById(id);
-const cs=$('cs'), gs=$('gs'), urlI=$('urlI'), pwI=$('pwI'), cbtn=$('cbtn');
-const badge=$('badge'), stxt=$('stxt'), logBox=$('logBox');
-const video=$('gv'), loadOv=$('loadOv'), loadTxt=$('loadTxt');
-const hud=$('hud'), qbar=$('qbar'), dataCtr=$('data-counter');
-const hFps=$('hFps'), hPing=$('hPing'), hBw=$('hBw'), hData=$('hData'), hIce=$('hIce');
-const cur=$('cur'), aiPanel=$('ai-panel'), aiText=$('ai-text');
-const hsFps=$('hs-fps'), hsPing=$('hs-ping');
-
-// ══════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════
-function ts(){
-  const d=new Date();
-  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
-}
-
-function log(m,t='i'){
-  const cls={i:'li',o:'lo',e:'lee',w:'lw'}[t]||'li';
-  const d=document.createElement('div');
-  d.className=`le ${cls}`;
-  d.innerHTML=`<span class="lt">${ts()}</span><span class="lm">${m}</span>`;
-  logBox.appendChild(d);
-  logBox.scrollTop=logBox.scrollHeight;
-  while(logBox.children.length>80)logBox.removeChild(logBox.firstChild);
-}
-
-function toast(m,t='i',dur=3500){
-  const cls={o:'tok',e:'ter',i:'tin',w:'twr'}[t]||'tin';
-  const ic={o:'✅',e:'❌',w:'⚠️',i:'ℹ️'};
-  const el=document.createElement('div');
-  el.className=`toast ${cls}`;
-  el.innerHTML=`<span class="tico">${ic[t]||'●'}</span><span>${m}</span>`;
-  $('toasts').appendChild(el);
-  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)},dur);
-}
-
-function setSt(cls,txt){badge.className=`sb ${cls}`;stxt.textContent=txt}
-
-function formatBytes(bytes){
-  if(bytes<1024)return`${bytes}B`;
-  if(bytes<1024*1024)return`${(bytes/1024).toFixed(0)}KB`;
-  return`${(bytes/1024/1024).toFixed(1)}MB`;
-}
-
-function formatTime(secs){
-  const m=Math.floor(secs/60),s=Math.floor(secs%60);
-  return`${m}:${String(s).padStart(2,'0')}`;
-}
-
-// ══════════════════════════════════════════════
-// PRESETS
-// ══════════════════════════════════════════════
-document.querySelectorAll('.preset').forEach(b=>{
-  b.addEventListener('click',()=>{
-    if(b.dataset.mode==='spec'){
-      S.isSpectator=true;
-      document.querySelectorAll('.preset').forEach(x=>x.classList.remove('on'));
-      b.classList.add('on');
-      log('Modo espectador seleccionado','i');
-      return;
-    }
-    S.isSpectator=false;
-    document.querySelectorAll('.preset').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-    S.qualityMode=b.dataset.mode;
-    log(`Preset: ${b.querySelector('.pe').textContent} ${b.querySelector('.pl').textContent}`,'i');
-  });
-});
-
-document.querySelectorAll('.qbtn').forEach(b=>{
-  b.addEventListener('click',async()=>{
-    if(!S.connected)return;
-    document.querySelectorAll('.qbtn').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-    const mode=b.dataset.mode;
-    try{
-      await fetch(S.serverUrl+'/quality',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
-        body:JSON.stringify({mode})
-      });
-      toast(`Calidad → ${b.textContent}`,'i',2000);
-      log(`Calidad cambiada a ${mode}`,'o');
-    }catch(e){log(`Quality change: ${e.message}`,'e')}
-  });
-});
-
-// ══════════════════════════════════════════════
-// MONITOR SELECTOR
-// ══════════════════════════════════════════════
-async function loadMonitors(){
-  try{
-    const r=await fetch(S.serverUrl+'/config',{headers:{'ngrok-skip-browser-warning':'true'}});
-    const cfg=await r.json();
-    if(cfg.monitors&&cfg.monitors.length>1){
-      const sel=$('monitorSel');
-      sel.innerHTML='';
-      cfg.monitors.forEach(m=>{
-        const btn=document.createElement('div');
-        btn.className='mon-btn'+(m.id===0?' on':'');
-        btn.dataset.mon=m.id;
-        btn.textContent=`M${m.id+1} (${m.width}x${m.height})`;
-        btn.onclick=async()=>{
-          document.querySelectorAll('.mon-btn').forEach(x=>x.classList.remove('on'));
-          btn.classList.add('on');
-          S.monitorId=m.id;
-          if(S.connected){
-            await fetch(S.serverUrl+'/monitor',{
-              method:'POST',
-              headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
-              body:JSON.stringify({monitor:m.id})
-            });
-            toast(`Monitor ${m.id+1} seleccionado`,'i',2000);
-          }
-        };
-        sel.appendChild(btn);
-      });
-    }
-  }catch(e){}
-}
-
-// ══════════════════════════════════════════════
-// CONNECT
-// ══════════════════════════════════════════════
-async function doConnect(){
-  let url=urlI.value.trim();
-  const pw=pwI.value.trim();
-  if(!url){toast('Introduce la URL del servidor','e');return}
-  if(!pw){toast('Introduce la contraseña','e');return}
-  if(!url.startsWith('http'))url='https://'+url;
-  url=url.replace(/\/$/,'');
-  S.serverUrl=url;
-  cbtn.disabled=true;
-  setSt('s-cn','Conectando...');
-  log('Iniciando conexión WebRTC...','i');
-
-  try{
-    // 1. Config
-    loadTxt.textContent='Obteniendo configuración...';
-    const cfgRes=await fetch(url+'/config',{headers:{'ngrok-skip-browser-warning':'true'}});
-    const cfg=await cfgRes.json();
-    log(`Servidor: ${cfg.width}x${cfg.height}@${cfg.fps}fps`,'i');
-    log(`ICE servers: ${cfg.iceServers.length} | AI: ${cfg.ai_enabled?'✓':'✗'}`,'i');
-
-    // Cargar monitores
-    await loadMonitors();
-
-    // 2. PeerConnection
-    loadTxt.textContent='Creando PeerConnection...';
-    S.pc=new RTCPeerConnection({
-      iceServers:cfg.iceServers,
-      bundlePolicy:'max-bundle',
-      rtcpMuxPolicy:'require',
-      sdpSemantics:'unified-plan',
-    });
-
-    // 3. Tracks
-    S.pc.ontrack=(ev)=>{
-      log(`📺 Track: ${ev.track.kind}`,'o');
-      if(!video.srcObject)video.srcObject=ev.streams[0];
-      video.play()
-        .then(()=>{
-          loadOv.style.display='none';
-          log('▶️ Reproduciendo','o');
-        })
-        .catch(()=>showPlayBtn());
-      ev.track.onunmute=()=>log(`🔊 ${ev.track.kind} activo`,'o');
-    };
-
-    // 4. ICE events
-    S.pc.oniceconnectionstatechange=()=>{
-      const st=S.pc.iceConnectionState;
-      hIce.textContent=st;
-      log(`ICE: ${st}`,st==='connected'||st==='completed'?'o':st==='failed'?'e':'i');
-      if(st==='connected'||st==='completed'){
-        setSt('s-ok','Conectado');
-        S.connected=true;
-        S.sessionStart=Date.now();
-        toast('Conectado ✓','o');
-        startStats();
-        startAILoop();
-        startGamepadLoop();
-        if(cfg.spectator_enabled&&!S.isSpectator)generateSpectatorLink();
-      }
-      if(st==='failed'||st==='disconnected'||st==='closed'){
-        if(S.connected)autoReconnect();
-      }
-    };
-
-    // 5. DataChannel (solo si no es spectator)
-    if(!S.isSpectator){
-      S.dc=S.pc.createDataChannel('input',{ordered:false,maxRetransmits:0});
-      S.dc.onopen=()=>log('📡 DataChannel abierto','o');
-      S.dc.onclose=()=>log('📡 DataChannel cerrado','w');
-    }
-
-    // 6. Transceivers
-    loadTxt.textContent='Preparando stream...';
-    S.pc.addTransceiver('video',{direction:'recvonly'});
-    if(!S.isSpectator)S.pc.addTransceiver('audio',{direction:'recvonly'});
-
-    const offer=await S.pc.createOffer();
-    await S.pc.setLocalDescription(offer);
-
-    // 7. Gather ICE
-    loadTxt.textContent='Recopilando ICE candidates...';
-    await new Promise(res=>{
-      if(S.pc.iceGatheringState==='complete')res();
-      else S.pc.onicegatheringstatechange=()=>{if(S.pc.iceGatheringState==='complete')res()};
-      setTimeout(res,5000);
-    });
-
-    // 8. Send offer
-    loadTxt.textContent='Negociando SDP...';
-    const body={
-      sdp:S.pc.localDescription.sdp,
-      type:S.pc.localDescription.type,
-      quality_mode:S.qualityMode,
-      codec:'H264',
-    };
-    if(S.isSpectator) body.spectator_token=S.spectatorToken||'';
-    else body.password=pw;
-
-    const ansRes=await fetch(url+'/offer',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
-      body:JSON.stringify(body)
-    });
-    if(!ansRes.ok){
-      const err=await ansRes.json().catch(()=>({error:'Error desconocido'}));
-      throw new Error(err.error||`HTTP ${ansRes.status}`);
-    }
-
-    const answer=await ansRes.json();
-    log('SDP answer recibida ✓','o');
-
-    if(answer.config){
-      log(`Config: ${answer.config.width}x${answer.config.height}@${answer.config.fps}fps`,'i');
-    }
-
-    await S.pc.setRemoteDescription(new RTCSessionDescription(answer));
-    setSt('s-cn','Estableciendo ICE...');
-    showGame();
-
-  }catch(err){
-    log(`Error: ${err.message}`,'e');
-    toast(`Error: ${err.message}`,'e',6000);
-    resetConn();
-  }
-}
-
-// ══════════════════════════════════════════════
-// AUTO RECONNECT
-// ══════════════════════════════════════════════
-let reconnectAttempts=0;
-const MAX_RECONNECTS=3;
-
-async function autoReconnect(){
-  if(reconnectAttempts>=MAX_RECONNECTS){
-    toast('No se pudo reconectar','e');
-    doDisconnect();
-    return;
-  }
-  reconnectAttempts++;
-  toast(`Reconectando (${reconnectAttempts}/${MAX_RECONNECTS})...`,'w');
-  log(`Reconexión ${reconnectAttempts}...`,'w');
-  loadTxt.textContent=`Reconectando (${reconnectAttempts}/${MAX_RECONNECTS})...`;
-  loadOv.style.display='flex';
-  await new Promise(r=>setTimeout(r,2000));
-  await doConnect();
-}
-
-function doDisconnect(){
-  stopStats();stopAILoop();stopGamepadLoop();
-  if(S.recording)toggleRecord();
-  if(S.dc){try{S.dc.close()}catch(e){}}
-  if(S.pc){try{S.pc.close()}catch(e){}}
-  S.pc=null;S.dc=null;video.srcObject=null;
-  S.connected=false;reconnectAttempts=0;
-  resetConn();
-  gs.style.display='none';cs.style.display='flex';
-  cur.style.display='none';
-  if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
-  toast('Desconectado','i');
-}
-
-function resetConn(){
-  cbtn.disabled=false;
-  setSt('s-dc','Desconectado');
-}
-
-function showPlayBtn(){
-  if($('playBtn'))return;
-  const btn=document.createElement('button');
-  btn.id='playBtn';
-  btn.innerHTML='▶️ Pulsa para empezar';
-  btn.style.cssText=`position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-    z-index:9999;padding:18px 36px;font-size:1.1rem;font-weight:700;
-    background:linear-gradient(135deg,#7c6fff,#ff6b9d);color:white;
-    border:none;border-radius:16px;cursor:pointer;
-    box-shadow:0 0 40px rgba(124,111,255,.5);font-family:'Space Grotesk',sans-serif;`;
-  btn.onclick=()=>{
-    video.play().then(()=>{
-      btn.remove();loadOv.style.display='none';
-    });
-  };
-  document.body.appendChild(btn);
-}
-
-// ══════════════════════════════════════════════
-// SCREENS
-// ══════════════════════════════════════════════
-function showGame(){
-  cs.style.display='none';
-  gs.style.display='block';
-  cur.style.display='block';
-  loadOv.style.display='flex';
-  showHud();
-  if(S.touchEnabled)buildTouchControls();
-}
-
-// ══════════════════════════════════════════════
-// HUD
-// ══════════════════════════════════════════════
-function showHud(){
-  hud.classList.remove('hid');
-  qbar.classList.remove('hid');
-  dataCtr.classList.remove('hid');
-  clearTimeout(S.hudTimer);
-  S.hudTimer=setTimeout(hideHud,4000);
-}
-
-function hideHud(){
-  hud.classList.add('hid');
-  qbar.classList.add('hid');
-  dataCtr.classList.add('hid');
-}
-
-video.addEventListener('mousemove',showHud);
-video.addEventListener('touchstart',showHud,{passive:true});
-
-// ══════════════════════════════════════════════
-// FULLSCREEN
-// ══════════════════════════════════════════════
-function reqFS(){
-  (document.documentElement.requestFullscreen||
-   document.documentElement.webkitRequestFullscreen).call(document.documentElement).catch(()=>{});
-}
-function togFS(){
-  if(!document.fullscreenElement&&!document.webkitFullscreenElement)reqFS();
-  else(document.exitFullscreen||document.webkitExitFullscreen).call(document).catch(()=>{});
-}
-
-// ══════════════════════════════════════════════
-// STATS
-// ══════════════════════════════════════════════
-let statsInt=null,aiStatInt=null;
-
-function startStats(){
-  statsInt=setInterval(async()=>{
-    if(!S.pc)return;
-    try{
-      const stats=await S.pc.getStats();
-      let fps=0,rtt=0,br=0,loss=0;
-      stats.forEach(r=>{
-        if(r.type==='inbound-rtp'&&r.kind==='video'){
-          fps=Math.round(r.framesPerSecond||0);
-          const now=Date.now();
-          const elapsed=(now-S.lastBwT)/1000;
-          const bytes=(r.bytesReceived||0)-S.sessionBytes;
-          br=Math.round(bytes/1024/elapsed);
-          S.bytesRx+=r.bytesReceived||0;
-          S.lastBwT=now;
-          loss=(r.packetsLost||0);
+        // Comprobar si entramos como espectador por URL (ej: ?spectate=192.168.1.33)
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('spectate')) {
+            isSpectatorMode = true;
+            document.getElementById('server-ip').value = urlParams.get('spectate');
+            document.getElementById('server-ip').disabled = true;
+            document.querySelector('.brand p').innerText = "Modo Espectador";
+            playBtn.innerHTML = '<i class="fa-solid fa-eye"></i> Ver Partida';
         }
-        if(r.type==='candidate-pair'&&r.state==='succeeded'){
-          rtt=Math.round((r.currentRoundTripTime||0)*1000);
+
+        // --- Utilidades UI ---
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
-      });
 
-      // Update HUD
-      hFps.textContent=fps||'--';
-      hPing.textContent=rtt||'--';
-      hBw.textContent=br>0?`${br}`:'--';
+        document.getElementById('quality-slider').addEventListener('input', (e) => {
+            document.getElementById('quality-val').textContent = e.target.value + '%';
+            sendConfig();
+        });
 
-      // Color FPS
-      hsFps.className='hstat '+(fps>=50?'fps-ok':fps>=30?'fps-warn':'fps-bad');
-      hsPing.className='hstat '+(rtt<80?'ping-ok':rtt<200?'ping-warn':'ping-bad');
+        document.getElementById('res-select').addEventListener('change', () => {
+            const res = document.getElementById('res-select').value;
+            if(res === '1080p') { canvas.width = 1920; canvas.height = 1080; }
+            if(res === '720p') { canvas.width = 1280; canvas.height = 720; }
+            if(res === '440p') { canvas.width = 782; canvas.height = 440; }
+            sendConfig();
+        });
 
-      // Data counter
-      const sessionSecs=(Date.now()-S.sessionStart)/1000;
-      const sessionMB=S.bytesRx/1024/1024;
-      const dcSession=$('dc-session');
-      dcSession.textContent=`${sessionMB.toFixed(0)} MB`;
-      dcSession.className='dc-val'+(sessionMB>500?' warn':sessionMB>2000?' danger':'');
-      $('dc-speed').textContent=`${br>0?br:'0'} KB/s`;
-      $('dc-time').textContent=formatTime(sessionSecs);
-      hData.textContent=`${sessionMB.toFixed(0)}MB`;
+        // --- CONEXIÓN WEB-SOCKET ---
+        connectBtn.addEventListener('click', () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.close();
+                return;
+            }
 
-      // Send to server for AI
-      if(S.serverUrl&&fps>0){
-        fetch(S.serverUrl+'/client-stats',{
-          method:'POST',
-          headers:{'Content-Type':'application/json','ngrok-skip-browser-warning':'true'},
-          body:JSON.stringify({fps,rtt,bitrate:br,loss})
-        }).then(r=>r.json()).then(data=>{
-          if(data.quality_change){
-            log(`🤖 AI: calidad ajustada → ${data.quality_change}`,'w');
-            toast(`IA ajustó calidad → ${data.quality_change}`,'w');
-            document.querySelectorAll('.qbtn').forEach(b=>{
-              b.classList.toggle('on',b.dataset.mode===data.quality_change);
-            });
-          }
-          if(data.ai&&data.ai.advice&&S.aiEnabled){
-            showAIPanel(data.ai.advice,data.ai.level);
-          }
-        }).catch(()=>{});
-      }
-    }catch(e){}
-  },1500);
-}
+            const ip = document.getElementById('server-ip').value;
+            const wsUrl = `ws://${ip}:8080/ws`;
+            
+            connectBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Conectando...';
+            
+            try {
+                ws = new WebSocket(wsUrl);
+                ws.binaryType = 'blob';
 
-function stopStats(){clearInterval(statsInt);statsInt=null}
+                ws.onopen = () => {
+                    statusText.innerHTML = '<span style="color:var(--accent-main)">• Conectado</span>';
+                    connectBtn.innerHTML = '<i class="fa-solid fa-unlink"></i> Desconectar';
+                    playBtn.style.display = "flex";
+                    
+                    // Si es espectador, mandamos config especial para no enviar inputs
+                    if(isSpectatorMode) ws.send(JSON.stringify({ type: "spectator_join" }));
+                    else sendConfig();
+                };
 
-// ══════════════════════════════════════════════
-// AI ADVISOR
-// ══════════════════════════════════════════════
-let aiLoopInt=null;
+                ws.onclose = () => {
+                    statusText.innerHTML = '<span style="color:#ff3366">• Desconectado</span>';
+                    connectBtn.innerHTML = '<i class="fa-solid fa-link"></i> Conectar al Host';
+                    playBtn.style.display = "none";
+                    canvas.classList.add('blurred');
+                    if (isPlaying) document.exitPointerLock();
+                };
 
-function startAILoop(){
-  if(!S.aiEnabled)return;
-  aiLoopInt=setInterval(async()=>{
-    if(!S.connected||!S.serverUrl)return;
-    try{
-      const r=await fetch(S.serverUrl+'/ai',{headers:{'ngrok-skip-browser-warning':'true'}});
-      const data=await r.json();
-      if(data.advice&&S.aiEnabled)showAIPanel(data.advice,data.level);
-    }catch(e){}
-  },30000);
-}
+                ws.onerror = (err) => {
+                    showToast("Error de conexión. Revisa IP/Firewall.");
+                    connectBtn.innerHTML = '<i class="fa-solid fa-link"></i> Conectar al Host';
+                };
 
-function stopAILoop(){clearInterval(aiLoopInt);aiLoopInt=null}
+                // Render rápido
+                ws.onmessage = async (event) => {
+                    if (event.data instanceof Blob) {
+                        createImageBitmap(event.data).then(imgBitmap => {
+                            ctx.drawImage(imgBitmap, 0, 0, canvas.width, canvas.height);
+                            imgBitmap.close();
+                        }).catch(e => {});
+                    }
+                };
+            } catch (e) {
+                showToast("Formato de IP inválido");
+            }
+        });
 
-function showAIPanel(text,level='ok'){
-  if(!S.aiEnabled)return;
-  aiText.textContent=text;
-  aiPanel.className=`level-${level} show`;
-  if(level==='ok')setTimeout(hideAIPanel,8000);
-}
+        function sendConfig() {
+            if (ws && ws.readyState === WebSocket.OPEN && !isSpectatorMode) {
+                ws.send(JSON.stringify({
+                    type: "config",
+                    resolution: document.getElementById('res-select').value,
+                    quality: parseInt(document.getElementById('quality-slider').value)
+                }));
+            }
+        }
 
-function hideAIPanel(){
-  aiPanel.classList.remove('show');
-}
+        // --- INGRESO AL JUEGO ---
+        playBtn.addEventListener('click', async () => {
+            panel.classList.add('hidden');
+            canvas.classList.remove('blurred');
+            
+            if(!isSpectatorMode) {
+                try {
+                    await canvas.requestPointerLock();
+                } catch (e) {
+                    showToast("Haz clic en la pantalla para jugar");
+                }
+            } else {
+                showToast("Viendo partida en vivo...");
+            }
+        });
 
-function toggleAI(){
-  S.aiEnabled=!S.aiEnabled;
-  $('aiBtn').textContent=`🤖 AI: ${S.aiEnabled?'ON':'OFF'}`;
-  if(!S.aiEnabled)hideAIPanel();
-  toast(`AI Advisor ${S.aiEnabled?'activado':'desactivado'}`,'i',2000);
-}
+        // HUD TOGGLE (Shift + Tab)
+        window.addEventListener('keydown', (e) => {
+            if (e.shiftKey && e.key === 'Tab') {
+                e.preventDefault();
+                topHud.classList.toggle('visible');
+                // Salir del juego momentáneamente para usar el menú
+                if(isPlaying && topHud.classList.contains('visible')) document.exitPointerLock();
+            }
+        });
 
-// ══════════════════════════════════════════════
-// SPECTATOR
-// ══════════════════════════════════════════════
-let specLink='';
+        document.addEventListener('pointerlockchange', () => {
+            if (document.pointerLockElement === canvas) {
+                isPlaying = true;
+                topHud.classList.remove('visible');
+            } else {
+                isPlaying = false;
+                if(!panel.classList.contains('hidden') === false) { // Si el panel no está visible, mostramos hud
+                    topHud.classList.add('visible');
+                }
+            }
+        });
 
-async function generateSpectatorLink(){
-  try{
-    const r=await fetch(S.serverUrl+'/spectator-link',{headers:{'ngrok-skip-browser-warning':'true'}});
-    const data=await r.json();
-    specLink=`${window.location.href.split('?')[0]}?spec=${data.token}`;
-    $('spec-link-box').textContent=specLink;
-  }catch(e){
-    $('spec-link-box').textContent='Error generando enlace';
-  }
-}
+        // --- FUNCIONALIDADES DEL HUD ---
 
-function showSpectatorPanel(){
-  const p=$('spec-overlay');
-  p.classList.toggle('show');
-}
+        // 1. Volver al menú
+        document.getElementById('hud-menu').addEventListener('click', () => {
+            topHud.classList.remove('visible');
+            panel.classList.remove('hidden');
+            canvas.classList.add('blurred');
+        });
 
-function copySpecLink(){
-  navigator.clipboard.writeText(specLink).then(()=>{
-    toast('Enlace copiado ✓','o',2000);
-  }).catch(()=>{
-    toast('No se pudo copiar','e');
-  });
-}
+        // 2. Captura de pantalla
+        function takeScreenshot() {
+            const dataURL = canvas.toDataURL("image/jpeg", 1.0);
+            const link = document.createElement("a");
+            link.download = `PedusCloud_Shot_${new Date().getTime()}.jpg`;
+            link.href = dataURL;
+            link.click();
+            showToast("Captura guardada");
+        }
+        document.getElementById('hud-screenshot').addEventListener('click', takeScreenshot);
 
-// ══════════════════════════════════════════════
-// SCREENSHOT
-// ══════════════════════════════════════════════
-function takeScreenshot(){
-  const canvas=document.createElement('canvas');
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(video,0,0);
-  const link=document.createElement('a');
-  link.download=`pedus-cloud-${Date.now()}.png`;
-  link.href=canvas.toDataURL('image/png');
-  link.click();
-  toast('Screenshot guardado ✓','o',2000);
-  log('📸 Screenshot guardado','o');
-}
+        // 3. Grabar Video local
+        document.getElementById('hud-record').addEventListener('click', function() {
+            if(!isRecording) {
+                const stream = canvas.captureStream(30); // 30 FPS
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                recordedChunks = [];
+                
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `PedusCloud_Record_${new Date().getTime()}.webm`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    showToast("Video guardado localmente");
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                this.classList.add('active');
+                showToast("Grabación iniciada");
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                this.classList.remove('active');
+            }
+        });
 
-// ══════════════════════════════════════════════
-// RECORDING
-// ══════════════════════════════════════════════
-function toggleRecord(){
-  if(!S.recording){
-    if(!video.srcObject){toast('No hay stream activo','e');return}
-    const stream=video.srcObject;
-    S.recordedChunks=[];
-    try{
-      S.mediaRecorder=new MediaRecorder(stream,{mimeType:'video/webm;codecs=vp9'});
-    }catch(e){
-      S.mediaRecorder=new MediaRecorder(stream);
-    }
-    S.mediaRecorder.ondataavailable=e=>{
-      if(e.data.size>0)S.recordedChunks.push(e.data);
-    };
-    S.mediaRecorder.onstop=()=>{
-      const blob=new Blob(S.recordedChunks,{type:'video/webm'});
-      const url=URL.createObjectURL(blob);
-      const link=document.createElement('a');
-      link.download=`pedus-cloud-${Date.now()}.webm`;
-      link.href=url;
-      link.click();
-      URL.revokeObjectURL(url);
-      toast('Grabación guardada ✓','o');
-      log('🎬 Grabación guardada','o');
-    };
-    S.mediaRecorder.start(100);
-    S.recording=true;
-    $('recBtn').textContent='⏹ Stop';
-    $('recBtn').style.color='var(--red)';
-    toast('Grabación iniciada ⏺','i',2000);
-    log('⏺ Grabación iniciada','i');
-  }else{
-    S.mediaRecorder.stop();
-    S.recording=false;
-    $('recBtn').textContent='⏺';
-    $('recBtn').style.color='';
-  }
-}
+        // 4. Modo Stream (Generar enlace)
+        document.getElementById('hud-stream').addEventListener('click', () => {
+            const currentUrl = window.location.origin + window.location.pathname;
+            const ip = document.getElementById('server-ip').value;
+            const streamLink = `${currentUrl}?spectate=${ip}`;
+            document.getElementById('stream-link-text').innerText = streamLink;
+            document.getElementById('stream-modal').style.display = 'block';
+        });
 
-// ══════════════════════════════════════════════
-// DATA SAVER
-// ══════════════════════════════════════════════
-function toggleDataSaver(){
-  S.dataSaver=!S.dataSaver;
-  $('dsBtn').textContent=`📊 Datos: ${S.dataSaver?'Ahorro':'Auto'}`;
-  if(S.dataSaver&&S.connected){
-    document.querySelector('.qbtn[data-mode="medio"]').click();
-    toast('Modo ahorro activado','w',2000);
-  }
-}
+        document.getElementById('copy-stream-btn').addEventListener('click', () => {
+            const text = document.getElementById('stream-link-text').innerText;
+            navigator.clipboard.writeText(text);
+            showToast("¡Enlace copiado! Envíalo a tus amigos.");
+        });
 
-// ══════════════════════════════════════════════
-// GAMEPAD API
-// ══════════════════════════════════════════════
-function startGamepadLoop(){
-  const gpInd=$('gp-ind');
+        // 5. Fullscreen
+        document.getElementById('hud-fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        });
 
-  S.gamepadLoop=setInterval(()=>{
-    const gamepads=navigator.getGamepads?.();
-    if(!gamepads)return;
+        // --- INPUTS AL SERVIDOR (Solo si no es espectador) ---
+        function sendInput(data) {
+            if (ws && ws.readyState === WebSocket.OPEN && isPlaying && !isSpectatorMode) {
+                ws.send(JSON.stringify(data));
+            }
+        }
 
-    let foundGamepad=false;
-    for(const gp of gamepads){
-      if(!gp)continue;
-      foundGamepad=true;
-      gpInd.className='connected';
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isPlaying || isSpectatorMode) return;
+            sendInput({ type: "mousemove", dx: e.movementX, dy: e.movementY });
+        });
+        canvas.addEventListener('mousedown', (e) => {
+            if (!isPlaying || isSpectatorMode) return;
+            e.preventDefault(); sendInput({ type: "mousedown", button: e.button });
+        });
+        canvas.addEventListener('mouseup', (e) => {
+            if (!isPlaying || isSpectatorMode) return;
+            e.preventDefault(); sendInput({ type: "mouseup", button: e.button });
+        });
+        canvas.addEventListener('contextmenu', e => e.preventDefault());
 
-      const axes=[
-        gp.axes[0]||0, gp.axes[1]||0,
-        gp.axes[2]||0, gp.axes[3]||0
-      ];
-      const buttons=gp.buttons.map(b=>typeof b==='number'?b>0.5:b.pressed);
-      const lt=gp.buttons[6]?.value||0;
-      const rt=gp.buttons[7]?.value||0;
+        window.addEventListener('keydown', (e) => {
+            if (!isPlaying || isSpectatorMode) return;
+            // Evitar comportamiento por defecto de f11, etc. a menos que sea necesario
+            if(e.key !== 'F11' && e.key !== 'F12') e.preventDefault(); 
+            sendInput({ type: "keydown", key: e.key });
+        });
+        window.addEventListener('keyup', (e) => {
+            if (!isPlaying || isSpectatorMode) return;
+            e.preventDefault(); sendInput({ type: "keyup", key: e.key });
+        });
 
-      sendInput({type:'gamepad', axes, buttons, lt, rt});
-      break;
-    }
-
-    if(!foundGamepad){
-      gpInd.className='';
-    }
-  },16); // ~60fps
-}
-
-function stopGamepadLoop(){
-  clearInterval(S.gamepadLoop);
-  S.gamepadLoop=null;
-  $('gp-ind').className='';
-}
-
-window.addEventListener('gamepadconnected',e=>{
-  toast(`🎮 Mando conectado: ${e.gamepad.id}`,'o');
-  log(`🎮 Mando: ${e.gamepad.id}`,'o');
-});
-
-window.addEventListener('gamepaddisconnected',e=>{
-  toast('🎮 Mando desconectado','w');
-});
-
-// ══════════════════════════════════════════════
-// TOUCH CONTROLS
-// ══════════════════════════════════════════════
-function toggleTouchControls(){
-  S.touchEnabled=!S.touchEnabled;
-  $('touchBtn').textContent=`📱 Touch: ${S.touchEnabled?'ON':'OFF'}`;
-  const tc=$('touch-ctrl');
-  if(S.touchEnabled&&S.connected){
-    tc.classList.add('show');
-    buildTouchControls();
-  }else{
-    tc.classList.remove('show');
-  }
-}
-
-function buildTouchControls(){
-  const tc=$('touch-ctrl');
-  tc.innerHTML='';
-
-  // Joystick zona izquierda
-  const joyZone=document.createElement('div');
-  joyZone.className='joystick-zone';
-  joyZone.style.cssText='position:absolute;bottom:20px;left:20px;width:140px;height:140px';
-
-  // Botones acción (derecha)
-  const actions=[
-    {icon:'🅰',key:'space',bottom:60,right:70,label:'A'},
-    {icon:'🅱',key:'e',bottom:110,right:20,label:'B'},
-    {icon:'🇽',key:'r',bottom:110,right:120,label:'X'},
-    {icon:'🇾',key:'q',bottom:160,right:70,label:'Y'},
-  ];
-
-  actions.forEach(a=>{
-    const btn=document.createElement('div');
-    btn.className='touch-btn';
-    btn.style.cssText=`bottom:${a.bottom}px;right:${a.right}px;position:absolute`;
-    btn.textContent=a.icon;
-    btn.addEventListener('touchstart',e=>{e.preventDefault();sendInput({type:'keydown',key:a.key})});
-    btn.addEventListener('touchend',e=>{e.preventDefault();sendInput({type:'keyup',key:a.key})});
-    tc.appendChild(btn);
-  });
-
-  // Joystick con touch
-  let joyCenter={x:90,y:window.innerHeight-90};
-  let joyActive=false;
-
-  joyZone.addEventListener('touchstart',e=>{
-    e.preventDefault();
-    joyActive=true;
-    const t=e.touches[0];
-    joyCenter={x:t.clientX,y:t.clientY};
-  },{passive:false});
-
-  joyZone.addEventListener('touchmove',e=>{
-    e.preventDefault();
-    if(!joyActive)return;
-    const t=e.touches[0];
-    const dx=(t.clientX-joyCenter.x)/70;
-    const dy=(t.clientY-joyCenter.y)/70;
-    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-    const lx=clamp(dx,-1,1);
-    const ly=clamp(dy,-1,1);
-
-    // WASD
-    const DEAD=0.2;
-    sendInput({type:'gamepad',axes:[lx,ly,0,0],buttons:Array(17).fill(false),lt:0,rt:0});
-  },{passive:false});
-
-  joyZone.addEventListener('touchend',e=>{
-    e.preventDefault();
-    joyActive=false;
-    sendInput({type:'gamepad',axes:[0,0,0,0],buttons:Array(17).fill(false),lt:0,rt:0});
-  },{passive:false});
-
-  tc.appendChild(joyZone);
-  tc.classList.add('show');
-}
-
-// ══════════════════════════════════════════════
-// INPUT — KEYBOARD
-// ══════════════════════════════════════════════
-const pressedKeys=new Set();
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    S.escN++;clearTimeout(S.escT);
-    if(S.escN>=2&&S.connected){S.escN=0;doDisconnect();return}
-    S.escT=setTimeout(()=>S.escN=0,600);
-  }
-  if(e.key==='`'||e.key==='~'){showHud();return}
-  if(e.key==='F11'){e.preventDefault();togFS();return}
-  if(e.key==='F9'&&S.connected){e.preventDefault();takeScreenshot();return}
-  if(e.key==='F10'&&S.connected){e.preventDefault();toggleRecord();return}
-  if(!S.dc||S.dc.readyState!=='open')return;
-  const noDef=['F1','F3','F5','F12','Tab','Backspace'];
-  if(noDef.includes(e.key))e.preventDefault();
-  if(!pressedKeys.has(e.key)){
-    pressedKeys.add(e.key);
-    sendInput({type:'keydown',key:e.key});
-  }
-});
-
-document.addEventListener('keyup',e=>{
-  pressedKeys.delete(e.key);
-  if(S.dc&&S.dc.readyState==='open')sendInput({type:'keyup',key:e.key});
-});
-
-// ══════════════════════════════════════════════
-// INPUT — MOUSE
-// ══════════════════════════════════════════════
-function toGame(cx,cy){
-  const rect=video.getBoundingClientRect();
-  const vw=video.videoWidth||1280,vh=video.videoHeight||720;
-  const scale=Math.min(rect.width/vw,rect.height/vh);
-  const ox=(rect.width-vw*scale)/2+rect.left;
-  const oy=(rect.height-vh*scale)/2+rect.top;
-  return{x:Math.round((cx-ox)/scale),y:Math.round((cy-oy)/scale)};
-}
-
-function sendInput(data){
-  if(S.dc&&S.dc.readyState==='open')S.dc.send(JSON.stringify(data));
-}
-
-document.addEventListener('mousemove',e=>{
-  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
-  if(!S.connected)return;
-  const{x,y}=toGame(e.clientX,e.clientY);
-  sendInput({type:'mousemove',x,y});
-});
-
-document.addEventListener('mousedown',e=>{
-  cur.classList.add('clicking');
-  if(!S.connected)return;
-  e.preventDefault();
-  const{x,y}=toGame(e.clientX,e.clientY);
-  sendInput({type:'mousedown',button:e.button,x,y});
-});
-
-document.addEventListener('mouseup',e=>{
-  cur.classList.remove('clicking');
-  if(!S.connected)return;
-  const{x,y}=toGame(e.clientX,e.clientY);
-  sendInput({type:'mouseup',button:e.button,x,y});
-});
-
-document.addEventListener('contextmenu',e=>{if(S.connected)e.preventDefault()});
-document.addEventListener('wheel',e=>{
-  if(!S.connected)return;
-  e.preventDefault();
-  sendInput({type:'wheel',deltaY:e.deltaY});
-},{passive:false});
-
-// ══════════════════════════════════════════════
-// SPECTATOR TOKEN FROM URL
-// ══════════════════════════════════════════════
-(function checkSpectatorURL(){
-  const params=new URLSearchParams(window.location.search);
-  const token=params.get('spec');
-  if(token){
-    S.spectatorToken=token;
-    S.isSpectator=true;
-    document.querySelectorAll('.preset').forEach(b=>{
-      b.classList.toggle('on',b.dataset.mode==='spec');
-    });
-    log('🔗 Modo espectador detectado (enlace directo)','w');
-    toast('Modo espectador activo','w');
-  }
-})();
-
-// ══════════════════════════════════════════════
-// RESIZE
-// ══════════════════════════════════════════════
-window.addEventListener('resize',()=>{
-  if(S.connected&&S.touchEnabled)buildTouchControls();
-});
-
-// ══════════════════════════════════════════════
-// PERSISTENCE
-// ══════════════════════════════════════════════
-const sv=localStorage.getItem('pcg_url');if(sv)urlI.value=sv;
-urlI.addEventListener('input',()=>localStorage.setItem('pcg_url',urlI.value.trim()));
-pwI.addEventListener('keydown',e=>{if(e.key==='Enter')doConnect()});
-urlI.addEventListener('keydown',e=>{if(e.key==='Enter')pwI.focus()});
-
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
-log('🎮 Pedus Cloud Gaming listo.','i');
-log('💡 Introduce la URL del servidor y conecta.','i');
-log('⌨️  F9=Screenshot | F10=Grabar | Esc×2=Salir','w');
-</script>
+    </script>
 </body>
 </html>
